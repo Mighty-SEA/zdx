@@ -59,6 +59,11 @@
                             <span>Tarif</span>
                         </a>
                         
+                        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo*') ? 'active' : '' }}">
+                            <i class="fas fa-search text-lg w-5 text-center"></i>
+                            <span>SEO Halaman</span>
+                        </a>
+                        
                         <div x-data="{ open: {{ request()->routeIs('admin.users*') ? 'true' : 'false' }} }">
                             <button @click="open = !open" class="sidebar-link w-full text-left flex items-center justify-between {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
                                 <div class="flex items-center space-x-3">

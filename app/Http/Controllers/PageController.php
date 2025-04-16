@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PageSeoSetting;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -11,21 +12,60 @@ class PageController extends Controller
      */
     
     /**
-     * Mendapatkan data SEO dasar untuk halaman
+     * Mendapatkan data SEO dari database untuk halaman
      */
-    protected function getSeoData($route = '')
+    protected function getSeoData($identifier = 'home')
     {
-        return [
-            'title' => 'ZDX Express - Jasa Pengiriman Cepat & Terpercaya',
-            'description' => 'ZDX Express menyediakan layanan pengiriman cepat, aman, dan terpercaya ke seluruh Indonesia. Dapatkan tarif terbaik dan tracking real-time.',
-            'keywords' => 'jasa pengiriman, ekspedisi, kurir, pengiriman barang, tracking paket',
-            'og_title' => 'ZDX Express - Jasa Pengiriman Cepat & Terpercaya',
-            'og_description' => 'ZDX Express menyediakan layanan pengiriman cepat, aman, dan terpercaya ke seluruh Indonesia.',
-            'og_image' => asset('images/og-image.jpg'),
-            'meta_robots' => 'index, follow',
-            'canonical_url' => url($route),
-            'custom_schema' => null
-        ];
+        // Get SEO settings from database
+        $pageSeo = PageSeoSetting::where('page_identifier', $identifier)->first();
+        
+        // If not found or using global settings, get home page settings as default
+        if (!$pageSeo || $pageSeo->uses_global_settings) {
+            $defaultSeo = PageSeoSetting::where('page_identifier', 'home')->first();
+            
+            // If still not found, use hardcoded defaults
+            if (!$defaultSeo) {
+                return [
+                    'title' => 'ZDX Express - Jasa Pengiriman Cepat & Terpercaya',
+                    'description' => 'ZDX Express menyediakan layanan pengiriman cepat, aman, dan terpercaya ke seluruh Indonesia. Dapatkan tarif terbaik dan tracking real-time.',
+                    'keywords' => 'jasa pengiriman, ekspedisi, kurir, pengiriman barang, tracking paket',
+                    'og_title' => 'ZDX Express - Jasa Pengiriman Cepat & Terpercaya',
+                    'og_description' => 'ZDX Express menyediakan layanan pengiriman cepat, aman, dan terpercaya ke seluruh Indonesia.',
+                    'og_image' => asset('images/og-image.jpg'),
+                    'meta_robots' => 'index, follow',
+                    'canonical_url' => url($identifier == 'home' ? '/' : $identifier),
+                    'custom_schema' => null
+                ];
+            }
+            
+            // Use home settings with page-specific canonical URL
+            $seoData = [
+                'title' => $defaultSeo->title,
+                'description' => $defaultSeo->description,
+                'keywords' => $defaultSeo->keywords,
+                'og_title' => $defaultSeo->og_title ?? $defaultSeo->title,
+                'og_description' => $defaultSeo->og_description ?? $defaultSeo->description,
+                'og_image' => $defaultSeo->og_image ? asset($defaultSeo->og_image) : asset('images/og-image.jpg'),
+                'meta_robots' => $defaultSeo->custom_robots ?? 'index, follow',
+                'canonical_url' => url($identifier == 'home' ? '/' : $identifier),
+                'custom_schema' => $defaultSeo->custom_schema
+            ];
+        } else {
+            // Use page-specific settings
+            $seoData = [
+                'title' => $pageSeo->title,
+                'description' => $pageSeo->description,
+                'keywords' => $pageSeo->keywords,
+                'og_title' => $pageSeo->og_title ?? $pageSeo->title,
+                'og_description' => $pageSeo->og_description ?? $pageSeo->description,
+                'og_image' => $pageSeo->og_image ? asset($pageSeo->og_image) : asset('images/og-image.jpg'),
+                'meta_robots' => $pageSeo->custom_robots ?? 'index, follow',
+                'canonical_url' => url($identifier == 'home' ? '/' : $identifier),
+                'custom_schema' => $pageSeo->custom_schema
+            ];
+        }
+        
+        return $seoData;
     }
     
     /**
@@ -33,7 +73,7 @@ class PageController extends Controller
      */
     public function home()
     {
-        $seoData = $this->getSeoData('');
+        $seoData = $this->getSeoData('home');
         return view('home', compact('seoData'));
     }
     
@@ -42,7 +82,7 @@ class PageController extends Controller
      */
     public function services()
     {
-        $seoData = $this->getSeoData('layanan');
+        $seoData = $this->getSeoData('services');
         return view('services', compact('seoData'));
     }
     
@@ -51,7 +91,7 @@ class PageController extends Controller
      */
     public function rates()
     {
-        $seoData = $this->getSeoData('tarif');
+        $seoData = $this->getSeoData('rates');
         return view('rates', compact('seoData'));
     }
     
@@ -78,7 +118,7 @@ class PageController extends Controller
      */
     public function profile()
     {
-        $seoData = $this->getSeoData('profil');
+        $seoData = $this->getSeoData('profile');
         return view('profile', compact('seoData'));
     }
     
@@ -87,7 +127,7 @@ class PageController extends Controller
      */
     public function contact()
     {
-        $seoData = $this->getSeoData('kontak');
+        $seoData = $this->getSeoData('contact');
         return view('contact', compact('seoData'));
     }
 } 
