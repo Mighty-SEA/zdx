@@ -50,6 +50,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/rates/{id}/edit', [RateController::class, 'edit'])->name('rates.edit');
     Route::put('/rates/{id}', [RateController::class, 'update'])->name('rates.update');
     Route::delete('/rates/{id}', [RateController::class, 'destroy'])->name('rates.destroy');
+    Route::post('/rates/import', [RateController::class, 'import'])->name('rates.import');
+    Route::get('/rates/download-template', [RateController::class, 'downloadTemplate'])->name('rates.download-template');
     
     // Admin Users
     Route::get('/users', function () {
