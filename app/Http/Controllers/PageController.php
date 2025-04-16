@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\SeoSetting;
+use App\Models\PageSeo;
 
 class PageController extends Controller
 {
@@ -12,37 +13,45 @@ class PageController extends Controller
      */
     
     /**
-     * Mengambil data SEO untuk halaman tertentu
-     *
-     * @param string $route
-     * @return array
+     * Mendapatkan pengaturan SEO untuk halaman tertentu
+     * Jika halaman menggunakan pengaturan global, akan mengembalikan pengaturan global
      */
-    private function getSeoData($route)
+    protected function getSeoData($route = '')
     {
-        // Ambil data SEO khusus halaman dari model PageSeo
-        $pageSeo = \App\Models\PageSeo::where('route', $route)->first();
+        // Pengaturan SEO Global
+        $globalSeo = SeoSetting::first() ?? new SeoSetting();
         
-        // Fallback ke data default jika tidak ada di database
-        if (!$pageSeo) {
+        // Cari pengaturan halaman spesifik
+        $pageSeo = PageSeo::where('route', $route)->first();
+        
+        // Jika tidak ada pengaturan halaman atau halaman menggunakan pengaturan global
+        if (!$pageSeo || $pageSeo->uses_global_settings) {
             return [
-                'title' => ucfirst($route),
-                'description' => 'ZDX Cargo - Jasa pengiriman terpercaya untuk kebutuhan logistik Anda',
-                'keywords' => 'jasa pengiriman, cargo, logistik',
+                'title' => $globalSeo->site_title,
+                'description' => $globalSeo->site_description,
+                'keywords' => $globalSeo->site_keywords,
+                'og_title' => $globalSeo->og_title,
+                'og_description' => $globalSeo->og_description,
+                'og_image' => $globalSeo->og_image,
+                'meta_robots' => $globalSeo->meta_robots,
+                'canonical_url' => url($route),
+                'custom_schema' => null
             ];
         }
         
+        // Gunakan pengaturan halaman spesifik
         return [
             'title' => $pageSeo->title,
             'description' => $pageSeo->description,
             'keywords' => $pageSeo->keywords,
-            'og_title' => $pageSeo->og_title,
-            'og_description' => $pageSeo->og_description,
+            'og_title' => $pageSeo->og_title ?: $pageSeo->title,
+            'og_description' => $pageSeo->og_description ?: $pageSeo->description,
             'og_image' => $pageSeo->og_image,
-            'canonical_url' => $pageSeo->canonical_url,
-            'is_indexed' => $pageSeo->is_indexed,
-            'is_followed' => $pageSeo->is_followed,
-            'custom_robots' => $pageSeo->custom_robots,
-            'custom_schema' => $pageSeo->custom_schema,
+            'meta_robots' => $pageSeo->is_indexed 
+                ? ($pageSeo->is_followed ? 'index, follow' : 'index, nofollow') 
+                : ($pageSeo->is_followed ? 'noindex, follow' : 'noindex, nofollow'),
+            'canonical_url' => $pageSeo->canonical_url ?: url($route),
+            'custom_schema' => $pageSeo->custom_schema
         ];
     }
     
@@ -51,7 +60,7 @@ class PageController extends Controller
      */
     public function home()
     {
-        $seoData = $this->getSeoData('home');
+        $seoData = $this->getSeoData('');
         return view('home', compact('seoData'));
     }
     
@@ -60,7 +69,7 @@ class PageController extends Controller
      */
     public function services()
     {
-        $seoData = $this->getSeoData('services');
+        $seoData = $this->getSeoData('layanan');
         return view('services', compact('seoData'));
     }
     
@@ -69,7 +78,7 @@ class PageController extends Controller
      */
     public function rates()
     {
-        $seoData = $this->getSeoData('rates');
+        $seoData = $this->getSeoData('tarif');
         return view('rates', compact('seoData'));
     }
     
@@ -96,7 +105,7 @@ class PageController extends Controller
      */
     public function profile()
     {
-        $seoData = $this->getSeoData('profile');
+        $seoData = $this->getSeoData('profil');
         return view('profile', compact('seoData'));
     }
     
@@ -105,7 +114,7 @@ class PageController extends Controller
      */
     public function contact()
     {
-        $seoData = $this->getSeoData('contact');
+        $seoData = $this->getSeoData('kontak');
         return view('contact', compact('seoData'));
     }
 } 

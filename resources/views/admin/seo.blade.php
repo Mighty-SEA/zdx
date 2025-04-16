@@ -31,7 +31,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">Laporan SEO</h3>
                     <button type="button" id="refresh-report" class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full hover:bg-indigo-200 transition-colors duration-200">
-                        <i class="fas fa-sync-alt mr-1"></i> Refresh Laporan
+                        <i class="fas fa-sync-alt mr-1" id="refresh-icon"></i> Refresh Laporan
                     </button>
                 </div>
                 
@@ -284,60 +284,114 @@
                         <div id="page-seo-settings" class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-5 hover:border-indigo-200 transition-colors duration-200 hidden">
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="font-medium text-gray-800">Pengaturan Halaman Spesifik</h4>
-                            <button type="button" class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded hover:bg-indigo-200 transition-colors duration-200">
-                                <i class="fas fa-magic mr-1"></i> Auto Optimize
-                                </button>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 gap-4">
-                            <div>
-                                <label for="page_title" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <div class="flex items-center">
-                                        <span>Judul Halaman</span>
-                                        <span class="ml-1 text-green-600"><i class="fas fa-check-circle"></i></span>
+                            <div class="flex items-center gap-2">
+                                <div class="relative inline-block w-44">
+                                    <select id="page_seo_mode" onchange="updateGlobalSettingsMode(this)" class="appearance-none w-full text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded pr-8 hover:bg-indigo-200 transition-colors duration-200 border-none focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                                        <option value="0">Pengaturan Independen</option>
+                                        <option value="1">Gunakan Pengaturan Global</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-indigo-800">
+                                        <i class="fas fa-chevron-down text-xs"></i>
                                     </div>
-                                </label>
-                                <input type="text" id="page_title" name="page_title" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                <div class="flex justify-between mt-1">
-                                        <p class="text-xs text-gray-500">Judul halaman pada hasil pencarian</p>
-                                        <p class="text-xs text-gray-500"><span id="page_title_count">0</span>/60 karakter</p>
+                                </div>
+                                <button type="button" id="save-page-button-form" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
+                                    <i class="fas fa-save mr-2"></i> Simpan Perubahan Halaman
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Form untuk menyimpan halaman spesifik -->
+                        <form id="pageSeoForm" action="" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" id="page_id_input" name="page_id" value="">
+                            <input type="hidden" id="uses_global_settings_input" name="uses_global_settings" value="0">
+                        
+                            <!-- Info banner tentang pengaturan global -->
+                            <div id="global-settings-info" class="mb-4 hidden bg-blue-50 p-3 rounded-lg border border-blue-200">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <i class="fas fa-info-circle text-blue-500"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-700">Halaman ini menggunakan pengaturan SEO global. Ubah mode ke "Pengaturan Independen" untuk mengatur SEO khusus halaman ini.</p>
+                                        <div class="mt-2 flex gap-2">
+                                            <button type="button" id="switch-to-independent" class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded hover:bg-blue-300 transition-colors duration-200">
+                                                <i class="fas fa-edit mr-1"></i> Gunakan Pengaturan Independen
+                                            </button>
+                                            <button type="button" id="view-global-settings" class="text-xs bg-gray-200 text-gray-800 px-2 py-1 rounded hover:bg-gray-300 transition-colors duration-200">
+                                                <i class="fas fa-eye mr-1"></i> Lihat Pengaturan Global
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div>
+                                
+                            <div id="page-seo-form" class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label for="page_title" class="block text-sm font-medium text-gray-700 mb-1">
+                                        <div class="flex items-center">
+                                            <span>Judul Halaman</span>
+                                            <span class="ml-1 text-green-600"><i class="fas fa-check-circle"></i></span>
+                                        </div>
+                                    </label>
+                                    <input type="text" id="page_title" name="title" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                    <div class="flex justify-between mt-1">
+                                        <p class="text-xs text-gray-500">Judul halaman pada hasil pencarian</p>
+                                        <p class="text-xs text-gray-500"><span id="page_title_count">0</span>/60 karakter</p>
+                                    </div>
+                                </div>
+                                
+                                <div>
                                     <label for="page_description" class="block text-sm font-medium text-gray-700 mb-1">
                                         <div class="flex items-center">
                                             <span>Deskripsi Halaman</span>
                                             <span class="ml-1 text-green-600"><i class="fas fa-check-circle"></i></span>
                                         </div>
                                     </label>
-                                <textarea id="page_description" name="page_description" rows="2"
+                                    <textarea id="page_description" name="description" rows="2"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"></textarea>
-                                <div class="flex justify-between mt-1">
-                                    <p class="text-xs text-gray-500">Deskripsi singkat halaman</p>
+                                    <div class="flex justify-between mt-1">
+                                        <p class="text-xs text-gray-500">Deskripsi singkat halaman</p>
                                         <p class="text-xs text-gray-500"><span id="page_description_count">0</span>/160 karakter</p>
+                                    </div>
                                 </div>
-                            </div>
                                 
                                 <div>
                                     <label for="page_keywords" class="block text-sm font-medium text-gray-700 mb-1">Kata Kunci</label>
-                                <input type="text" id="page_keywords" name="page_keywords"
+                                    <input type="text" id="page_keywords" name="keywords" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
                                     <p class="text-xs text-gray-500 mt-1">Pisahkan kata kunci dengan koma</p>
-                        </div>
+                                </div>
                                 
                                 <div>
-                                <label for="page_robots" class="block text-sm font-medium text-gray-700 mb-1">Robot Settings</label>
-                                <select name="page_robots" id="page_robots" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                    <option value="index, follow">index, follow (Recommended)</option>
-                                    <option value="noindex, follow">noindex, follow</option>
-                                    <option value="index, nofollow">index, nofollow</option>
-                                    <option value="noindex, nofollow">noindex, nofollow</option>
-                                </select>
-                                <p class="text-xs text-gray-500 mt-1">Atur bagaimana robot pencari memperlakukan halaman ini</p>
-                </div>
-                        </div>
+                                    <label for="page_robots" class="block text-sm font-medium text-gray-700 mb-1">Robot Settings</label>
+                                    <select name="custom_robots" id="page_robots" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <option value="index, follow">index, follow (Recommended)</option>
+                                        <option value="noindex, follow">noindex, follow</option>
+                                        <option value="index, nofollow">index, nofollow</option>
+                                        <option value="noindex, nofollow">noindex, nofollow</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Atur bagaimana robot pencari memperlakukan halaman ini</p>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="is_indexed" name="is_indexed" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                    <label for="is_indexed" class="ml-2 block text-sm text-gray-700">Allow indexing (index)</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="is_followed" name="is_followed" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                    <label for="is_followed" class="ml-2 block text-sm text-gray-700">Allow following links (follow)</label>
+                                </div>
+                                
+                                <div class="flex items-center justify-end mt-4">
+                                    <button type="button" id="save-page-button-form" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
+                                        <i class="fas fa-save mr-2"></i> Simpan Perubahan Halaman
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     
                     <!-- SEO Preview Card -->
@@ -725,15 +779,40 @@
                     document.getElementById('global-seo-settings').classList.add('hidden');
                     document.getElementById('page-seo-settings').classList.remove('hidden');
                     
+                    // Setup the form action for the specific page
+                    const pageSeoForm = document.getElementById('pageSeoForm');
+                    pageSeoForm.action = `/admin/seo/page/${selectedPageId}/save`;
+                    document.getElementById('page_id_input').value = selectedPageId;
+                    
                     // Load page-specific data via AJAX
                     fetch(`/admin/seo/page/${selectedPageId}`)
                         .then(response => response.json())
                         .then(data => {
+                            console.log('Loaded page data:', data);
+                            
                             // Update form fields with page-specific data
                             document.getElementById('page_title').value = data.title || '';
                             document.getElementById('page_description').value = data.description || '';
                             document.getElementById('page_keywords').value = data.keywords || '';
-                            document.getElementById('page_robots').value = data.meta_robots || 'index, follow';
+                            document.getElementById('page_robots').value = data.custom_robots || 'index, follow';
+                            document.getElementById('is_indexed').checked = data.is_indexed || false;
+                            document.getElementById('is_followed').checked = data.is_followed || false;
+                            
+                            // Update character counts
+                            document.getElementById('page_title_count').textContent = 
+                                (data.title || '').length;
+                            document.getElementById('page_description_count').textContent = 
+                                (data.description || '').length;
+                            
+                            // Set page SEO mode based on data
+                            const usesGlobalSettings = data.uses_global_settings || false;
+                            console.log('Setting uses_global_settings to:', usesGlobalSettings);
+                            const pageSeoModeSelect = document.getElementById('page_seo_mode');
+                            pageSeoModeSelect.value = usesGlobalSettings ? '1' : '0';
+                            document.getElementById('uses_global_settings_input').value = usesGlobalSettings ? '1' : '0';
+                            
+                            // Toggle visibility of form and info banner
+                            togglePageSeoMode(usesGlobalSettings);
                             
                             // Update preview with page-specific data
                             document.getElementById('preview-title').textContent = data.title || 'Judul Halaman';
@@ -754,7 +833,50 @@
                 }
             });
         }
-
+        
+        // Fungsi global untuk update mode pengaturan
+        window.updateGlobalSettingsMode = function(selectElement) {
+            const useGlobalSettings = selectElement.value === '1';
+            document.getElementById('uses_global_settings_input').value = selectElement.value;
+            togglePageSeoMode(useGlobalSettings);
+        };
+        
+        // Fungsi untuk toggle mode pengaturan SEO halaman
+        function togglePageSeoMode(useGlobalSettings) {
+            const pageSeoForm = document.getElementById('page-seo-form');
+            const globalSettingsInfo = document.getElementById('global-settings-info');
+            
+            console.log('Toggling page SEO mode, useGlobalSettings =', useGlobalSettings);
+            
+            if (useGlobalSettings) {
+                pageSeoForm.classList.add('opacity-50', 'pointer-events-none');
+                globalSettingsInfo.classList.remove('hidden');
+            } else {
+                pageSeoForm.classList.remove('opacity-50', 'pointer-events-none');
+                globalSettingsInfo.classList.add('hidden');
+            }
+        }
+        
+        // Event handler untuk tombol switch-to-independent
+        const switchToIndependentBtn = document.getElementById('switch-to-independent');
+        if (switchToIndependentBtn) {
+            switchToIndependentBtn.addEventListener('click', function() {
+                const pageSeoModeSelect = document.getElementById('page_seo_mode');
+                pageSeoModeSelect.value = '0';
+                document.getElementById('uses_global_settings_input').value = '0';
+                togglePageSeoMode(false);
+            });
+        }
+        
+        // Event handler untuk tombol view-global-settings
+        const viewGlobalSettingsBtn = document.getElementById('view-global-settings');
+        if (viewGlobalSettingsBtn) {
+            viewGlobalSettingsBtn.addEventListener('click', function() {
+                document.getElementById('page-selector').value = 'global';
+                document.getElementById('edit-selected-page').click();
+            });
+        }
+        
         // Page Selector Change Handler
         if (pageSelector) {
             pageSelector.addEventListener('change', function() {
@@ -763,6 +885,29 @@
                     editPageButton.click();
                 }
             });
+        }
+        
+        // Tambahkan event listener untuk tombol simpan pada form halaman spesifik
+        const savePageButton = document.getElementById('save-page-button');
+        const savePageButtonForm = document.getElementById('save-page-button-form');
+        
+        const submitPageForm = function() {
+            // Pastikan nilai uses_global_settings terupdate
+            const pageSeoModeSelect = document.getElementById('page_seo_mode');
+            document.getElementById('uses_global_settings_input').value = pageSeoModeSelect.value;
+            
+            console.log('Submitting form with uses_global_settings =', document.getElementById('uses_global_settings_input').value);
+            
+            // Submit form untuk halaman spesifik
+            document.getElementById('pageSeoForm').submit();
+        };
+        
+        if (savePageButton) {
+            savePageButton.addEventListener('click', submitPageForm);
+        }
+        
+        if (savePageButtonForm) {
+            savePageButtonForm.addEventListener('click', submitPageForm);
         }
         
         // Character counters for text fields
@@ -934,84 +1079,245 @@
 
         // SEO Report Update
         function updateSeoReport() {
+            // Tampilkan indikator loading
+            const refreshIcon = document.getElementById('refresh-icon');
+            refreshIcon.className = 'fas fa-spinner fa-spin mr-1';
+            
+            // Nonaktifkan tombol sementara
+            const refreshButton = document.getElementById('refresh-report');
+            refreshButton.disabled = true;
+            refreshButton.classList.add('opacity-50');
+            
             fetch('/admin/seo/report')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         const report = data.data;
                         
-                        // Update scores
-                        document.getElementById('seo-score').textContent = report.seo_score;
+                        // Update scores dengan animasi sederhana
+                        animateCounter('seo-score', parseInt(document.getElementById('seo-score').textContent), report.seo_score);
+                        
+                        // Update arah perubahan
                         document.getElementById('seo-score-change').innerHTML = `
-                            <i class="fas fa-arrow-${report.score_change > 0 ? 'up' : 'down'} mr-1"></i>
-                            ${report.score_change > 0 ? '+' : ''}${report.score_change}
+                            <i class="fas fa-arrow-${report.score_change >= 0 ? 'up' : 'down'} mr-1"></i>
+                            ${report.score_change >= 0 ? '+' : ''}${report.score_change}
                         `;
+                        document.getElementById('seo-score-change').className = report.score_change >= 0 
+                            ? 'text-green-600 text-xs flex items-center' 
+                            : 'text-red-600 text-xs flex items-center';
                         
-                        document.getElementById('keywords-count').textContent = report.keywords_ranking;
+                        animateCounter('keywords-count', parseInt(document.getElementById('keywords-count').textContent || 0), report.keywords_ranking);
                         document.getElementById('keywords-change').innerHTML = `
-                            <i class="fas fa-arrow-${report.keywords_change > 0 ? 'up' : 'down'} mr-1"></i>
-                            ${report.keywords_change > 0 ? '+' : ''}${report.keywords_change}
+                            <i class="fas fa-arrow-${report.keywords_change >= 0 ? 'up' : 'down'} mr-1"></i>
+                            ${report.keywords_change >= 0 ? '+' : ''}${report.keywords_change}
                         `;
+                        document.getElementById('keywords-change').className = report.keywords_change >= 0 
+                            ? 'text-green-600 text-xs flex items-center' 
+                            : 'text-red-600 text-xs flex items-center';
                         
-                        document.getElementById('backlinks-count').textContent = report.backlinks;
+                        animateCounter('backlinks-count', parseInt(document.getElementById('backlinks-count').textContent || 0), report.backlinks);
                         document.getElementById('backlinks-change').innerHTML = `
-                            <i class="fas fa-arrow-${report.backlinks_change > 0 ? 'up' : 'down'} mr-1"></i>
-                            ${report.backlinks_change > 0 ? '+' : ''}${report.backlinks_change}
+                            <i class="fas fa-arrow-${report.backlinks_change >= 0 ? 'up' : 'down'} mr-1"></i>
+                            ${report.backlinks_change >= 0 ? '+' : ''}${report.backlinks_change}
                         `;
+                        document.getElementById('backlinks-change').className = report.backlinks_change >= 0 
+                            ? 'text-green-600 text-xs flex items-center' 
+                            : 'text-red-600 text-xs flex items-center';
                         
-                        document.getElementById('page-speed').textContent = report.page_speed;
+                        animateCounter('page-speed', parseInt(document.getElementById('page-speed').textContent || 0), report.page_speed);
                         document.getElementById('page-speed-change').innerHTML = `
-                            <i class="fas fa-arrow-${report.page_speed_change > 0 ? 'up' : 'down'} mr-1"></i>
-                            ${report.page_speed_change > 0 ? '+' : ''}${report.page_speed_change}
+                            <i class="fas fa-arrow-${report.page_speed_change >= 0 ? 'up' : 'down'} mr-1"></i>
+                            ${report.page_speed_change >= 0 ? '+' : ''}${report.page_speed_change}
                         `;
+                        document.getElementById('page-speed-change').className = report.page_speed_change >= 0 
+                            ? 'text-green-600 text-xs flex items-center' 
+                            : 'text-red-600 text-xs flex items-center';
                         
                         // Update tips
-                        const tipsContainer = document.querySelector('#seo-tips .space-y-2');
-                        tipsContainer.innerHTML = '';
-                        
-                        report.optimization_tips.forEach(tip => {
-                            const tipElement = document.createElement('div');
-                            let bgColor, borderColor, textColor, icon;
-                            
-                            switch(tip.type) {
-                                case 'error':
-                                    bgColor = 'bg-red-50';
-                                    borderColor = 'border-red-500';
-                                    textColor = 'text-red-800';
-                                    icon = 'exclamation-circle';
-                                    break;
-                                case 'warning':
-                                    bgColor = 'bg-yellow-50';
-                                    borderColor = 'border-yellow-500';
-                                    textColor = 'text-yellow-800';
-                                    icon = 'exclamation-triangle';
-                                    break;
-                                default:
-                                    bgColor = 'bg-blue-50';
-                                    borderColor = 'border-blue-500';
-                                    textColor = 'text-blue-800';
-                                    icon = 'info-circle';
-                            }
-                            
-                            tipElement.className = `${bgColor} border-l-4 ${borderColor} p-3 rounded-r-lg`;
-                            tipElement.innerHTML = `
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-${icon} ${textColor}"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="text-sm ${textColor}">${tip.message}</p>
-                                    </div>
-                                </div>
-                            `;
-                            
-                            tipsContainer.appendChild(tipElement);
-                        });
+                        updateSeoTips(report.optimization_tips);
+                    } else {
+                        console.error('Error in SEO report data:', data.message);
+                        showToast('Gagal memperbarui laporan SEO', 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error updating SEO report:', error);
+                    showToast('Terjadi kesalahan saat memperbarui laporan SEO', 'error');
+                })
+                .finally(() => {
+                    // Kembalikan tombol ke keadaan semula
+                    refreshIcon.className = 'fas fa-sync-alt mr-1';
+                    refreshButton.disabled = false;
+                    refreshButton.classList.remove('opacity-50');
                 });
+        }
+        
+        // Fungsi untuk menganimasikan perubahan nilai
+        function animateCounter(elementId, start, end) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const duration = 1000; // 1 detik
+            const startTime = performance.now();
+            
+            function updateCounter(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                const value = Math.floor(start + (progress * (end - start)));
+                element.textContent = value;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = end;
+                }
+            }
+            
+            requestAnimationFrame(updateCounter);
+        }
+        
+        // Fungsi untuk memperbarui tips SEO
+        function updateSeoTips(tips) {
+            const tipsContainer = document.querySelector('#seo-tips .space-y-2');
+            if (!tipsContainer) return;
+            
+            // Hapus tips yang ada dengan animasi fade
+            const existingTips = tipsContainer.querySelectorAll('div');
+            existingTips.forEach(tip => {
+                tip.classList.add('opacity-0', 'transition-opacity');
+            });
+            
+            // Tunggu animasi selesai, lalu perbarui tips
+            setTimeout(() => {
+                tipsContainer.innerHTML = '';
+                
+                // Tambahkan tips baru dengan animasi fade in
+                tips.forEach((tip, index) => {
+                    const tipElement = document.createElement('div');
+                    let bgColor, borderColor, textColor, icon;
+                    
+                    switch(tip.type) {
+                        case 'error':
+                            bgColor = 'bg-red-50';
+                            borderColor = 'border-red-500';
+                            textColor = 'text-red-800';
+                            icon = 'exclamation-circle';
+                            break;
+                        case 'warning':
+                            bgColor = 'bg-yellow-50';
+                            borderColor = 'border-yellow-500';
+                            textColor = 'text-yellow-800';
+                            icon = 'exclamation-triangle';
+                            break;
+                        default:
+                            bgColor = 'bg-blue-50';
+                            borderColor = 'border-blue-500';
+                            textColor = 'text-blue-800';
+                            icon = 'info-circle';
+                    }
+                    
+                    tipElement.className = `${bgColor} border-l-4 ${borderColor} p-3 rounded-r-lg opacity-0 transition-opacity duration-300`;
+                    tipElement.innerHTML = `
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-${icon} ${textColor}"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm ${textColor}">${tip.message}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tipsContainer.appendChild(tipElement);
+                    
+                    // Animasi fade in dengan sedikit delay
+                    setTimeout(() => {
+                        tipElement.classList.remove('opacity-0');
+                    }, index * 100);
+                });
+                
+                // Jika tidak ada tips
+                if (tips.length === 0) {
+                    const emptyTip = document.createElement('div');
+                    emptyTip.className = 'bg-green-50 border-l-4 border-green-500 p-3 rounded-r-lg opacity-0 transition-opacity duration-300';
+                    emptyTip.innerHTML = `
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-green-800"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-green-800">Selamat! SEO website Anda sudah optimal.</p>
+                            </div>
+                        </div>
+                    `;
+                    tipsContainer.appendChild(emptyTip);
+                    
+                    setTimeout(() => {
+                        emptyTip.classList.remove('opacity-0');
+                    }, 100);
+                }
+            }, 300);
+        }
+        
+        // Fungsi untuk menampilkan pesan toast
+        function showToast(message, type = 'success') {
+            // Cek jika sudah ada toast container
+            let toastContainer = document.querySelector('.toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container fixed bottom-5 right-5 z-50';
+                document.body.appendChild(toastContainer);
+            }
+            
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500';
+            const textColor = type === 'success' ? 'text-green-800' : 'text-red-800';
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+            
+            toast.className = `${bgColor} border-l-4 p-3 mb-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ease-out`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-${icon} ${textColor}"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm ${textColor}">${message}</p>
+                    </div>
+                    <button class="ml-auto text-gray-400 hover:text-gray-500 focus:outline-none">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Animasi tampilkan toast
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 10);
+            
+            // Set auto-hide setelah 5 detik
+            const hideTimeout = setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            }, 5000);
+            
+            // Tambahkan event listener untuk tombol close
+            toast.querySelector('button').addEventListener('click', () => {
+                clearTimeout(hideTimeout);
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            });
         }
 
         // Add event listener for refresh button
