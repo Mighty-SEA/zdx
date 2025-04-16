@@ -8,6 +8,8 @@ use App\Models\Rate;
 use App\Imports\RatesImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\NotificationController;
 
 class RateController extends Controller
 {
@@ -74,6 +76,19 @@ class RateController extends Controller
                 }
             }
             
+            // Buat notifikasi untuk multi-record
+            if ($createdCount > 0) {
+                NotificationController::addNotification(
+                    Auth::id(),
+                    'Tarif Baru Ditambahkan',
+                    $createdCount . ' data tarif baru telah ditambahkan',
+                    'fas fa-dollar-sign',
+                    'bg-green-100',
+                    'text-green-500',
+                    route('admin.rates')
+                );
+            }
+            
             return redirect()->route('admin.rates')->with('success', $createdCount . ' data tarif berhasil ditambahkan');
         } else {
             // Single record creation (for API)
@@ -92,6 +107,17 @@ class RateController extends Controller
             }
 
             $rate = Rate::create($request->all());
+            
+            // Buat notifikasi untuk single record
+            NotificationController::addNotification(
+                Auth::id(),
+                'Tarif Baru Ditambahkan',
+                'Tarif baru untuk ' . $request->kota_kab . ', ' . $request->provinsi . ' telah ditambahkan',
+                'fas fa-dollar-sign',
+                'bg-green-100',
+                'text-green-500',
+                route('admin.rates')
+            );
             
             if ($request->wantsJson()) {
                 return response()->json(['success' => 'Data berhasil ditambahkan']);
@@ -127,7 +153,25 @@ class RateController extends Controller
         }
 
         $rate = Rate::find($id);
+        $oldPrice = $rate->harga_satuan;
         $rate->update($request->all());
+        
+        // Buat notifikasi untuk perubahan tarif
+        $priceChange = '';
+        if ($oldPrice != $request->harga_satuan) {
+            $change = $request->harga_satuan - $oldPrice;
+            $priceChange = $change > 0 ? ' (naik ' . number_format($change, 0, ',', '.') . ')' : ' (turun ' . number_format(abs($change), 0, ',', '.') . ')';
+        }
+        
+        NotificationController::addNotification(
+            Auth::id(),
+            'Tarif Diperbarui',
+            'Tarif untuk ' . $request->kota_kab . ', ' . $request->provinsi . ' telah diperbarui menjadi Rp ' . number_format($request->harga_satuan, 0, ',', '.') . $priceChange,
+            'fas fa-edit',
+            'bg-blue-100',
+            'text-blue-500',
+            route('admin.rates')
+        );
 
         if ($request->wantsJson()) {
             return response()->json(['success' => 'Data berhasil diperbarui']);
@@ -139,7 +183,19 @@ class RateController extends Controller
     public function destroy($id)
     {
         $rate = Rate::findOrFail($id);
+        $locationInfo = $rate->kota_kab . ', ' . $rate->provinsi;
         $rate->delete();
+
+        // Buat notifikasi untuk penghapusan tarif
+        NotificationController::addNotification(
+            Auth::id(),
+            'Tarif Dihapus',
+            'Tarif untuk ' . $locationInfo . ' telah dihapus',
+            'fas fa-trash',
+            'bg-red-100',
+            'text-red-500',
+            route('admin.rates')
+        );
 
         if (request()->wantsJson()) {
             return response()->json(['success' => 'Data berhasil dihapus']);
@@ -259,7 +315,24 @@ class RateController extends Controller
                 $message .= ", {$stats['skipped']} data dilewati (duplikat)";
             }
             
+            // Tambahkan notifikasi untuk hasil import
+            $notifTitle = 'Import Tarif Berhasil';
+            $notifIcon = 'fas fa-file-import';
+            $notifBg = 'bg-green-100';
+            $notifColor = 'text-green-500';
+            
+            NotificationController::addNotification(
+                Auth::id(),
+                $notifTitle,
+                $message,
+                $notifIcon,
+                $notifBg,
+                $notifColor,
+                route('admin.rates')
+            );
+            
             return redirect()->route('admin.rates')->with('success', $message);
+            
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
             
@@ -268,9 +341,31 @@ class RateController extends Controller
                 $errorMessage .= 'Baris ke-' . $failure->row() . ': ' . implode(', ', $failure->errors()) . '; ';
             }
             
+            // Tambahkan notifikasi untuk kegagalan import karena validasi
+            NotificationController::addNotification(
+                Auth::id(),
+                'Import Tarif Gagal',
+                'Validasi gagal: ' . $errorMessage,
+                'fas fa-exclamation-triangle',
+                'bg-red-100',
+                'text-red-500',
+                route('admin.rates')
+            );
+            
             return redirect()->route('admin.rates')->with('error', $errorMessage);
         } catch (\Exception $e) {
-            return redirect()->route('admin.rates')->with('error', 'Terjadi kesalahan saat mengimport data: ' . $e->getMessage());
+            // Tambahkan notifikasi untuk kegagalan import
+            NotificationController::addNotification(
+                Auth::id(),
+                'Import Tarif Gagal',
+                'Terjadi kesalahan saat import: ' . $e->getMessage(),
+                'fas fa-exclamation-triangle',
+                'bg-red-100',
+                'text-red-500',
+                route('admin.rates')
+            );
+            
+            return redirect()->route('admin.rates')->with('error', 'Import gagal: ' . $e->getMessage());
         }
     }
 } 

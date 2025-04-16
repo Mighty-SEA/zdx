@@ -137,70 +137,118 @@
                         </button>
                         
                         <!-- Notifications -->
-                        <div class="relative" x-data="{ open: false }">
+                        <div class="relative" 
+                            x-data="{ 
+                                open: false, 
+                                notifications: [], 
+                                unreadCount: 0,
+                                init() {
+                                    this.fetchNotifications();
+                                },
+                                fetchNotifications() {
+                                    fetch('{{ route('admin.notifications.data') }}')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            this.notifications = data.notifications;
+                                            this.unreadCount = data.unreadCount;
+                                        });
+                                },
+                                markAsRead(id, index) {
+                                    fetch(`{{ url('admin/notifications') }}/${id}/read`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            this.notifications[index].read_at = new Date();
+                                            this.unreadCount = Math.max(0, this.unreadCount - 1);
+                                        }
+                                    });
+                                },
+                                markAllAsRead() {
+                                    fetch('{{ route('admin.notifications.mark-all-read') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            this.notifications.forEach(notification => {
+                                                notification.read_at = new Date();
+                                            });
+                                            this.unreadCount = 0;
+                                        }
+                                    });
+                                }
+                            }"
+                        >
                             <button @click="open = !open" class="p-2 text-gray-600 rounded-lg hover:bg-gray-100 relative">
                                 <i class="fas fa-bell"></i>
-                                <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">3</span>
+                                <span 
+                                    x-show="unreadCount > 0" 
+                                    x-text="unreadCount" 
+                                    class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
+                                </span>
                             </button>
                             
                             <!-- Notifications Dropdown -->
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden" style="display: none;">
+                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden z-50" style="display: none;">
                                 <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
                                     <div class="flex items-center justify-between">
                                         <h3 class="text-sm font-semibold text-gray-700">Notifikasi</h3>
-                                        <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800">Tandai semua dibaca</a>
+                                        <button @click="markAllAsRead()" x-show="unreadCount > 0" class="text-xs text-indigo-600 hover:text-indigo-800">
+                                            Tandai semua dibaca
+                                        </button>
                                     </div>
                                 </div>
                                 
                                 <div class="max-h-72 overflow-y-auto">
-                                    <a href="#" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
-                                        <div class="flex">
-                                            <div class="flex-shrink-0 mr-3">
-                                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
-                                                    <i class="fas fa-shipping-fast"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <p class="text-sm font-medium text-gray-800">Pengiriman Baru</p>
-                                                <p class="text-xs text-gray-500">Pesanan #12345 telah dibuat</p>
-                                                <p class="text-xs text-gray-400 mt-1">Baru saja</p>
-                                            </div>
+                                    <template x-if="notifications.length > 0">
+                                        <div>
+                                            <template x-for="(notification, index) in notifications" :key="notification.id">
+                                                <a :href="notification.link || '#'" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100" :class="{'bg-indigo-50': !notification.read_at}">
+                                                    <div class="flex">
+                                                        <div class="flex-shrink-0 mr-3">
+                                                            <div class="w-10 h-10 rounded-full flex items-center justify-center" :class="notification.icon_background + ' ' + notification.icon_color">
+                                                                <i :class="notification.icon"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-1">
+                                                            <p class="text-sm font-medium text-gray-800" x-text="notification.title"></p>
+                                                            <p class="text-xs text-gray-500" x-text="notification.message"></p>
+                                                            <div class="flex items-center justify-between mt-1">
+                                                                <p class="text-xs text-gray-400" x-text="new Date(notification.created_at).toLocaleString('id-ID', {dateStyle: 'medium', timeStyle: 'short'})"></p>
+                                                                <button 
+                                                                    x-show="!notification.read_at" 
+                                                                    @click.stop.prevent="markAsRead(notification.id, index)" 
+                                                                    class="text-xs text-indigo-600 hover:text-indigo-800">
+                                                                    Tandai dibaca
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </template>
                                         </div>
-                                    </a>
+                                    </template>
                                     
-                                    <a href="#" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
-                                        <div class="flex">
-                                            <div class="flex-shrink-0 mr-3">
-                                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-500">
-                                                    <i class="fas fa-user"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <p class="text-sm font-medium text-gray-800">Pelanggan Baru</p>
-                                                <p class="text-xs text-gray-500">John Doe baru saja mendaftar</p>
-                                                <p class="text-xs text-gray-400 mt-1">30 menit yang lalu</p>
-                                            </div>
+                                    <template x-if="notifications.length === 0">
+                                        <div class="py-8 text-center">
+                                            <i class="fas fa-bell-slash text-gray-400 text-3xl mb-2"></i>
+                                            <p class="text-gray-600 text-sm">Tidak ada notifikasi</p>
                                         </div>
-                                    </a>
-                                    
-                                    <a href="#" class="block px-4 py-3 hover:bg-gray-50">
-                                        <div class="flex">
-                                            <div class="flex-shrink-0 mr-3">
-                                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-500">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <p class="text-sm font-medium text-gray-800">Pengingat Sistem</p>
-                                                <p class="text-xs text-gray-500">Perbarui tarif pengiriman</p>
-                                                <p class="text-xs text-gray-400 mt-1">2 jam yang lalu</p>
-                                            </div>
-                                        </div>
-                                    </a>
+                                    </template>
                                 </div>
                                 
                                 <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200">
-                                    <a href="#" class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Lihat semua notifikasi</a>
+                                    <a href="{{ route('admin.notifications') }}" class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Lihat semua notifikasi</a>
                                 </div>
                             </div>
                         </div>

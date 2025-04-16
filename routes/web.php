@@ -6,6 +6,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\RateController;
 use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\NotificationController;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -52,6 +53,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::delete('/rates/{id}', [RateController::class, 'destroy'])->name('rates.destroy');
     Route::post('/rates/import', [RateController::class, 'import'])->name('rates.import');
     Route::get('/rates/download-template', [RateController::class, 'downloadTemplate'])->name('rates.download-template');
+    
+    // Notifications Routes
+    Route::get('/notifications', [NotificationController::class, 'all'])->name('notifications');
+    Route::get('/notifications/data', [NotificationController::class, 'index'])->name('notifications.data');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     
     // Admin Users
     Route::get('/users', function () {
