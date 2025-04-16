@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\Admin\RateController;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -36,9 +37,12 @@ Route::prefix('admin')->group(function () {
         })->name('admin.dashboard');
         
         // Admin Rates
-        Route::get('/rates', function () {
-            return view('admin.rates');
-        })->name('admin.rates');
+        Route::get('/rates', [RateController::class, 'index'])->name('admin.rates');
+        Route::get('/rates/create', [RateController::class, 'create'])->name('admin.rates.create');
+        Route::post('/rates', [RateController::class, 'store'])->name('admin.rates.store');
+        Route::get('/rates/{id}/edit', [RateController::class, 'edit'])->name('admin.rates.edit');
+        Route::put('/rates/{id}', [RateController::class, 'update'])->name('admin.rates.update');
+        Route::delete('/rates/{id}', [RateController::class, 'destroy'])->name('admin.rates.destroy');
         
         // Admin Users
         Route::get('/users', function () {
@@ -56,6 +60,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/seo/page/{id}', [SeoController::class, 'getPageSeo'])->name('admin.seo.page');
         Route::post('/seo/page/{id}/save', [SeoController::class, 'storePage'])->name('admin.seo.page.save');
         Route::post('/seo/page/{id}/api', [SeoController::class, 'storePageApi'])->name('admin.seo.page.api.save');
+        Route::get('/seo/page/{id}', [SeoController::class, 'getPageData'])->name('admin.seo.page.data');
+        Route::get('/seo/report', [SeoController::class, 'getSeoReport'])->name('admin.seo.report');
         
         // Admin Settings
         Route::get('/settings', function () {
