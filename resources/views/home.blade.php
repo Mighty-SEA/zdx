@@ -1,57 +1,28 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-@php
-$pageSeo = \App\Models\PageSeo::where('route', '')->first();
-@endphp
-
-@if($pageSeo)
-<title>{{ $pageSeo->title ?? config('app.name') }}</title>
-<meta name="description" content="{{ $pageSeo->description }}">
-@if($pageSeo->keywords)
-<meta name="keywords" content="{{ $pageSeo->keywords }}">
-@endif
+<title>{{ $seoData['title'] }}</title>
+<meta name="description" content="{{ $seoData['description'] }}">
+<meta name="keywords" content="{{ $seoData['keywords'] }}">
 
 <!-- Canonical URL -->
-@if($pageSeo->canonical_url)
-<link rel="canonical" href="{{ $pageSeo->canonical_url }}">
-@else
-<link rel="canonical" href="{{ url()->current() }}">
-@endif
+<link rel="canonical" href="{{ $seoData['canonical_url'] }}">
 
 <!-- Robots Meta -->
-@if($pageSeo->is_indexed && $pageSeo->is_followed)
-<meta name="robots" content="index, follow">
-@elseif($pageSeo->is_indexed && !$pageSeo->is_followed)
-<meta name="robots" content="index, nofollow">
-@elseif(!$pageSeo->is_indexed && $pageSeo->is_followed)
-<meta name="robots" content="noindex, follow">
-@else
-<meta name="robots" content="noindex, nofollow">
-@endif
-
-<!-- Custom Robots -->
-@if($pageSeo->custom_robots)
-<meta name="robots" content="{{ $pageSeo->custom_robots }}">
-@endif
+<meta name="robots" content="{{ $seoData['meta_robots'] }}">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:title" content="{{ $pageSeo->og_title ?? $pageSeo->title }}">
-<meta property="og:description" content="{{ $pageSeo->og_description ?? $pageSeo->description }}">
-@if($pageSeo->og_image)
-<meta property="og:image" content="{{ asset($pageSeo->og_image) }}">
+<meta property="og:title" content="{{ $seoData['og_title'] }}">
+<meta property="og:description" content="{{ $seoData['og_description'] }}">
+@if($seoData['og_image'])
+<meta property="og:image" content="{{ asset($seoData['og_image']) }}">
 @endif
 
 <!-- Custom Schema.org JSON-LD -->
-@if($pageSeo->custom_schema)
-{!! $pageSeo->custom_schema !!}
-@endif
-@else
-<title>{{ config('app.name') }} - Beranda</title>
-<meta name="description" content="ZDX Cargo - Solusi pengiriman barang terpercaya untuk bisnis dan kebutuhan pribadi Anda.">
-<meta name="keywords" content="jasa pengiriman, cargo darat, pengiriman laut, cargo udara, ekspedisi">
+@if($seoData['custom_schema'])
+{!! $seoData['custom_schema'] !!}
 @endif
 @endsection
 

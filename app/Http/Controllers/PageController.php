@@ -3,55 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\SeoSetting;
-use App\Models\PageSeo;
 
 class PageController extends Controller
 {
     /**
-     * Controller untuk halaman frontend dengan SEO dinamis
+     * Controller untuk halaman frontend
      */
     
     /**
-     * Mendapatkan pengaturan SEO untuk halaman tertentu
-     * Jika halaman menggunakan pengaturan global, akan mengembalikan pengaturan global
+     * Mendapatkan data SEO dasar untuk halaman
      */
     protected function getSeoData($route = '')
     {
-        // Pengaturan SEO Global
-        $globalSeo = SeoSetting::first() ?? new SeoSetting();
-        
-        // Cari pengaturan halaman spesifik
-        $pageSeo = PageSeo::where('route', $route)->first();
-        
-        // Jika tidak ada pengaturan halaman atau halaman menggunakan pengaturan global
-        if (!$pageSeo || $pageSeo->uses_global_settings) {
-            return [
-                'title' => $globalSeo->site_title,
-                'description' => $globalSeo->site_description,
-                'keywords' => $globalSeo->site_keywords,
-                'og_title' => $globalSeo->og_title,
-                'og_description' => $globalSeo->og_description,
-                'og_image' => $globalSeo->og_image,
-                'meta_robots' => $globalSeo->meta_robots,
-                'canonical_url' => url($route),
-                'custom_schema' => null
-            ];
-        }
-        
-        // Gunakan pengaturan halaman spesifik
         return [
-            'title' => $pageSeo->title,
-            'description' => $pageSeo->description,
-            'keywords' => $pageSeo->keywords,
-            'og_title' => $pageSeo->og_title ?: $pageSeo->title,
-            'og_description' => $pageSeo->og_description ?: $pageSeo->description,
-            'og_image' => $pageSeo->og_image,
-            'meta_robots' => $pageSeo->is_indexed 
-                ? ($pageSeo->is_followed ? 'index, follow' : 'index, nofollow') 
-                : ($pageSeo->is_followed ? 'noindex, follow' : 'noindex, nofollow'),
-            'canonical_url' => $pageSeo->canonical_url ?: url($route),
-            'custom_schema' => $pageSeo->custom_schema
+            'title' => 'ZDX Express - Jasa Pengiriman Cepat & Terpercaya',
+            'description' => 'ZDX Express menyediakan layanan pengiriman cepat, aman, dan terpercaya ke seluruh Indonesia. Dapatkan tarif terbaik dan tracking real-time.',
+            'keywords' => 'jasa pengiriman, ekspedisi, kurir, pengiriman barang, tracking paket',
+            'og_title' => 'ZDX Express - Jasa Pengiriman Cepat & Terpercaya',
+            'og_description' => 'ZDX Express menyediakan layanan pengiriman cepat, aman, dan terpercaya ke seluruh Indonesia.',
+            'og_image' => asset('images/og-image.jpg'),
+            'meta_robots' => 'index, follow',
+            'canonical_url' => url($route),
+            'custom_schema' => null
         ];
     }
     

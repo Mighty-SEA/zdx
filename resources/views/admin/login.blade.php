@@ -4,34 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- SEO Meta Tags dari Database -->
-    @php
-    $seoSettings = DB::table('seo_settings')->first();
-    @endphp
-    
-    <title>Login - {{ $seoSettings ? $seoSettings->site_title : 'ZDX Cargo Admin' }}</title>
-    
-    @if($seoSettings)
-    <meta name="description" content="{{ $seoSettings->site_description }}">
-    <meta name="keywords" content="{{ $seoSettings->site_keywords }}">
+    <!-- Meta Tags Dasar -->
+    <title>Login - ZDX Cargo Admin</title>
+    <meta name="description" content="ZDX Cargo - Login Panel Admin">
     <meta name="robots" content="noindex, nofollow">
-    
-    <!-- Google Analytics -->
-    @if($seoSettings->google_analytics_id)
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $seoSettings->google_analytics_id }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ $seoSettings->google_analytics_id }}');
-    </script>
-    @endif
-    
-    <!-- Custom Head Tags -->
-    @if($seoSettings->custom_head_tags)
-    {!! $seoSettings->custom_head_tags !!}
-    @endif
-    @endif
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

@@ -216,27 +216,6 @@
                     </div>
                 </div>
                 
-                <!-- SEO Management Section -->
-                <div class="bg-white p-4 rounded-lg border border-gray-200">
-                    <h4 class="font-medium text-gray-700 mb-3 flex items-center">
-                        <i class="fas fa-search text-indigo-500 mr-2"></i> Manajemen SEO
-                    </h4>
-                    <div class="space-y-2">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
-                            <span class="ml-2 text-sm text-gray-700">Lihat pengaturan SEO</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
-                            <span class="ml-2 text-sm text-gray-700">Edit pengaturan SEO</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
-                            <span class="ml-2 text-sm text-gray-700">Kelola meta tags</span>
-                        </label>
-                    </div>
-                </div>
-                
                 <!-- Settings Section -->
                 <div class="bg-white p-4 rounded-lg border border-gray-200">
                     <h4 class="font-medium text-gray-700 mb-3 flex items-center">

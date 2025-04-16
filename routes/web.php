@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\RateController;
 
 // Frontend Routes
@@ -53,15 +52,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/roles', function () {
             return view('admin.roles');
         })->name('admin.users.roles');
-        
-        // Admin SEO Management
-        Route::get('/seo', [SeoController::class, 'index'])->name('admin.seo');
-        Route::post('/seo/save', [SeoController::class, 'store'])->name('admin.seo.save');
-        Route::get('/seo/page/{id}', [SeoController::class, 'getPageSeo'])->name('admin.seo.page');
-        Route::post('/seo/page/{id}/save', [SeoController::class, 'storePage'])->name('admin.seo.page.save');
-        Route::post('/seo/page/{id}/api', [SeoController::class, 'storePageApi'])->name('admin.seo.page.api.save');
-        Route::get('/seo/page/{id}', [SeoController::class, 'getPageData'])->name('admin.seo.page.data');
-        Route::get('/seo/report', [SeoController::class, 'getSeoReport'])->name('admin.seo.report');
         
         // Admin Settings
         Route::get('/settings', function () {

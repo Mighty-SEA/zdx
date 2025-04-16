@@ -6,55 +6,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') - ZDX Cargo Admin</title>
     
-    <!-- SEO Meta Tags dari Database -->
-    @php
-    $seoSettings = DB::table('seo_settings')->first();
-    @endphp
-    
-    @if($seoSettings)
-    <meta name="description" content="{{ $seoSettings->site_description }}">
-    <meta name="keywords" content="{{ $seoSettings->site_keywords }}">
-    <meta name="robots" content="{{ $seoSettings->meta_robots }}">
+    <!-- Meta Tags Dasar -->
+    <meta name="description" content="ZDX Cargo - Admin Panel">
+    <meta name="keywords" content="cargo, shipping, admin, dashboard">
+    <meta name="robots" content="noindex, nofollow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="{{ $seoSettings->og_title }}">
-    <meta property="og:description" content="{{ $seoSettings->og_description }}">
-    @if($seoSettings->og_image)
-    <meta property="og:image" content="{{ url($seoSettings->og_image) }}">
-    @endif
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="{{ $seoSettings->twitter_card }}">
-    <meta property="twitter:url" content="{{ url()->current() }}">
-    <meta property="twitter:title" content="{{ $seoSettings->og_title }}">
-    <meta property="twitter:description" content="{{ $seoSettings->og_description }}">
-    @if($seoSettings->og_image)
-    <meta property="twitter:image" content="{{ url($seoSettings->og_image) }}">
-    @endif
-    
-    <!-- Google Analytics -->
-    @if($seoSettings->google_analytics_id)
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $seoSettings->google_analytics_id }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ $seoSettings->google_analytics_id }}');
-    </script>
-    @endif
-    
-    <!-- Schema Markup -->
-    @if($seoSettings->schema_markup)
-    {!! $seoSettings->schema_markup !!}
-    @endif
-    
-    <!-- Custom Head Tags -->
-    @if($seoSettings->custom_head_tags)
-    {!! $seoSettings->custom_head_tags !!}
-    @endif
-    @endif
+    <meta property="og:title" content="ZDX Cargo Admin">
+    <meta property="og:description" content="ZDX Cargo Admin Panel">
     
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -118,11 +79,6 @@
                                 </a>
                             </div>
                         </div>
-                        
-                        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo') ? 'active' : '' }}">
-                            <i class="fas fa-search text-lg w-5 text-center"></i>
-                            <span>SEO</span>
-                        </a>
                         
                         <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                             <i class="fas fa-cog text-lg w-5 text-center"></i>
