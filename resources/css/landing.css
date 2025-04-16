@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/*.blade.php';
+@source '../views/layouts/app.blade.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Menu Item Styles */
+.menu-item {
+    position: relative;
+}
+
+.menu-item::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(to right, #4f46e5, #3b82f6);
+    transition: width 0.3s ease;
+}
+
+.menu-item:hover::after {
+    width: 100%;
+}
+
+.active-menu-item {
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.active-menu-item::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(to right, #4f46e5, #3b82f6);
+}
+
+/* Gradient Buttons */
+.btn-gradient {
+    background: linear-gradient(to right, #4f46e5, #3b82f6);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2), 0 4px 6px -2px rgba(79, 70, 229, 0.1);
+}
+
+/* Cards with shadow hover effect */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Hero Section Gradients */
+.hero-gradient {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+}
+
+/* Footer Styles */
+.footer-link {
+    transition: all 0.2s ease;
+}
+
+.footer-link:hover {
+    color: white;
+    transform: translateX(3px);
+}
+
+/* Mobile Menu Animations */
+.mobile-menu-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.mobile-menu-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.mobile-menu-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mobile-menu-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Section Spacing */
+.section-spacing {
+    padding: 5rem 0;
+}
+
+/* Responsive Font Sizes */
+@media (max-width: 640px) {
+    .responsive-heading {
+        font-size: 1.875rem;
+    }
+    .responsive-subheading {
+        font-size: 1.125rem;
+    }
+} 

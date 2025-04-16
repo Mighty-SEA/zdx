@@ -4,39 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZDX Cargo - Jasa Pengiriman Terpercaya</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/landing.css', 'resources/js/landing.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .menu-item {
-            position: relative;
-        }
-        .menu-item::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(to right, #4f46e5, #3b82f6);
-            transition: width 0.3s ease;
-        }
-        .menu-item:hover::after {
-            width: 100%;
-        }
-        .active-menu-item {
-            color: #4f46e5;
-            font-weight: 600;
-        }
-        .active-menu-item::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(to right, #4f46e5, #3b82f6);
-        }
-    </style>
 </head>
 <body class="bg-gray-50">
     <!-- Navbar -->
@@ -58,6 +27,8 @@
                     <a href="/layanan" class="menu-item px-3 py-2 rounded-md text-gray-700 hover:text-indigo-600 transition-colors {{ request()->is('layanan') ? 'active-menu-item' : '' }}">Layanan</a>
                     <a href="/tarif" class="menu-item px-3 py-2 rounded-md text-gray-700 hover:text-indigo-600 transition-colors {{ request()->is('tarif') ? 'active-menu-item' : '' }}">Tarif</a>
                     <a href="/tracking" class="menu-item px-3 py-2 rounded-md text-gray-700 hover:text-indigo-600 transition-colors {{ request()->is('tracking') ? 'active-menu-item' : '' }}">Tracking</a>
+                    <a href="/customer" class="menu-item px-3 py-2 rounded-md text-gray-700 hover:text-indigo-600 transition-colors {{ request()->is('customer') ? 'active-menu-item' : '' }}">Customer</a>
+                    <a href="/profil" class="menu-item px-3 py-2 rounded-md text-gray-700 hover:text-indigo-600 transition-colors {{ request()->is('profil') ? 'active-menu-item' : '' }}">Profil</a>
                     <a href="/kontak" class="menu-item px-3 py-2 rounded-md text-gray-700 hover:text-indigo-600 transition-colors {{ request()->is('kontak') ? 'active-menu-item' : '' }}">Kontak</a>
                     <a href="#" class="ml-4 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-full font-medium hover:shadow-lg transform hover:scale-105 transition-all">
                         <i class="fas fa-headset mr-1"></i> Hubungi Kami
@@ -79,6 +50,8 @@
                     <a href="/layanan" class="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md {{ request()->is('layanan') ? 'bg-indigo-50 text-indigo-600 font-semibold' : '' }}">Layanan</a>
                     <a href="/tarif" class="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md {{ request()->is('tarif') ? 'bg-indigo-50 text-indigo-600 font-semibold' : '' }}">Tarif</a>
                     <a href="/tracking" class="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md {{ request()->is('tracking') ? 'bg-indigo-50 text-indigo-600 font-semibold' : '' }}">Tracking</a>
+                    <a href="/customer" class="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md {{ request()->is('customer') ? 'bg-indigo-50 text-indigo-600 font-semibold' : '' }}">Customer</a>
+                    <a href="/profil" class="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md {{ request()->is('profil') ? 'bg-indigo-50 text-indigo-600 font-semibold' : '' }}">Profil</a>
                     <a href="/kontak" class="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md {{ request()->is('kontak') ? 'bg-indigo-50 text-indigo-600 font-semibold' : '' }}">Kontak</a>
                     <div class="pt-2 mt-2 border-t border-gray-100">
                         <a href="#" class="mx-4 inline-block px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-md font-medium">
@@ -106,9 +79,9 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Layanan</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Pengiriman Darat</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Pengiriman Laut</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Pengiriman Udara</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white footer-link">Pengiriman Darat</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white footer-link">Pengiriman Laut</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white footer-link">Pengiriman Udara</a></li>
                     </ul>
                 </div>
                 <div>
@@ -136,23 +109,5 @@
     </footer>
 
     @stack('scripts')
-    <script>
-        // Mobile menu toggle
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('mobileMenu').classList.toggle('hidden');
-        });
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('mainNav');
-            if (window.scrollY > 10) {
-                navbar.classList.add('shadow-lg');
-                navbar.classList.remove('shadow-md');
-            } else {
-                navbar.classList.remove('shadow-lg');
-                navbar.classList.add('shadow-md');
-            }
-        });
-    </script>
 </body>
 </html> 
