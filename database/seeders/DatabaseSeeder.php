@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AdminUserSeeder::class,
+            SeoSettingsSeeder::class,
+            PageSeoSettingsSeeder::class,
+            PageSeosSeeder::class,
         ]);
 
         User::factory()->create([

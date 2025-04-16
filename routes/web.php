@@ -2,34 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\Admin\SeoController;
 
-Route::get('/', function () {
-    return view('home');
-});
-
-Route::get('/layanan', function () {
-    return view('services');
-});
-
-Route::get('/tarif', function () {
-    return view('rates');
-});
-
-Route::get('/tracking', function () {
-    return view('tracking');
-});
-
-Route::get('/customer', function () {
-    return view('customer');
-});
-
-Route::get('/profil', function () {
-    return view('profile');
-});
-
-Route::get('/kontak', function () {
-    return view('contact');
-});
+// Frontend Routes
+Route::get('/', [PageController::class, 'home']);
+Route::get('/layanan', [PageController::class, 'services']);
+Route::get('/tarif', [PageController::class, 'rates']);
+Route::get('/tracking', [PageController::class, 'tracking']);
+Route::get('/customer', [PageController::class, 'customer']);
+Route::get('/profil', [PageController::class, 'profile']);
+Route::get('/kontak', [PageController::class, 'contact']);
 
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {
@@ -68,9 +51,11 @@ Route::prefix('admin')->group(function () {
         })->name('admin.users.roles');
         
         // Admin SEO Management
-        Route::get('/seo', function () {
-            return view('admin.seo');
-        })->name('admin.seo');
+        Route::get('/seo', [SeoController::class, 'index'])->name('admin.seo');
+        Route::post('/seo/save', [SeoController::class, 'store'])->name('admin.seo.save');
+        Route::get('/seo/page/{id}', [SeoController::class, 'getPageSeo'])->name('admin.seo.page');
+        Route::post('/seo/page/{id}/save', [SeoController::class, 'storePage'])->name('admin.seo.page.save');
+        Route::post('/seo/page/{id}/api', [SeoController::class, 'storePageApi'])->name('admin.seo.page.api.save');
         
         // Admin Settings
         Route::get('/settings', function () {
