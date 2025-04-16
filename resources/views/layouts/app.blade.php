@@ -17,6 +17,18 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @vite(['resources/css/app.css', 'resources/css/landing.css', 'resources/js/app.js'])
     @stack('styles')
+    <style>
+        /* Tambahan untuk mengatasi masalah navbar fixed */
+        main {
+            padding-top: 80px; /* Sesuai dengan tinggi navbar */
+        }
+        
+        /* Pengecualian untuk halaman yang memerlukan hero full height */
+        .hero-fullheight {
+            margin-top: -80px; /* Mengompensasi padding-top dari main */
+            padding-top: 0;
+        }
+    </style>
 </head>
 <body class="bg-white text-gray-800 antialiased">
     @include('partials.header')

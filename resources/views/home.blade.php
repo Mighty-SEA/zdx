@@ -144,14 +144,7 @@ $pageSeo = \App\Models\PageSeo::where('route', '')->first();
         </div>
 
         <!-- Scroll Indicator yang lebih menarik -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
-            <div class="text-white flex flex-col items-center">
-                <span class="text-xs mb-2 text-white/70">Scroll Down</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-            </div>
-        </div>
+
     </div>
 
     <!-- Services Section -->
@@ -377,7 +370,7 @@ $pageSeo = \App\Models\PageSeo::where('route', '')->first();
     <!-- CTA Section -->
     <div class="relative py-20 overflow-hidden">
         <!-- Background dengan gradien dan pattern -->
-        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#E65100]">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#1A1A1A]">
             <!-- Pattern overlay untuk tekstur -->
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNGM2LjYyNyAwIDEyLTUuMzczIDEyLTEyUzQyLjYyNyAxMCAzNiAxMCAyNCAxNS4zNzMgMjQgMjJzNS4zNzMgMTIgMTIgMTJ6IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-10"></div>
         </div>
@@ -425,7 +418,7 @@ $pageSeo = \App\Models\PageSeo::where('route', '')->first();
                         <!-- CTA Buttons -->
                         <div class="flex flex-wrap gap-4">
                             <a href="/contact" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
-                Hubungi Kami
+                                Hubungi Kami
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
@@ -473,22 +466,15 @@ $pageSeo = \App\Models\PageSeo::where('route', '')->first();
             </div>
             
             <!-- Clients -->
-            <div class="mt-20 text-center" data-aos="fade-up">
+            <div class="mt-20 mb-0 text-center" data-aos="fade-up">
                 <h3 class="text-xl text-white font-medium mb-8">Dipercaya oleh Perusahaan Terkemuka</h3>
                 <div class="flex flex-wrap justify-center gap-8 items-center">
-                    <img src="https://via.placeholder.com/150x50/FFFFFF/666666?text=LOGO+1" alt="Client 1" class="h-10 opacity-70 hover:opacity-100 transition-opacity duration-300">
-                    <img src="https://via.placeholder.com/150x50/FFFFFF/666666?text=LOGO+2" alt="Client 2" class="h-10 opacity-70 hover:opacity-100 transition-opacity duration-300">
-                    <img src="https://via.placeholder.com/150x50/FFFFFF/666666?text=LOGO+3" alt="Client 3" class="h-10 opacity-70 hover:opacity-100 transition-opacity duration-300">
-                    <img src="https://via.placeholder.com/150x50/FFFFFF/666666?text=LOGO+4" alt="Client 4" class="h-10 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                    <img src="{{ asset('asset/images/client1.png') }}" alt="Client 1" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                    <img src="{{ asset('asset/images/client2.png') }}" alt="Client 2" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                    <img src="{{ asset('asset/images/client3.png') }}" alt="Client 3" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                    <img src="{{ asset('asset/images/client4.png') }}" alt="Client 4" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
                 </div>
             </div>
-        </div>
-        
-        <!-- Wave effect di bawah -->
-        <div class="absolute bottom-0 left-0 right-0 transform rotate-180">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" class="fill-white">
-                <path d="M0,96L48,101.3C96,107,192,117,288,106.7C384,96,480,64,576,64C672,64,768,96,864,122.7C960,149,1056,171,1152,165.3C1248,160,1344,128,1392,112L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
-            </svg>
         </div>
     </div>
 

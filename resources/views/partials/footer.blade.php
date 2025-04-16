@@ -1,129 +1,166 @@
 <!-- Footer -->
-<footer class="bg-accent text-white mt-20 relative">
-    <!-- Pola Latar Belakang -->
-    <div class="absolute inset-0 overflow-hidden opacity-5">
+<footer class="bg-accent text-white relative overflow-hidden">
+    <!-- Wave Separator -->
+    <div class="absolute top-0 left-0 w-full overflow-hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="absolute top-0 w-full h-12 text-white">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor"></path>
+        </svg>
+    </div>
+
+    <!-- Pola Latar Belakang dengan Animasi -->
+    <div class="absolute inset-0 overflow-hidden opacity-10">
         <div class="absolute top-0 left-0 w-full h-full">
-            <div class="w-40 h-40 bg-[#FF6000] rounded-full absolute -top-20 -left-20 opacity-50"></div>
-            <div class="w-56 h-56 bg-[#FF6000] rounded-full absolute top-40 -right-20 opacity-30"></div>
-            <div class="w-32 h-32 bg-[#FF6000] rounded-full absolute bottom-10 left-1/4 opacity-40"></div>
+            <div class="w-40 h-40 bg-[#FF6000] rounded-full absolute -top-20 -left-20 opacity-50 animate-pulse"></div>
+            <div class="w-56 h-56 bg-[#FF6000] rounded-full absolute top-40 -right-20 opacity-30 animate-pulse" style="animation-delay: 1s"></div>
+            <div class="w-32 h-32 bg-[#FF6000] rounded-full absolute bottom-10 left-1/4 opacity-40 animate-pulse" style="animation-delay: 2s"></div>
         </div>
     </div>
 
     <!-- Konten Utama Footer -->
-    <div class="max-w-7xl mx-auto px-6 py-10 relative">
+    <div class="max-w-7xl mx-auto px-6 pt-16 pb-10 relative">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
             <!-- Tentang Perusahaan -->
-            <div>
+            <div class="transform transition-all duration-500 hover:translate-y-[-5px]">
                 <div class="flex items-center mb-5">
-                    <img src="{{ asset('asset/logo.png') }}" alt="ZINDAN DIANTAR EXPRESS" class="h-12 mr-3">
+                    <img src="{{ asset('asset/logo.png') }}" alt="ZINDAN DIANTAR EXPRESS" class="h-14 mr-3">
                     <div>
                         <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">ZINDAN</h3>
                         <p class="text-gray-400 text-xs tracking-wider">DIANTAR EXPRESS</p>
                     </div>
                 </div>
-                <p class="text-white text-opacity-70 mb-4">PT. Zindan Diantar Express adalah perusahaan jasa pengiriman barang terpercaya dengan jaringan yang luas di seluruh Indonesia.</p>
-                <div class="flex items-start space-x-2">
-                    <i class="fas fa-map-marker-alt text-[#FF6000] mt-1"></i>
-                    <p class="text-white text-opacity-80">Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa,<br>
+                <p class="text-white text-opacity-80 mb-6 leading-relaxed">PT. Zindan Diantar Express adalah perusahaan jasa pengiriman barang terpercaya dengan jaringan yang luas di seluruh Indonesia.</p>
+                <div class="flex items-start space-x-3 bg-[#FF6000] bg-opacity-5 p-4 rounded-lg backdrop-blur-sm">
+                    <i class="fas fa-map-marker-alt text-[#FF6000] mt-1 text-lg"></i>
+                    <p class="text-white text-opacity-90">Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa,<br>
                     Kec. Jatiasih, Kota Bekasi - Jawa Barat 17424</p>
                 </div>
             </div>
 
             <!-- Layanan Perusahaan -->
-            <div>
-                <h4 class="text-lg font-semibold mb-5 text-[#FF6000] border-b border-gray-700 pb-2">Layanan Kami</h4>
+            <div class="transform transition-all duration-500 hover:translate-y-[-5px]">
+                <h4 class="text-lg font-semibold mb-5 text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-2 flex items-center">
+                    <span class="bg-[#FF6000] w-2 h-6 rounded-sm mr-2"></span> Layanan Kami
+                </h4>
                 <ul class="space-y-3">
                     <li>
-                        <a href="/layanan" class="group flex items-center text-white text-opacity-80 hover:text-[#FF6000] transition-all duration-300">
-                            <i class="fas fa-truck mr-3 text-[#FF6000] group-hover:translate-x-1 transition-transform duration-300"></i>
-                            <span>Zindan Diantar Express Darat</span>
+                        <a href="/layanan" class="group flex items-center text-white hover:text-[#FF6000] transition-all duration-300 p-2 hover:bg-white hover:bg-opacity-5 rounded-md">
+                            <div class="w-8 h-8 rounded-md bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3 group-hover:bg-[#FF6000] group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <span>Pengiriman Darat</span>
                         </a>
                     </li>
                     <li>
-                        <a href="/layanan" class="group flex items-center text-white text-opacity-80 hover:text-[#FF6000] transition-all duration-300">
-                            <i class="fas fa-ship mr-3 text-[#FF6000] group-hover:translate-x-1 transition-transform duration-300"></i>
-                            <span>Zindan Diantar Express Laut</span>
+                        <a href="/layanan" class="group flex items-center text-white hover:text-[#FF6000] transition-all duration-300 p-2 hover:bg-white hover:bg-opacity-5 rounded-md">
+                            <div class="w-8 h-8 rounded-md bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3 group-hover:bg-[#FF6000] group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-ship"></i>
+                            </div>
+                            <span>Pengiriman Laut</span>
                         </a>
                     </li>
                     <li>
-                        <a href="/layanan" class="group flex items-center text-white text-opacity-80 hover:text-[#FF6000] transition-all duration-300">
-                            <i class="fas fa-plane mr-3 text-[#FF6000] group-hover:translate-x-1 transition-transform duration-300"></i>
-                            <span>Zindan Diantar Express Udara</span>
+                        <a href="/layanan" class="group flex items-center text-white hover:text-[#FF6000] transition-all duration-300 p-2 hover:bg-white hover:bg-opacity-5 rounded-md">
+                            <div class="w-8 h-8 rounded-md bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3 group-hover:bg-[#FF6000] group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <span>Pengiriman Udara</span>
                         </a>
                     </li>
                 </ul>
                 
-                <h4 class="text-lg font-semibold mb-4 mt-8 text-[#FF6000] border-b border-gray-700 pb-2">Halaman</h4>
+                <h4 class="text-lg font-semibold mb-4 mt-8 text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-2 flex items-center">
+                    <span class="bg-[#FF6000] w-2 h-6 rounded-sm mr-2"></span> Halaman
+                </h4>
                 <div class="grid grid-cols-2 gap-y-3">
-                    <a href="/profile" class="text-white text-opacity-80 hover:text-[#FF6000] transition-colors">Profile</a>
-                    <a href="/tarif" class="text-white text-opacity-80 hover:text-[#FF6000] transition-colors">Tarif</a>
-                    <a href="/tracking" class="text-white text-opacity-80 hover:text-[#FF6000] transition-colors">Tracking</a>
-                    <a href="/contact" class="text-white text-opacity-80 hover:text-[#FF6000] transition-colors">Contact Us</a>
+                    <a href="/profile" class="text-white hover:text-[#FF6000] transition-colors flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-xs text-[#FF6000]"></i> Profile
+                    </a>
+                    <a href="/tarif" class="text-white hover:text-[#FF6000] transition-colors flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-xs text-[#FF6000]"></i> Tarif
+                    </a>
+                    <a href="/tracking" class="text-white hover:text-[#FF6000] transition-colors flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-xs text-[#FF6000]"></i> Tracking
+                    </a>
+                    <a href="/contact" class="text-white hover:text-[#FF6000] transition-colors flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-xs text-[#FF6000]"></i> Contact Us
+                    </a>
                 </div>
             </div>
 
             <!-- Informasi Kontak -->
-            <div>
-                <h4 class="text-lg font-semibold mb-5 text-[#FF6000] border-b border-gray-700 pb-2">Hubungi Kami</h4>
+            <div class="transform transition-all duration-500 hover:translate-y-[-5px]">
+                <h4 class="text-lg font-semibold mb-5 text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-2 flex items-center">
+                    <span class="bg-[#FF6000] w-2 h-6 rounded-sm mr-2"></span> Hubungi Kami
+                </h4>
                 <ul class="space-y-4">
-                    <li class="flex items-center text-white text-opacity-80">
-                        <div class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3">
-                            <i class="fas fa-phone-alt text-[#FF6000]"></i>
+                    <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center mr-4 shadow-glow">
+                            <i class="fas fa-phone-alt text-white"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400">Telepon</p>
-                            <p>021 3871 1144</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider">Telepon</p>
+                            <p class="font-medium">021 3871 1144</p>
                         </div>
                     </li>
-                    <li class="flex items-center text-white text-opacity-80">
-                        <div class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3">
-                            <i class="fas fa-headset text-[#FF6000]"></i>
+                    <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center mr-4 shadow-glow">
+                            <i class="fas fa-headset text-white"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400">Customer Service</p>
-                            <p>021 3871 1181</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider">Customer Service</p>
+                            <p class="font-medium">021 3871 1181</p>
                         </div>
                     </li>
-                    <li class="flex items-center text-white text-opacity-80">
-                        <div class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3">
-                            <i class="fas fa-envelope text-[#FF6000]"></i>
+                    <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center mr-4 shadow-glow">
+                            <i class="fas fa-envelope text-white"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400">Email</p>
-                            <p>info@zdx.co.id</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider">Email</p>
+                            <p class="font-medium">info@zdx.co.id</p>
                         </div>
                     </li>
                 </ul>
                 
-                <h4 class="text-lg font-semibold mb-4 mt-8 text-[#FF6000] border-b border-gray-700 pb-2">Media Sosial</h4>
+                <h4 class="text-lg font-semibold mb-4 mt-8 text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-2 flex items-center">
+                    <span class="bg-[#FF6000] w-2 h-6 rounded-sm mr-2"></span> Media Sosial
+                </h4>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#" class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center hover:bg-opacity-20 transition-all duration-300 hover:scale-110">
-                        <i class="fab fa-facebook-f text-[#FF6000]"></i>
+                    <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-facebook-f text-white"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center hover:bg-opacity-20 transition-all duration-300 hover:scale-110">
-                        <i class="fab fa-twitter text-[#FF6000]"></i>
+                    <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-twitter text-white"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center hover:bg-opacity-20 transition-all duration-300 hover:scale-110">
-                        <i class="fab fa-instagram text-[#FF6000]"></i>
+                    <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-instagram text-white"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-[#FF6000] bg-opacity-10 flex items-center justify-center hover:bg-opacity-20 transition-all duration-300 hover:scale-110">
-                        <i class="fab fa-linkedin-in text-[#FF6000]"></i>
+                    <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-linkedin-in text-white"></i>
                     </a>
                 </div>
             </div>
         </div>
         
         <!-- Footer Bottom -->
-        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-white text-opacity-60">
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-white text-opacity-70">
             <p>&copy; Copyright 2025. All Rights Reserved. PT. Zindan Diantar Express</p>
         </div>
     </div>
     
     <!-- Scroll to Top Button -->
-    <button id="scrollToTop" class="fixed bottom-6 right-6 bg-[#FF6000] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 opacity-0 invisible">
+    <button id="scrollToTop" class="fixed bottom-6 right-6 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 opacity-0 invisible z-50">
         <i class="fas fa-chevron-up"></i>
     </button>
 </footer>
+
+<style>
+.shadow-glow {
+    box-shadow: 0 0 15px rgba(255, 96, 0, 0.3);
+}
+</style>
 
 <script>
     // Scroll to Top Button
