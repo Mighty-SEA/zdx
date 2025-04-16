@@ -1,133 +1,224 @@
 @extends('layouts.app')
 
+@section('meta_tags')
+    <title>Tracking - PT. Zindan Diantar Express</title>
+    <meta name="description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo.">
+@endsection
+
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-gradient-to-r from-indigo-900 to-blue-800 py-24">
-        <div class="absolute inset-0 bg-black opacity-30"></div>
-        <div class="max-w-7xl mx-auto px-4 relative z-10 text-center">
-            <h1 class="text-5xl font-bold text-white mb-6">Lacak Pengiriman</h1>
-            <p class="text-xl text-gray-200 max-w-3xl mx-auto">
-                Pantau status pengiriman Anda secara real-time dengan sistem pelacakan kami yang akurat
-            </p>
-        </div>
-    </div>
-
-    <!-- Tracking Form -->
-    <div class="max-w-4xl mx-auto px-4 py-16 -mt-12 relative z-20">
-        <div class="bg-white rounded-xl shadow-xl p-8 mb-16">
-            <h2 class="text-2xl font-bold text-center mb-8">Masukkan Nomor Resi</h2>
-            <form class="flex flex-col md:flex-row gap-4">
-                <input type="text" class="flex-1 border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Contoh: ZDX12345678">
-                <button type="button" class="bg-indigo-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
-                    Lacak Sekarang
-                </button>
-            </form>
-        </div>
-
-        <!-- Tracking Results (Sample) -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
-            <div class="bg-indigo-600 text-white p-6">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xl font-bold">Nomor Resi: ZDX12345678</h3>
-                    <span class="px-4 py-1 bg-green-500 rounded-full text-sm font-bold">Dalam Pengiriman</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div>
-                        <p class="text-sm text-indigo-200">Pengirim</p>
-                        <p class="font-semibold">PT Maju Jaya</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-indigo-200">Penerima</p>
-                        <p class="font-semibold">CV Sukses Selalu</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-indigo-200">Tanggal Pengiriman</p>
-                        <p class="font-semibold">12 Oktober 2023</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Timeline -->
-            <div class="p-6">
-                <h4 class="font-bold mb-6">Status Pengiriman</h4>
-                <div class="space-y-8">
-                    <div class="relative pl-8">
-                        <div class="absolute left-0 top-1 w-4 h-4 bg-green-500 rounded-full"></div>
-                        <div class="absolute left-2 top-5 w-0.5 h-16 bg-gray-300"></div>
-                        <div>
-                            <p class="font-semibold">Paket diterima di Gudang Jakarta</p>
-                            <p class="text-sm text-gray-500">12 Oktober 2023, 08:30 WIB</p>
-                            <p class="text-sm text-gray-600 mt-1">Barang telah diterima di gudang utama dan siap untuk diproses pengirimannya.</p>
-                        </div>
-                    </div>
-                    <div class="relative pl-8">
-                        <div class="absolute left-0 top-1 w-4 h-4 bg-green-500 rounded-full"></div>
-                        <div class="absolute left-2 top-5 w-0.5 h-16 bg-gray-300"></div>
-                        <div>
-                            <p class="font-semibold">Paket dalam perjalanan</p>
-                            <p class="text-sm text-gray-500">12 Oktober 2023, 14:15 WIB</p>
-                            <p class="text-sm text-gray-600 mt-1">Barang sedang dalam perjalanan menuju kota tujuan dengan armada ekspedisi kami.</p>
-                        </div>
-                    </div>
-                    <div class="relative pl-8">
-                        <div class="absolute left-0 top-1 w-4 h-4 bg-green-500 rounded-full"></div>
-                        <div class="absolute left-2 top-5 w-0.5 h-16 bg-gray-300"></div>
-                        <div>
-                            <p class="font-semibold">Paket tiba di kota tujuan</p>
-                            <p class="text-sm text-gray-500">13 Oktober 2023, 10:45 WIB</p>
-                            <p class="text-sm text-gray-600 mt-1">Barang telah tiba di gudang distribusi kota tujuan dan sedang dipersiapkan untuk pengantaran.</p>
-                        </div>
-                    </div>
-                    <div class="relative pl-8">
-                        <div class="absolute left-0 top-1 w-4 h-4 bg-indigo-500 rounded-full"></div>
-                        <div>
-                            <p class="font-semibold">Paket sedang diantar</p>
-                            <p class="text-sm text-gray-500">13 Oktober 2023, 14:20 WIB</p>
-                            <p class="text-sm text-gray-600 mt-1">Barang sedang dalam proses pengantaran ke alamat penerima. Estimasi tiba: 16:00 WIB.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FAQ Section -->
-        <div class="bg-gray-100 rounded-xl p-8">
-            <h2 class="text-2xl font-bold mb-6">Pertanyaan Umum</h2>
-            <div class="space-y-4">
-                <div class="border-b border-gray-300 pb-4">
-                    <h3 class="font-semibold mb-2">Bagaimana cara melacak paket saya?</h3>
-                    <p class="text-gray-600">Masukkan nomor resi yang Anda terima saat melakukan pengiriman ke dalam kolom di atas, lalu klik tombol "Lacak Sekarang".</p>
-                </div>
-                <div class="border-b border-gray-300 pb-4">
-                    <h3 class="font-semibold mb-2">Di mana saya bisa mendapatkan nomor resi?</h3>
-                    <p class="text-gray-600">Nomor resi akan diberikan oleh petugas kami saat Anda melakukan pengiriman. Nomor tersebut juga tercetak pada bukti pengiriman.</p>
-                </div>
-                <div class="border-b border-gray-300 pb-4">
-                    <h3 class="font-semibold mb-2">Berapa lama waktu yang dibutuhkan untuk memperbarui status?</h3>
-                    <p class="text-gray-600">Status pengiriman diperbarui secara real-time oleh tim kami di lapangan. Waktu pembaruan biasanya tidak lebih dari 30 menit setelah perubahan status terjadi.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold mb-2">Apa yang harus saya lakukan jika paket belum sampai sesuai estimasi?</h3>
-                    <p class="text-gray-600">Jika paket Anda belum sampai sesuai dengan estimasi yang diberikan, silakan hubungi layanan pelanggan kami di nomor (021) 123-4567 atau melalui email di cs@zdxcargo.com.</p>
-                </div>
+    <div class="bg-[#FF6000]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-4xl font-bold text-white">
+                    Lacak Pengiriman
+                </h1>
+                <p class="mt-2 text-lg text-white text-opacity-90">
+                    Pantau status pengiriman Anda secara real-time
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Call to Action -->
-    <div class="bg-gradient-to-r from-indigo-800 to-blue-700 py-16">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold text-white mb-6">Butuh Bantuan?</h2>
-            <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
-                Tim customer service kami siap membantu Anda dengan pertanyaan seputar pengiriman
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/kontak" class="inline-block bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                    Hubungi Kami
-                </a>
-                <a href="#" class="inline-block border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors">
-                    FAQ
-                </a>
+    <div class="bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Tracking Search Form -->
+            <div class="max-w-3xl mx-auto -mt-8 relative z-10">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <form action="#" method="GET">
+                        <div class="mb-4">
+                            <label for="tracking_number" class="block text-base font-medium text-gray-700 mb-2">Nomor Resi</label>
+                            <div class="flex rounded-md overflow-hidden border border-gray-300">
+                                <span class="bg-gray-100 px-4 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#FF6000]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="tracking_number"
+                                    id="tracking_number"
+                                    class="flex-1 p-3 focus:outline-none focus:ring-1 focus:ring-[#FF6000]"
+                                    placeholder="Masukkan nomor resi pengiriman Anda"
+                                >
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">Contoh: ZDX12345678</p>
+                        </div>
+                        <button
+                            type="submit"
+                            class="w-full py-3 px-4 bg-[#FF6000] text-white font-medium rounded-md hover:bg-[#E55A00] transition-colors"
+                        >
+                            Lacak Pengiriman
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tracking Results (will be shown conditionally) -->
+            <div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="bg-[#FF6000] px-5 py-3">
+                    <h2 class="text-lg font-semibold text-white">Detail Pengiriman</h2>
+                </div>
+                <div class="p-5">
+                    <!-- Shipment Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                            <h3 class="text-base font-semibold text-gray-800 mb-3">
+                                Informasi Pengiriman
+                            </h3>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-gray-200 pb-2">
+                                    <span class="text-gray-600">Nomor Resi:</span>
+                                    <span class="bg-[#FFF0E6] text-[#FF6000] px-2 py-1 rounded font-medium">ZDX12345678</span>
+                                </li>
+                                <li class="flex justify-between border-b border-gray-200 pb-2">
+                                    <span class="text-gray-600">Tanggal Pengiriman:</span>
+                                    <span>12 April 2024</span>
+                                </li>
+                                <li class="flex justify-between border-b border-gray-200 pb-2">
+                                    <span class="text-gray-600">Layanan:</span>
+                                    <span>ZDX Express</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded flex items-center text-xs">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                                        Dalam Pengiriman
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                            <h3 class="text-base font-semibold text-gray-800 mb-3">
+                                Informasi Alamat
+                            </h3>
+                            <div class="space-y-4 text-sm">
+                                <div class="border-b border-gray-200 pb-3">
+                                    <p class="font-medium text-gray-700 mb-1">Pengirim:</p>
+                                    <p>PT. Sinar Jaya</p>
+                                    <p class="text-gray-500">Jakarta Barat, DKI Jakarta</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-700 mb-1">Penerima:</p>
+                                    <p>PT. Maju Bersama</p>
+                                    <p class="text-gray-500">Bandung, Jawa Barat</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tracking Timeline -->
+                    <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                        <h3 class="text-base font-semibold text-gray-800 mb-4">
+                            Status Pengiriman
+                        </h3>
+                        <div class="relative">
+                            <div class="absolute top-0 left-3 h-full w-0.5 bg-gray-200"></div>
+                            
+                            <!-- Timeline Items -->
+                            <div class="ml-10 space-y-6">
+                                <!-- Status 1 -->
+                                <div class="relative">
+                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-[#FF6000] flex items-center justify-center">
+                                        <span class="text-white text-xs">1</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">
+                                            Dalam Pengiriman
+                                            <span class="ml-2 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Aktif</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 mt-1">Paket telah dikirim dan sedang dalam perjalanan</p>
+                                        <p class="text-xs text-gray-500 mt-1">11 Apr 2024, 14:30 WIB</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Status 2 -->
+                                <div class="relative">
+                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center">
+                                        <span class="text-white text-xs">2</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-700">Paket Diproses</p>
+                                        <p class="text-sm text-gray-600 mt-1">Paket sedang diproses di gudang Jakarta</p>
+                                        <p class="text-xs text-gray-500 mt-1">11 Apr 2024, 09:15 WIB</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Status 3 -->
+                                <div class="relative">
+                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center">
+                                        <span class="text-white text-xs">3</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-700">Paket Diterima</p>
+                                        <p class="text-sm text-gray-600 mt-1">Paket telah diterima di gudang Jakarta</p>
+                                        <p class="text-xs text-gray-500 mt-1">10 Apr 2024, 16:45 WIB</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Status 4 -->
+                                <div class="relative">
+                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center">
+                                        <span class="text-white text-xs">4</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-700">Paket Dijemput</p>
+                                        <p class="text-sm text-gray-600 mt-1">Paket telah dijemput dari lokasi pengirim</p>
+                                        <p class="text-xs text-gray-500 mt-1">10 Apr 2024, 13:22 WIB</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracking Info -->
+            <div class="max-w-4xl mx-auto mt-10 mb-16">
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                        <div class="w-full md:w-1/3 flex justify-center">
+                            <!-- SVG illustration instead of image -->
+                            <div class="text-[#FF6000]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-36 h-36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                    <path d="M12 13 L12 16"></path>
+                                    <circle cx="12" cy="10" r="1"></circle>
+                                    <path d="M4 12 L20 12"></path>
+                                    <path d="M10 7 L14 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-2/3">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                                Cara Melacak Kiriman
+                            </h2>
+                            <ol class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 bg-[#FF6000] text-white rounded-full w-6 h-6 flex items-center justify-center mr-3">1</span>
+                                    <span>Masukkan nomor resi pengiriman Anda pada kolom yang tersedia</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 bg-[#FF6000] text-white rounded-full w-6 h-6 flex items-center justify-center mr-3">2</span>
+                                    <span>Klik tombol "Lacak Pengiriman" untuk melihat status terkini</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 bg-[#FF6000] text-white rounded-full w-6 h-6 flex items-center justify-center mr-3">3</span>
+                                    <span>Sistem kami akan menampilkan detail perjalanan paket Anda</span>
+                                </li>
+                            </ol>
+                            
+                            <div class="mt-6 p-4 bg-white rounded-md border border-gray-200">
+                                <p class="text-sm text-gray-700">
+                                    Jika Anda mengalami kesulitan melacak kiriman atau memerlukan bantuan lebih lanjut, 
+                                    silakan hubungi tim layanan pelanggan kami di <span class="text-[#FF6000] font-semibold">customer.service@zdx.co.id</span> 
+                                    atau telepon <span class="text-[#FF6000] font-semibold">021-7654321</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

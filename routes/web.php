@@ -12,7 +12,7 @@ Route::get('/layanan', [PageController::class, 'services']);
 Route::get('/tarif', [PageController::class, 'rates']);
 Route::get('/tracking', [PageController::class, 'tracking']);
 Route::get('/customer', [PageController::class, 'customer']);
-Route::get('/profil', [PageController::class, 'profile']);
+Route::get('/profile', [PageController::class, 'profile']);
 Route::get('/kontak', [PageController::class, 'contact']);
 
 // Authentication Routes
