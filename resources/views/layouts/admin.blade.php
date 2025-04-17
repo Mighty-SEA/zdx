@@ -29,13 +29,11 @@
         <aside id="sidebar" class="sidebar bg-white h-full border-r border-gray-200">
             <!-- Logo Section -->
             <div class="px-6 py-4 flex items-center h-16">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                        <div class="bg-indigo-600 text-white p-2 rounded-lg w-10 h-10 flex items-center justify-center">
-                            <i class="fas fa-shipping-fast text-xl"></i>
-                        </div>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center">
+                    <div class="flex-shrink-0 mr-2">
+                        <img src="{{ asset('asset/logo.png') }}" alt="ZDX Cargo" class="h-10 w-auto animate-float">
                     </div>
-                    <span class="text-xl font-bold text-gray-800">ZDX Admin</span>
+                    <span class="text-xl font-bold text-gray-800 ml-1">Admin</span>
                 </a>
             </div>
             
@@ -124,7 +122,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <i class="fas fa-search text-gray-400"></i>
                                 </span>
-                                <input type="text" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-indigo-500" placeholder="Cari...">
+                                <input type="text" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-[#FF6000]" placeholder="Cari...">
                             </div>
                         </div>
                     </div>
@@ -194,7 +192,7 @@
                                 <span 
                                     x-show="unreadCount > 0" 
                                     x-text="unreadCount" 
-                                    class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
+                                    class="absolute top-0 right-0 w-4 h-4 bg-[#FF6000] rounded-full text-white text-xs flex items-center justify-center">
                                 </span>
                             </button>
                             
@@ -203,7 +201,7 @@
                                 <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
                                     <div class="flex items-center justify-between">
                                         <h3 class="text-sm font-semibold text-gray-700">Notifikasi</h3>
-                                        <button @click="markAllAsRead()" x-show="unreadCount > 0" class="text-xs text-indigo-600 hover:text-indigo-800">
+                                        <button @click="markAllAsRead()" x-show="unreadCount > 0" class="text-xs text-[#FF6000] hover:text-[#E65100]">
                                             Tandai semua dibaca
                                         </button>
                                     </div>
@@ -213,7 +211,7 @@
                                     <template x-if="notifications.length > 0">
                                         <div>
                                             <template x-for="(notification, index) in notifications" :key="notification.id">
-                                                <a :href="notification.link || '#'" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100" :class="{'bg-indigo-50': !notification.read_at}">
+                                                <a :href="notification.link || '#'" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100" :class="{'bg-[#FFF0E6]': !notification.read_at}">
                                                     <div class="flex">
                                                         <div class="flex-shrink-0 mr-3">
                                                             <div class="w-10 h-10 rounded-full flex items-center justify-center" :class="notification.icon_background + ' ' + notification.icon_color">
@@ -228,7 +226,7 @@
                                                                 <button 
                                                                     x-show="!notification.read_at" 
                                                                     @click.stop.prevent="markAsRead(notification.id, index)" 
-                                                                    class="text-xs text-indigo-600 hover:text-indigo-800">
+                                                                    class="text-xs text-[#FF6000] hover:text-[#E65100]">
                                                                     Tandai dibaca
                                                                 </button>
                                                             </div>
@@ -248,34 +246,36 @@
                                 </div>
                                 
                                 <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200">
-                                    <a href="{{ route('admin.notifications') }}" class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Lihat semua notifikasi</a>
+                                    <a href="{{ route('admin.notifications') }}" class="text-xs text-[#FF6000] hover:text-[#E65100]">
+                                        Lihat semua notifikasi
+                                    </a>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- User Menu -->
+                        <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100" id="userMenuBtn">
-                                <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white">
-                                    <span>A</span>
+                            <button @click="open = !open" class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-[#FFF0E6] flex items-center justify-center overflow-hidden border border-[#FF6000]/20">
+                                    <span class="text-[#FF6000] font-bold">{{ substr(auth()->user()->name, 0, 1) }}</span>
                                 </div>
-                                <span class="hidden md:block text-sm font-medium text-gray-700">Admin</span>
-                                <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
+                                <span class="hidden md:inline-block text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
+                                <i class="fas fa-chevron-down text-xs text-gray-500"></i>
                             </button>
                             
-                            <!-- Dropdown Menu -->
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden" style="display: none; z-index: 50;">
+                            <!-- User Dropdown Menu -->
+                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-50" style="display: none;">
                                 <a href="{{ route('admin.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-user mr-2 text-indigo-600"></i> Profil
+                                    <i class="fas fa-user text-gray-500 mr-2"></i> Profile
                                 </a>
                                 <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-cog mr-2 text-indigo-600"></i> Pengaturan
+                                    <i class="fas fa-cog text-gray-500 mr-2"></i> Pengaturan
                                 </a>
-                                <div class="border-t border-gray-200"></div>
+                                <div class="border-t border-gray-100"></div>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                        <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt text-gray-500 mr-2"></i> Logout
                                     </button>
                                 </form>
                             </div>
@@ -283,35 +283,59 @@
                     </div>
                 </div>
                 
-                <!-- Mobile Search Bar (hidden by default) -->
-                <div id="mobileSearchBar" class="md:hidden border-t border-gray-200 py-3 px-4 hidden">
+                <!-- Mobile Search Bar (Hidden by default) -->
+                <div id="mobileSearchBar" class="px-5 py-3 border-t border-gray-200 hidden">
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-indigo-500" placeholder="Cari...">
+                        <input type="text" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-[#FF6000]" placeholder="Cari...">
                     </div>
                 </div>
             </header>
             
-            <!-- Mobile Sidebar Overlay -->
-            <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden hidden"></div>
-            
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto no-scrollbar bg-gray-100">
-                <div class="py-6 px-4 sm:px-6">
-                    <div class="mb-6">
-                        <h1 class="text-2xl font-bold text-gray-900">@yield('title', 'Dashboard')</h1>
-                    </div>
-                    
-                    @yield('content')
-                </div>
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-5">
+                @yield('content')
             </main>
         </div>
     </div>
     
-    <!-- Alpine.js for Dropdowns -->
-    <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+        const mobileSearchBar = document.getElementById('mobileSearchBar');
+        
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('mobile-open');
+            
+            if (sidebar.classList.contains('mobile-open')) {
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        sidebarOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+        
+        // Mobile Search Toggle
+        mobileSearchToggle.addEventListener('click', function() {
+            mobileSearchBar.classList.toggle('hidden');
+        });
+    </script>
     
     @stack('scripts')
 </body>

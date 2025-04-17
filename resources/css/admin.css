@@ -38,11 +38,11 @@ body {
 }
 
 .sidebar-link:hover {
-    @apply bg-gray-50 text-indigo-700;
+    @apply bg-gray-50 text-[#FF6000];
 }
 
 .sidebar-link.active {
-    @apply bg-indigo-50 text-indigo-700;
+    @apply bg-[#FFF0E6] text-[#FF6000];
 }
 
 .sidebar-link i {
@@ -60,11 +60,11 @@ body {
 }
 
 .sidebar-sublink:hover {
-    @apply bg-gray-50 text-indigo-700;
+    @apply bg-gray-50 text-[#FF6000];
 }
 
 .sidebar-sublink.active {
-    @apply text-indigo-700 font-medium;
+    @apply text-[#FF6000] font-medium;
 }
 
 /* Main Content */
@@ -112,7 +112,7 @@ header {
 
 /* Button Styles */
 .btn-primary {
-    @apply bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg;
+    @apply bg-[#FF6000] hover:bg-[#E65100] text-white font-medium py-2 px-4 rounded-lg;
 }
 
 .btn-secondary {
@@ -125,7 +125,7 @@ header {
 
 /* Form Styles */
 .form-input {
-    @apply w-full border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 px-4 py-2;
+    @apply w-full border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF6000] px-4 py-2;
 }
 
 .form-label {
