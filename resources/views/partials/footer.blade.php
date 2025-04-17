@@ -101,7 +101,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Telepon</p>
-                            <p class="font-medium">021 3871 1144</p>
+                            <p class="font-medium">0858 1471 8888</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Customer Service</p>
-                            <p class="font-medium">021 3871 1181</p>
+                            <p class="font-medium">0858 1471 8888</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
@@ -149,37 +149,44 @@
             <p>&copy; Copyright 2025. All Rights Reserved. PT. Zindan Diantar Express</p>
         </div>
     </div>
-    
-    <!-- Scroll to Top Button -->
-    <button id="scrollToTop" class="fixed bottom-6 right-6 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 opacity-0 invisible z-50">
-        <i class="fas fa-chevron-up"></i>
-    </button>
 </footer>
+
+<!-- WhatsApp Button -->
+<a href="https://wa.me/6285814718888" target="_blank" class="whatsapp-button fixed bottom-6 right-6 z-50">
+    <div class="relative">
+        <div class="ping-animation absolute inset-0 rounded-full"></div>
+        <div class="flex items-center justify-center bg-[#25D366] rounded-full w-18 h-18 shadow-lg">
+            <i class="fab fa-whatsapp text-white text-4xl"></i>
+        </div>
+    </div>
+</a>
 
 <style>
 .shadow-glow {
     box-shadow: 0 0 15px rgba(255, 96, 0, 0.3);
 }
-</style>
 
-<script>
-    // Scroll to Top Button
-    const scrollToTopBtn = document.getElementById('scrollToTop');
-    
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 300) {
-            scrollToTopBtn.classList.remove('opacity-0', 'invisible');
-            scrollToTopBtn.classList.add('opacity-100', 'visible');
-        } else {
-            scrollToTopBtn.classList.add('opacity-0', 'invisible');
-            scrollToTopBtn.classList.remove('opacity-100', 'visible');
-        }
-    });
-    
-    scrollToTopBtn.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-</script> 
+.whatsapp-button {
+    transition: all 0.3s ease;
+}
+
+.whatsapp-button:hover {
+    transform: scale(1.05);
+}
+
+.ping-animation {
+    background-color: #25D366;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    70%, 100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+</style> 

@@ -30,7 +30,7 @@
                 </a>
                 <a href="/services" class="menu-item px-3 py-2 rounded-md text-gray-800 hover:text-[#FF6000] transition-all duration-300 {{ request()->is('services') ? 'active-menu-item' : '' }} flex items-center gap-1 font-medium">
                     <i class="fas fa-cube text-sm"></i>
-                    <span>Layanan</span>
+                    <span>Business Plan</span>
                 </a>
                 <a href="/tracking" class="menu-item px-3 py-2 rounded-md text-gray-800 hover:text-[#FF6000] transition-all duration-300 {{ request()->is('tracking') ? 'active-menu-item' : '' }} flex items-center gap-1 font-medium">
                     <i class="fas fa-search-location text-sm"></i>
@@ -52,9 +52,6 @@
                         </a>
                         <a href="/customer" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('customer') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                             <i class="fas fa-user-friends mr-2 text-sm"></i>Customer
-                        </a>
-                        <a href="/business-plan" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('business-plan') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
-                            <i class="fas fa-chart-line mr-2 text-sm"></i>Business Plan
                         </a>
                         <a href="/commodity" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('commodity') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                             <i class="fas fa-box mr-2 text-sm"></i>Commodity
@@ -82,7 +79,7 @@
                     <i class="fas fa-home w-5 text-center"></i><span>Home</span>
                 </a>
                 <a href="/services" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('services') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
-                    <i class="fas fa-cube w-5 text-center"></i><span>Layanan</span>
+                    <i class="fas fa-cube w-5 text-center"></i><span>Business Plan</span>
                 </a>
                 <a href="/tracking" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('tracking') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                     <i class="fas fa-search-location w-5 text-center"></i><span>Tracking</span>
@@ -101,9 +98,6 @@
                 </a>
                 <a href="/customer" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('customer') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                     <i class="fas fa-user-friends w-5 text-center"></i><span>Customer</span>
-                </a>
-                <a href="/business-plan" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('business-plan') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
-                    <i class="fas fa-chart-line w-5 text-center"></i><span>Business Plan</span>
                 </a>
                 <a href="/commodity" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('commodity') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                     <i class="fas fa-box w-5 text-center"></i><span>Commodity</span>
