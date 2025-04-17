@@ -20,6 +20,9 @@ Route::get('/profile', [PageController::class, 'profile']);
 Route::get('/kontak', [PageController::class, 'contact']);
 Route::get('/contact', [PageController::class, 'contact']);
 Route::post('/search-rates', [PageController::class, 'searchRates'])->name('search.rates');
+Route::post('/get-cities', [PageController::class, 'getCities'])->name('get.cities');
+Route::post('/get-kelurahans', [PageController::class, 'getKelurahans'])->name('get.kelurahans');
+Route::post('/calculate-rates', [PageController::class, 'calculateRates'])->name('calculate.rates');
 
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {

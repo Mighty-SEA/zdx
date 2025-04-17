@@ -50,20 +50,23 @@
                     </nav>
                 </div>
                 
-                <!-- Management Menu -->
+                <!-- Operasional -->
                 <div class="px-5 mb-4">
-                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Manajemen</h3>
+                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Operasional</h3>
                     <nav class="space-y-1">
                         <a href="{{ route('admin.rates') }}" class="sidebar-link {{ request()->routeIs('admin.rates') ? 'active' : '' }}">
                             <i class="fas fa-dollar-sign text-lg w-5 text-center"></i>
                             <span>Tarif</span>
                         </a>
                         
-                        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo*') ? 'active' : '' }}">
-                            <i class="fas fa-search text-lg w-5 text-center"></i>
-                            <span>SEO Halaman</span>
-                        </a>
-                        
+                        <!-- Tambahkan menu operasional lainnya di sini jika ada -->
+                    </nav>
+                </div>
+                
+                <!-- Sistem & Pengaturan -->
+                <div class="px-5 mb-4">
+                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Sistem & Pengaturan</h3>
+                    <nav class="space-y-1">
                         <div x-data="{ open: {{ request()->routeIs('admin.users*') ? 'true' : 'false' }} }">
                             <button @click="open = !open" class="sidebar-link w-full text-left flex items-center justify-between {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
                                 <div class="flex items-center space-x-3">
@@ -89,6 +92,19 @@
                             <i class="fas fa-cog text-lg w-5 text-center"></i>
                             <span>Pengaturan</span>
                         </a>
+                    </nav>
+                </div>
+                
+                <!-- Marketing & SEO -->
+                <div class="px-5 mb-4">
+                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Marketing & SEO</h3>
+                    <nav class="space-y-1">
+                        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo*') ? 'active' : '' }}">
+                            <i class="fas fa-search text-lg w-5 text-center"></i>
+                            <span>SEO Halaman</span>
+                        </a>
+                        
+                        <!-- Tambahkan menu marketing lainnya di sini jika ada -->
                     </nav>
                 </div>
                 

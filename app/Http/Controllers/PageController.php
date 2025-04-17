@@ -156,6 +156,128 @@ class PageController extends Controller
     }
     
     /**
+     * API untuk mendapatkan daftar kota berdasarkan provinsi
+     */
+    public function getCities(Request $request)
+    {
+        $province = $request->input('province');
+        
+        // Validasi input
+        if (empty($province)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Provinsi harus diisi'
+            ]);
+        }
+        
+        // Ambil daftar kota/kabupaten berdasarkan provinsi
+        $cities = \App\Models\Rate::where('provinsi', $province)
+            ->select('kota_kab')
+            ->distinct()
+            ->orderBy('kota_kab')
+            ->pluck('kota_kab');
+            
+        return response()->json([
+            'success' => true,
+            'cities' => $cities
+        ]);
+    }
+    
+    /**
+     * API untuk mendapatkan daftar kelurahan/kecamatan berdasarkan provinsi dan kota
+     */
+    public function getKelurahans(Request $request)
+    {
+        $province = $request->input('province');
+        $city = $request->input('city');
+        
+        // Validasi input
+        if (empty($province) || empty($city)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Provinsi dan kota harus diisi'
+            ]);
+        }
+        
+        // Ambil daftar kelurahan/kecamatan berdasarkan provinsi dan kota
+        $kelurahans = \App\Models\Rate::where('provinsi', $province)
+            ->where('kota_kab', $city)
+            ->whereNotNull('kelurahan_kecamatan')
+            ->where('kelurahan_kecamatan', '<>', '')
+            ->select('kelurahan_kecamatan')
+            ->distinct()
+            ->orderBy('kelurahan_kecamatan')
+            ->pluck('kelurahan_kecamatan');
+            
+        return response()->json([
+            'success' => true,
+            'kelurahans' => $kelurahans
+        ]);
+    }
+    
+    /**
+     * API untuk menghitung tarif berdasarkan provinsi, kota, dan kelurahan (jika ada)
+     */
+    public function calculateRates(Request $request)
+    {
+        $province = $request->input('province');
+        $city = $request->input('city');
+        $kelurahan = $request->input('kelurahan');
+        $berat = floatval($request->input('weight', 1));
+        
+        // Validasi input
+        if (empty($province) || empty($city)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Provinsi dan kota harus diisi'
+            ]);
+        }
+        
+        // Buat query untuk mencari tarif
+        $query = \App\Models\Rate::where('provinsi', $province)
+            ->where('kota_kab', $city);
+            
+        // Tambahkan filter kelurahan jika ada
+        if (!empty($kelurahan)) {
+            $query->where('kelurahan_kecamatan', $kelurahan);
+        }
+        
+        // Ambil data tarif
+        $tarif = $query->first();
+        
+        // Jika tidak ada tarif yang sesuai, coba tanpa filter kelurahan
+        if (!$tarif && !empty($kelurahan)) {
+            $tarif = \App\Models\Rate::where('provinsi', $province)
+                ->where('kota_kab', $city)
+                ->first();
+        }
+        
+        // Jika masih tidak ada, coba pencarian lebih luas
+        if (!$tarif) {
+            $tarif = \App\Models\Rate::where('provinsi', $province)
+                ->first();
+                
+            if (!$tarif) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tarif untuk tujuan tersebut tidak ditemukan'
+                ]);
+            }
+        }
+        
+        // Hitung total biaya berdasarkan berat dan minimal_kg
+        $beratDihitung = max($berat, $tarif->minimal_kg);
+        $totalBiaya = $beratDihitung * $tarif->harga_satuan;
+        
+        return response()->json([
+            'success' => true,
+            'rate' => $tarif->harga_satuan,
+            'rate_formatted' => number_format($tarif->harga_satuan, 0, ',', '.'),
+            'total_formatted' => number_format($totalBiaya, 0, ',', '.')
+        ]);
+    }
+    
+    /**
      * Halaman Tracking
      */
     public function tracking()
