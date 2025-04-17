@@ -2,28 +2,35 @@
 
 @section('meta_tags')
     <title>Tracking - PT. Zindan Diantar Express</title>
-    <meta name="description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo.">
+    <meta name="description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.">
+    <meta name="keywords" content="lacak pengiriman, tracking zdx, cek resi, status kiriman, cargo tracking">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url('/tracking') }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/tracking') }}">
+    <meta property="og:title" content="Tracking Pengiriman - PT. Zindan Diantar Express">
+    <meta property="og:description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.">
 @endsection
 
 @section('content')
     <!-- Hero Section -->
-    <div class="bg-[#FF6000]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-            <div class="text-center">
-                <h1 class="text-3xl md:text-4xl font-bold text-white">
-                    Lacak Pengiriman
-                </h1>
-                <p class="mt-2 text-lg text-white text-opacity-90">
-                    Pantau status pengiriman Anda secara real-time
-                </p>
-            </div>
+    <div class="relative bg-gradient-to-r from-[#E65100] to-[#FF6000] py-24">
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-5xl font-bold text-white mb-6">Lacak Pengiriman</h1>
+            <p class="text-xl text-gray-200 max-w-3xl mx-auto">
+                Pantau status pengiriman Anda secara real-time
+            </p>
         </div>
     </div>
 
     <div class="bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Tracking Search Form -->
-            <div class="max-w-3xl mx-auto -mt-8 relative z-10">
+            <div class="max-w-3xl mx-auto -mt-12 relative z-10">
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <form action="#" method="GET">
                         <div class="mb-4">
@@ -46,7 +53,7 @@
                         </div>
                         <button
                             type="submit"
-                            class="w-full py-3 px-4 bg-[#FF6000] text-white font-medium rounded-md hover:bg-[#E55A00] transition-colors"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white font-medium rounded-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                         >
                             Lacak Pengiriman
                         </button>
@@ -56,7 +63,7 @@
 
             <!-- Tracking Results (will be shown conditionally) -->
             <div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg overflow-hidden">
-                <div class="bg-[#FF6000] px-5 py-3">
+                <div class="bg-gradient-to-r from-[#FF6000] to-[#FF8C00] px-5 py-3">
                     <h2 class="text-lg font-semibold text-white">Detail Pengiriman</h2>
                 </div>
                 <div class="p-5">
@@ -175,7 +182,7 @@
 
             <!-- Tracking Info -->
             <div class="max-w-4xl mx-auto mt-10 mb-16">
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <div class="bg-[#FFF0E6] rounded-lg p-6 border border-gray-200">
                     <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
                         <div class="w-full md:w-1/3 flex justify-center">
                             <!-- SVG illustration instead of image -->
@@ -205,17 +212,9 @@
                                 </li>
                                 <li class="flex items-start">
                                     <span class="flex-shrink-0 bg-[#FF6000] text-white rounded-full w-6 h-6 flex items-center justify-center mr-3">3</span>
-                                    <span>Sistem kami akan menampilkan detail perjalanan paket Anda</span>
+                                    <span>Detail pengiriman beserta riwayat status akan ditampilkan</span>
                                 </li>
                             </ol>
-                            
-                            <div class="mt-6 p-4 bg-white rounded-md border border-gray-200">
-                                <p class="text-sm text-gray-700">
-                                    Jika Anda mengalami kesulitan melacak kiriman atau memerlukan bantuan lebih lanjut, 
-                                    silakan hubungi tim layanan pelanggan kami di <span class="text-[#FF6000] font-semibold">customer.service@zdx.co.id</span> 
-                                    atau telepon <span class="text-[#FF6000] font-semibold">021-7654321</span>
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>

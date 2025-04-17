@@ -3,26 +3,41 @@
 @section('meta_tags')
     <title>Profile - PT. Zindan Diantar Express</title>
     <meta name="description" content="Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.">
+    <meta name="keywords" content="profil zdx, sejarah zdx, visi misi zdx, pengiriman barang, cargo indonesia">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url('/profile') }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/profile') }}">
+    <meta property="og:title" content="Profile - PT. Zindan Diantar Express">
+    <meta property="og:description" content="Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.">
 @endsection
 
 @section('content')
+    <!-- Hero Section -->
+    <div class="relative bg-gradient-to-r from-[#E65100] to-[#FF6000] py-24">
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-5xl font-bold text-white mb-6">Profile Perusahaan</h1>
+            <p class="text-xl text-gray-200 max-w-3xl mx-auto">
+                Mengenal lebih dekat PT. Zindan Diantar Express
+            </p>
+        </div>
+    </div>
+
     <div class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
-                    Profile
-                </h1>
-            </div>
-
             <!-- Breadcrumb -->
-            <div class="mt-4 flex justify-center space-x-2 text-gray-500 text-sm">
+            <div class="mb-8 flex space-x-2 text-gray-500 text-sm">
                 <a href="/" class="hover:text-[#FF6000]">Home</a>
                 <span>•</span>
                 <span class="text-[#FF6000]">Profile</span>
             </div>
 
             <!-- Company Profile Section -->
-            <div class="mt-12">
+            <div class="mt-8">
                 <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
                     <p class="text-lg text-gray-600 leading-relaxed">
                         PT. ZINDAN DIANTAR EXPRESS (ZDX) merupakan perusahaan yang didirikan pada tanggal 10 April 2023 
@@ -44,7 +59,7 @@
             <!-- Visi & Misi Section -->
             <div class="mt-12 grid gap-8 md:grid-cols-2">
                 <!-- Visi -->
-                <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:-translate-y-1">
                     <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">Visi</h2>
                     <p class="text-lg text-gray-600 leading-relaxed">
                         Menjadi perusahaan terbaik dan terpercaya dalam bidang jasa pengiriman barang diwilayah Indonesia 
@@ -53,7 +68,7 @@
                 </div>
 
                 <!-- Misi -->
-                <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:-translate-y-1">
                     <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">Misi</h2>
                     <p class="text-lg text-gray-600 leading-relaxed">
                         Peningkatan jasa layanan dan sumber daya (Manusia, metode, teknologi, infrastruktur) secara berkesinambungan, 
@@ -114,27 +129,38 @@
                     <div class="py-12 px-6">
                         <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
                             <div class="text-center">
-                                <div class="text-5xl font-bold text-white">0</div>
+                                <div class="text-5xl font-bold text-white">20+</div>
                                 <div class="mt-2 text-xl font-medium text-[#FF6000]">PARTNER</div>
                             </div>
 
                             <div class="text-center">
-                                <div class="text-5xl font-bold text-white">0</div>
+                                <div class="text-5xl font-bold text-white">100+</div>
                                 <div class="mt-2 text-xl font-medium text-[#FF6000]">PROJECT</div>
                             </div>
 
                             <div class="text-center">
-                                <div class="text-5xl font-bold text-white">0</div>
+                                <div class="text-5xl font-bold text-white">95%</div>
                                 <div class="mt-2 text-xl font-medium text-[#FF6000]">SUCCESS</div>
                             </div>
 
                             <div class="text-center">
-                                <div class="text-5xl font-bold text-white">0</div>
-                                <div class="mt-2 text-xl font-medium text-[#FF6000]">COUNTRY</div>
+                                <div class="text-5xl font-bold text-white">34</div>
+                                <div class="mt-2 text-xl font-medium text-[#FF6000]">PROVINCES</div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="mt-16 text-center">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Butuh Informasi Lebih Lanjut?</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+                    Hubungi kami untuk mendapatkan informasi lebih detail tentang layanan pengiriman PT. Zindan Diantar Express.
+                </p>
+                <a href="/contact" class="inline-block px-8 py-3 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    Hubungi Kami
+                </a>
             </div>
         </div>
     </div>

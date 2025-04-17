@@ -92,7 +92,67 @@ class PageController extends Controller
     public function rates()
     {
         $seoData = $this->getSeoData('rates');
-        return view('rates', compact('seoData'));
+        
+        // Mengambil daftar pulau untuk filter
+        $pulauList = \App\Models\Rate::select('pulau')->distinct()->pluck('pulau');
+        
+        // Mengambil daftar provinsi untuk dropdown
+        $provinsiList = \App\Models\Rate::select('provinsi')->distinct()->orderBy('provinsi')->pluck('provinsi');
+        
+        // Mengambil daftar kota (dengan batas 20 kota populer) untuk dropdown
+        $kotaPopuler = \App\Models\Rate::select('kota_kab')
+            ->distinct()
+            ->orderBy('kota_kab')
+            ->limit(20)
+            ->pluck('kota_kab');
+        
+        // Mengambil data tarif populer (10 kota terpopuler berdasarkan urutan abjad)
+        $tarifPopuler = \App\Models\Rate::select('pulau', 'provinsi', 'kota_kab', 'harga_satuan', 'minimal_kg', 'estimasi')
+            ->orderBy('provinsi')
+            ->orderBy('kota_kab')
+            ->limit(10)
+            ->get();
+        
+        // Menyiapkan variable untuk tampilan
+        $popularCities = $kotaPopuler;
+        $islands = $pulauList;
+        $provinces = $provinsiList;
+        $popularRates = $tarifPopuler;
+        
+        return view('rates', compact('seoData', 'islands', 'provinces', 'popularCities', 'popularRates'));
+    }
+    
+    /**
+     * API untuk pencarian tarif
+     */
+    public function searchRates(Request $request)
+    {
+        $kotaTujuan = $request->input('destination');
+        $berat = floatval($request->input('weight', 1));
+        
+        // Cari tarif berdasarkan kota tujuan
+        $tarif = \App\Models\Rate::where('kota_kab', 'LIKE', "%{$kotaTujuan}%")
+            ->orWhere('provinsi', 'LIKE', "%{$kotaTujuan}%")
+            ->orWhere('kelurahan_kecamatan', 'LIKE', "%{$kotaTujuan}%")
+            ->first();
+            
+        if (!$tarif) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tarif untuk tujuan tersebut tidak ditemukan'
+            ]);
+        }
+        
+        // Hitung total biaya berdasarkan berat dan minimal_kg
+        $beratDihitung = max($berat, $tarif->minimal_kg);
+        $totalBiaya = $beratDihitung * $tarif->harga_satuan;
+        
+        return response()->json([
+            'success' => true,
+            'city' => $tarif->kota_kab . ', ' . $tarif->provinsi,
+            'rate_formatted' => number_format($tarif->harga_satuan, 0, ',', '.'),
+            'total_formatted' => number_format($totalBiaya, 0, ',', '.')
+        ]);
     }
     
     /**

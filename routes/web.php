@@ -11,11 +11,15 @@ use App\Http\Controllers\Admin\NotificationController;
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
 Route::get('/layanan', [PageController::class, 'services']);
+Route::get('/services', [PageController::class, 'services']);
 Route::get('/tarif', [PageController::class, 'rates']);
+Route::get('/rates', [PageController::class, 'rates']);
 Route::get('/tracking', [PageController::class, 'tracking']);
 Route::get('/customer', [PageController::class, 'customer']);
 Route::get('/profile', [PageController::class, 'profile']);
 Route::get('/kontak', [PageController::class, 'contact']);
+Route::get('/contact', [PageController::class, 'contact']);
+Route::post('/search-rates', [PageController::class, 'searchRates'])->name('search.rates');
 
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {
