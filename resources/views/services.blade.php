@@ -40,100 +40,32 @@
 
     <!-- Services Section -->
     <div class="max-w-7xl mx-auto px-4 py-16">
+        @if($services->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-            <!-- Darat Service -->
+            @foreach($services as $service)
             <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                 <div class="h-48 bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center">
-                    <i class="fas fa-truck text-white text-7xl"></i>
+                    @if($service->image)
+                    <img src="{{ asset($service->image) }}" alt="{{ $service->title }}" class="h-full w-full object-cover">
+                    @else
+                    <i class="fas fa-box-open text-white text-7xl"></i>
+                    @endif
                 </div>
                 <div class="p-6">
-                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Pengiriman Darat</h3>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">{{ $service->title }}</h3>
                     <p class="text-gray-600 mb-6">
-                        Layanan pengiriman darat yang cepat dan andal ke seluruh Indonesia. 
-                        Kami menawarkan solusi yang efisien untuk pengiriman jarak dekat hingga menengah.
+                        {{ $service->description }}
                     </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman dari kota ke kota</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman dalam kota</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman barang berat</span>
-                        </li>
-                    </ul>
-                    <a href="/kontak" class="inline-block bg-[#FF6000] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#E65100] transition-colors">
-                        Hubungi Kami
+                    <a href="/layanan/{{ $service->slug }}" class="inline-block bg-[#FF6000] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#E65100] transition-colors">
+                        Selengkapnya
                     </a>
                 </div>
             </div>
-
-            <!-- Laut Service -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                <div class="h-48 bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center">
-                    <i class="fas fa-ship text-white text-7xl"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Pengiriman Laut</h3>
-                    <p class="text-gray-600 mb-6">
-                        Solusi pengiriman melalui jalur laut untuk barang dalam jumlah besar. 
-                        Ideal untuk pengiriman antar pulau dengan biaya yang kompetitif.
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman antar pulau</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman kontainer</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Jasa forwarding internasional</span>
-                        </li>
-                    </ul>
-                    <a href="/kontak" class="inline-block bg-[#FF6000] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#E65100] transition-colors">
-                        Hubungi Kami
-                    </a>
-                </div>
-            </div>
-
-            <!-- Udara Service -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                <div class="h-48 bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center">
-                    <i class="fas fa-plane text-white text-7xl"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Pengiriman Udara</h3>
-                    <p class="text-gray-600 mb-6">
-                        Layanan pengiriman cepat melalui udara untuk kebutuhan mendesak dan barang berharga. 
-                        Dijamin cepat sampai di tujuan.
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman ekspres</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman dokumen penting</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-[#FF6000] mt-1 mr-2"></i>
-                            <span>Pengiriman barang berharga</span>
-                        </li>
-                    </ul>
-                    <a href="/kontak" class="inline-block bg-[#FF6000] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#E65100] transition-colors">
-                        Hubungi Kami
-                    </a>
-                </div>
-            </div>
+            @endforeach
         </div>
+        @else
+
+        @endif
 
         <!-- Additional Services -->
         <h2 class="text-3xl font-bold text-center mb-12">Layanan Tambahan</h2>

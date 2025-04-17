@@ -13,6 +13,14 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # Allow direct access to images
+    RewriteCond %{REQUEST_URI} ^/images/.*$
+    RewriteRule ^ - [L]
+
+    # Allow direct access to uploads directory
+    RewriteCond %{REQUEST_URI} ^/uploads/.*$
+    RewriteRule ^ - [L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$

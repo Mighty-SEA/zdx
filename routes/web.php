@@ -8,10 +8,12 @@ use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\AnalyticsSettingsController;
+use App\Http\Controllers\Admin\ServiceController;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
 Route::get('/layanan', [PageController::class, 'services']);
+Route::get('/layanan/{slug}', [PageController::class, 'serviceDetail']);
 Route::get('/services', [PageController::class, 'services']);
 Route::get('/tarif', [PageController::class, 'rates']);
 Route::get('/rates', [PageController::class, 'rates']);
@@ -91,4 +93,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/profile', function () {
         return view('admin.profile');
     })->name('profile');
+    
+    // Admin Services
+    Route::get('/services', [ServiceController::class, 'index'])->name('services');
+    Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+    Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+    Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
+    Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });

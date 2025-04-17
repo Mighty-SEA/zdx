@@ -104,6 +104,11 @@
                             <span>SEO Halaman</span>
                         </a>
                         
+                        <a href="{{ route('admin.services') }}" class="sidebar-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
+                            <i class="fas fa-boxes text-lg w-5 text-center"></i>
+                            <span>Layanan</span>
+                        </a>
+                        
                         <!-- Tambahkan menu marketing lainnya di sini jika ada -->
                     </nav>
                 </div>

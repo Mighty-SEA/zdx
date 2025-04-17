@@ -83,7 +83,39 @@ class PageController extends Controller
     public function services()
     {
         $seoData = $this->getSeoData('services');
-        return view('services', compact('seoData'));
+        
+        // Mengambil semua layanan yang dipublikasikan dari database
+        $services = \App\Models\Service::where('status', 'published')->get();
+        
+        return view('services', compact('seoData', 'services'));
+    }
+    
+    /**
+     * Halaman Detail Layanan
+     */
+    public function serviceDetail($slug)
+    {
+        // Mencari layanan berdasarkan slug
+        $service = \App\Models\Service::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+            
+        // Menggunakan SEO data services sebagai default
+        $seoData = $this->getSeoData('services');
+        
+        // Override beberapa data SEO dengan informasi dari layanan
+        $seoData['title'] = $service->title . ' - ZDX Cargo';
+        $seoData['description'] = $service->description;
+        $seoData['canonical_url'] = url('layanan/' . $service->slug);
+        $seoData['og_title'] = $service->title;
+        $seoData['og_description'] = $service->description;
+        
+        // Jika layanan memiliki gambar, gunakan sebagai og:image
+        if ($service->image) {
+            $seoData['og_image'] = asset('storage/' . $service->image);
+        }
+        
+        return view('service-detail', compact('service', 'seoData'));
     }
     
     /**
