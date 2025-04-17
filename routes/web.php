@@ -20,6 +20,7 @@ Route::get('/services', [PageController::class, 'services']);
 Route::get('/tarif', [PageController::class, 'rates']);
 Route::get('/rates', [PageController::class, 'rates']);
 Route::get('/tracking', [PageController::class, 'tracking']);
+Route::post('/track-shipment', [PageController::class, 'trackShipment'])->name('track.shipment');
 Route::get('/customer', [PageController::class, 'customer']);
 Route::get('/profile', [PageController::class, 'profile']);
 Route::get('/kontak', [PageController::class, 'contact']);
@@ -78,6 +79,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/settings/analytics', [SettingsController::class, 'storeAnalytics'])->name('settings.analytics');
     Route::post('/settings/company', [SettingsController::class, 'storeCompany'])->name('settings.company');
     Route::post('/settings/api', [SettingsController::class, 'storeApi'])->name('settings.api');
+    Route::post('/settings/tracking', [SettingsController::class, 'storeTracking'])->name('settings.tracking');
+    Route::post('/settings/tracking/test', [SettingsController::class, 'testTracking'])->name('settings.tracking.test');
     
     // Redirect analytics-settings ke tab analytics pada halaman pengaturan
     Route::get('/analytics-settings', function() {

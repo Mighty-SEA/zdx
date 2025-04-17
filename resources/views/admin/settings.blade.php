@@ -34,6 +34,10 @@
                         <i class="fas fa-building w-5 mr-2"></i>
                         <span>Informasi Perusahaan</span>
                     </a>
+                    <a href="#tracking" id="nav-tracking" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 mb-1">
+                        <i class="fas fa-truck w-5 mr-2"></i>
+                        <span>API Tracking</span>
+                    </a>
                     <a href="#api" id="nav-api" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50">
                         <i class="fas fa-code w-5 mr-2"></i>
                         <span>API</span>
@@ -344,6 +348,178 @@
                     </div>
                 </div>
                 
+                <!-- Tracking API Settings -->
+                <div id="content-tracking" class="hidden bg-white rounded-lg shadow-sm p-5 border border-gray-200 mb-6">
+                    <div class="mb-4 border-b border-gray-200 pb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Pengaturan API Tracking</h3>
+                        <p class="text-sm text-gray-600">Konfigurasi integrasi dengan API Tracking eksternal</p>
+                    </div>
+                    
+                    @if(session('validation_error') || $errors->any())
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+                        <p class="font-medium">Terdapat kesalahan pada pengaturan tracking:</p>
+                        <ul class="list-disc list-inside ml-2 mt-1 text-sm">
+                            @if(session('validation_error'))
+                                <li>{{ session('validation_error') }}</li>
+                            @endif
+                            @if($errors->has('tracking_api_url'))
+                                <li>{{ $errors->first('tracking_api_url') }}</li>
+                            @endif
+                            @if($errors->has('tracking_request_headers'))
+                                <li>{{ $errors->first('tracking_request_headers') }}</li>
+                            @endif
+                            @if($errors->has('tracking_response_mapping'))
+                                <li>{{ $errors->first('tracking_response_mapping') }}</li>
+                            @endif
+                            @if($errors->has('general'))
+                                <li>{{ $errors->first('general') }}</li>
+                            @endif
+                        </ul>
+                    </div>
+                    @endif
+                    
+                    <div class="max-w-4xl">
+                        <form action="{{ route('admin.settings.tracking') }}" method="POST">
+                            @csrf
+                            
+                            <div class="mb-6">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="use_external_tracking" id="use_external_tracking" value="1" {{ $useExternalTracking ?? false ? 'checked' : '' }}
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <span class="ml-2 text-gray-700">Gunakan API Tracking Eksternal</span>
+                                </label>
+                                <p class="text-gray-500 text-sm mt-1 ml-6">
+                                    Jika diaktifkan, sistem akan menggunakan API pihak ketiga untuk pelacakan pengiriman.
+                                </p>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                                <h4 class="font-medium text-gray-800 mb-3">Penyedia Layanan API</h4>
+                                
+                                <div class="mb-4">
+                                    <label for="tracking_provider" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Pilih Penyedia
+                                    </label>
+                                    <select id="tracking_provider" name="tracking_provider" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <option value="" disabled {{ empty($trackingProvider) ? 'selected' : '' }}>-- Pilih Penyedia API --</option>
+                                        <option value="zdx_internal" {{ ($trackingProvider ?? '') == 'zdx_internal' ? 'selected' : '' }}>ZDX Internal (Default)</option>
+                                        <option value="wahana" {{ ($trackingProvider ?? '') == 'wahana' ? 'selected' : '' }}>Wahana Express</option>
+                                        <option value="jne" {{ ($trackingProvider ?? '') == 'jne' ? 'selected' : '' }}>JNE</option>
+                                        <option value="sicepat" {{ ($trackingProvider ?? '') == 'sicepat' ? 'selected' : '' }}>SiCepat</option>
+                                        <option value="pos_indonesia" {{ ($trackingProvider ?? '') == 'pos_indonesia' ? 'selected' : '' }}>Pos Indonesia</option>
+                                        <option value="custom" {{ ($trackingProvider ?? '') == 'custom' ? 'selected' : '' }}>Custom API</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                                <h4 class="font-medium text-gray-800 mb-3">Konfigurasi API</h4>
+                                
+                                <div class="mb-4">
+                                    <label for="tracking_api_url" class="block text-sm font-medium text-gray-700 mb-1">
+                                        URL Endpoint API Tracking
+                                    </label>
+                                    <input type="text" id="tracking_api_url" name="tracking_api_url" value="{{ $trackingApiUrl ?? '' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 @error('tracking_api_url') border-red-500 @enderror"
+                                        placeholder="https://api.example.com/tracking/{tracking_number}">
+                                    <p class="text-xs text-gray-500 mt-1">Gunakan {tracking_number} sebagai placeholder untuk nomor resi</p>
+                                    @error('tracking_api_url')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="tracking_api_key" class="block text-sm font-medium text-gray-700 mb-1">
+                                            API Key / Token
+                                        </label>
+                                        <input type="password" id="tracking_api_key" name="tracking_api_key" value="{{ $trackingApiKey ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="tracking_api_secret" class="block text-sm font-medium text-gray-700 mb-1">
+                                            API Secret (opsional)
+                                        </label>
+                                        <input type="password" id="tracking_api_secret" name="tracking_api_secret" value="{{ $trackingApiSecret ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="tracking_request_method" class="block text-sm font-medium text-gray-700 mb-1">
+                                        HTTP Method
+                                    </label>
+                                    <select id="tracking_request_method" name="tracking_request_method"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <option value="GET" {{ ($trackingRequestMethod ?? 'GET') == 'GET' ? 'selected' : '' }}>GET</option>
+                                        <option value="POST" {{ ($trackingRequestMethod ?? '') == 'POST' ? 'selected' : '' }}>POST</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="tracking_request_headers" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Headers Tambahan (JSON format)
+                                    </label>
+                                    <textarea id="tracking_request_headers" name="tracking_request_headers" rows="3"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                        placeholder='{"Content-Type": "application/json", "X-Custom-Header": "value"}'>{{ $trackingRequestHeaders ?? '' }}</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                                <h4 class="font-medium text-gray-800 mb-3">Konfigurasi Response</h4>
+                                
+                                <div class="mb-4">
+                                    <label for="tracking_response_mapping" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Pemetaan Response JSON (opsional)
+                                    </label>
+                                    <textarea id="tracking_response_mapping" name="tracking_response_mapping" rows="6"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 font-mono text-sm"
+                                        placeholder='{"tracking_number": "data.awb", "status": "data.delivery_status", "shipper": "data.origin", "receiver": "data.destination", "timeline": "data.history"}'
+                                    >{{ $trackingResponseMapping ?? '' }}</textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Tentukan pemetaan field dari response API ke format yang digunakan oleh ZDX</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label for="tracking_test_number" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Nomor Resi untuk Testing
+                                </label>
+                                <div class="flex">
+                                    <input type="text" id="tracking_test_number" name="tracking_test_number"
+                                        class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                        placeholder="Masukkan nomor resi untuk testing">
+                                    <button type="button" id="test_tracking_api" 
+                                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        Test API
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="tracking_api_test_result" class="mb-6 hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Hasil Test API
+                                </label>
+                                <div class="bg-gray-100 p-3 rounded-md border border-gray-200 max-h-80 overflow-auto">
+                                    <pre id="tracking_test_response" class="text-xs font-mono whitespace-pre-wrap"></pre>
+                                </div>
+                                <div id="tracking_request_details" class="mt-2 text-xs text-gray-500 hidden">
+                                    <p><strong>URL Request:</strong> <span id="request_url"></span></p>
+                                    <p><strong>Method:</strong> <span id="request_method"></span></p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-save mr-2"></i> Simpan Pengaturan Tracking
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
                 <!-- API Settings -->
                 <div id="content-api" class="hidden bg-white rounded-lg shadow-sm p-5 border border-gray-200 mb-6">
                     <div class="mb-4 border-b border-gray-200 pb-2">
@@ -530,6 +706,105 @@
                 window.location.hash = target;
             });
         });
+        
+        // Tracking API Test
+        const testTrackingApiBtn = document.getElementById('test_tracking_api');
+        if (testTrackingApiBtn) {
+            testTrackingApiBtn.addEventListener('click', function() {
+                const trackingNumber = document.getElementById('tracking_test_number').value.trim();
+                const apiUrl = document.getElementById('tracking_api_url').value.trim();
+                const apiKey = document.getElementById('tracking_api_key').value.trim();
+                const provider = document.getElementById('tracking_provider').value;
+                const method = document.getElementById('tracking_request_method').value;
+                const headersText = document.getElementById('tracking_request_headers').value.trim();
+                
+                // Validasi input dasar
+                if (!trackingNumber) {
+                    alert('Silakan masukkan nomor resi untuk testing');
+                    return;
+                }
+                
+                if (!apiUrl) {
+                    alert('URL API harus diisi');
+                    return;
+                }
+                
+                // Tampilkan area hasil dan loading state
+                const resultArea = document.getElementById('tracking_api_test_result');
+                const responseElement = document.getElementById('tracking_test_response');
+                resultArea.classList.remove('hidden');
+                responseElement.textContent = 'Memuat data...';
+                
+                // Siapkan data untuk dikirim ke backend
+                const testData = {
+                    tracking_number: trackingNumber,
+                    api_url: apiUrl,
+                    api_key: apiKey,
+                    provider: provider,
+                    method: method
+                };
+                
+                // Tambahkan headers jika ada
+                if (headersText) {
+                    try {
+                        testData.headers = JSON.parse(headersText);
+                    } catch (e) {
+                        responseElement.textContent = 'Error: Format JSON headers tidak valid. ' + e.message;
+                        return;
+                    }
+                }
+                
+                // Kirim request ke endpoint testing
+                fetch('/admin/settings/tracking/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(testData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        responseElement.textContent = JSON.stringify(data.response, null, 2);
+                    } else {
+                        responseElement.textContent = 'Error: ' + data.message + '\n\n' + JSON.stringify(data.response || {}, null, 2);
+                    }
+                    
+                    // Tampilkan detail request jika tersedia
+                    const requestDetails = document.getElementById('tracking_request_details');
+                    const requestUrl = document.getElementById('request_url');
+                    const requestMethod = document.getElementById('request_method');
+                    
+                    if (data.request_url && data.request_method) {
+                        requestUrl.textContent = data.request_url;
+                        requestMethod.textContent = data.request_method;
+                        requestDetails.classList.remove('hidden');
+                    } else {
+                        requestDetails.classList.add('hidden');
+                    }
+                })
+                .catch(error => {
+                    responseElement.textContent = 'Error saat menghubungi API: ' + error.message;
+                });
+            });
+        }
+        
+        // Show/hide penyedia custom fields based on provider selection
+        const trackingProviderSelect = document.getElementById('tracking_provider');
+        if (trackingProviderSelect) {
+            const toggleCustomFields = function() {
+                const customFields = document.querySelectorAll('.custom-provider-fields');
+                if (trackingProviderSelect.value === 'custom') {
+                    customFields.forEach(field => field.classList.remove('hidden'));
+                } else {
+                    customFields.forEach(field => field.classList.add('hidden'));
+                }
+            };
+            
+            trackingProviderSelect.addEventListener('change', toggleCustomFields);
+            toggleCustomFields(); // Run once on init
+        }
     });
 </script>
 @endpush 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PageSeoSetting;
+use App\Services\TrackingService;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -312,10 +313,39 @@ class PageController extends Controller
     /**
      * Halaman Tracking
      */
-    public function tracking()
+    public function tracking(Request $request)
     {
         $seoData = $this->getSeoData('tracking');
-        return view('tracking', compact('seoData'));
+        
+        // Cek jika ada parameter tracking_number
+        $trackingNumber = $request->tracking_number;
+        $trackingData = null;
+        
+        if ($trackingNumber) {
+            $trackingService = new TrackingService();
+            $trackingData = $trackingService->trackShipment($trackingNumber);
+        }
+        
+        return view('tracking', compact('seoData', 'trackingData', 'trackingNumber'));
+    }
+    
+    /**
+     * Track pengiriman via AJAX
+     */
+    public function trackShipment(Request $request)
+    {
+        $request->validate([
+            'tracking_number' => 'required|string|min:5|max:50',
+        ]);
+        
+        $trackingNumber = $request->tracking_number;
+        $trackingService = new TrackingService();
+        $trackingData = $trackingService->trackShipment($trackingNumber);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $trackingData,
+        ]);
     }
     
     /**
