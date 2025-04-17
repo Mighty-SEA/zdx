@@ -26,6 +26,19 @@ class SettingsController extends Controller
         $companyEmail = Setting::getValue('company_email', 'info@zdxcargo.com');
         $companyTaxId = Setting::getValue('company_tax_id', '01.234.567.8-901.000');
         $companyDescription = Setting::getValue('company_description', 'ZDX Cargo adalah perusahaan jasa pengiriman terpercaya yang melayani kebutuhan logistik bisnis dan pribadi dengan jangkauan nasional dan internasional.');
+        $companyLogo = Setting::getValue('company_logo', '');
+        $companyWebsite = Setting::getValue('company_website', 'www.zdxcargo.co.id');
+        $companySocials = [
+            'facebook' => Setting::getValue('company_facebook', 'https://facebook.com/zdxcargo'),
+            'instagram' => Setting::getValue('company_instagram', 'https://instagram.com/zdxcargo'),
+            'twitter' => Setting::getValue('company_twitter', ''),
+            'linkedin' => Setting::getValue('company_linkedin', ''),
+            'youtube' => Setting::getValue('company_youtube', ''),
+        ];
+        $companyLocation = [
+            'latitude' => Setting::getValue('company_latitude', '-6.2088'),
+            'longitude' => Setting::getValue('company_longitude', '106.8456'),
+        ];
         
         // Data untuk tab API
         $apiKey = Setting::getValue('api_key', '');
@@ -41,6 +54,10 @@ class SettingsController extends Controller
             'companyEmail',
             'companyTaxId',
             'companyDescription',
+            'companyLogo',
+            'companyWebsite',
+            'companySocials',
+            'companyLocation',
             'apiKey',
             'apiEnabled',
             'webhookUrl'
@@ -93,6 +110,15 @@ class SettingsController extends Controller
             'company_email' => 'required|email|max:100',
             'company_tax_id' => 'nullable|string|max:30',
             'company_description' => 'nullable|string|max:500',
+            'company_website' => 'nullable|string|max:100',
+            'company_facebook' => 'nullable|string|max:255',
+            'company_instagram' => 'nullable|string|max:255',
+            'company_twitter' => 'nullable|string|max:255',
+            'company_linkedin' => 'nullable|string|max:255',
+            'company_youtube' => 'nullable|string|max:255',
+            'company_latitude' => 'nullable|string|max:20',
+            'company_longitude' => 'nullable|string|max:20',
+            'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         
         // Simpan semua pengaturan perusahaan
@@ -102,8 +128,41 @@ class SettingsController extends Controller
         Setting::setValue('company_email', $request->company_email, 'company');
         Setting::setValue('company_tax_id', $request->company_tax_id, 'company');
         Setting::setValue('company_description', $request->company_description, 'company');
+        Setting::setValue('company_website', $request->company_website, 'company');
         
-        return redirect()->route('admin.settings')
+        // Simpan social media
+        Setting::setValue('company_facebook', $request->company_facebook, 'company');
+        Setting::setValue('company_instagram', $request->company_instagram, 'company');
+        Setting::setValue('company_twitter', $request->company_twitter, 'company');
+        Setting::setValue('company_linkedin', $request->company_linkedin, 'company');
+        Setting::setValue('company_youtube', $request->company_youtube, 'company');
+        
+        // Simpan koordinat lokasi
+        Setting::setValue('company_latitude', $request->company_latitude, 'company');
+        Setting::setValue('company_longitude', $request->company_longitude, 'company');
+        
+        // Upload logo perusahaan jika ada
+        if ($request->hasFile('company_logo')) {
+            $image = $request->file('company_logo');
+            $imageName = 'company_logo_' . time() . '.' . $image->getClientOriginalExtension();
+            
+            // Simpan gambar ke public/uploads/company
+            $path = public_path('uploads/company');
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+            
+            // Hapus logo lama jika ada
+            $oldLogo = Setting::getValue('company_logo', '');
+            if ($oldLogo && file_exists(public_path($oldLogo))) {
+                unlink(public_path($oldLogo));
+            }
+            
+            $image->move($path, $imageName);
+            Setting::setValue('company_logo', 'uploads/company/' . $imageName, 'company');
+        }
+        
+        return redirect()->route('admin.settings', ['#company'])
             ->with('success', 'Informasi perusahaan berhasil disimpan.');
     }
     

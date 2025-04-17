@@ -363,10 +363,11 @@
                     uploadPrompt.classList.add('hidden');
                     imageMetaFields.classList.remove('hidden');
                     
-                    // Prefill image name field with sanitized filename (without extension)
-                    if (!imageNameInput.value) {
+                    // Prefill image name field with sanitized filename (without extension) if empty or auto
+                    if (!imageNameInput.value || imageNameInput.dataset.auto === 'true') {
                         const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
                         imageNameInput.value = sanitizeFileName(fileName);
+                        imageNameInput.dataset.auto = 'true';
                     }
                 }
                 
@@ -392,7 +393,9 @@
             uploadPrompt.classList.remove('hidden');
             imageMetaFields.classList.add('hidden');
             imageNameInput.value = '';
-            document.getElementById('image_alt').value = '';
+            imageNameInput.dataset.auto = 'true';
+            imageAltInput.value = '';
+            imageAltInput.dataset.auto = 'true';
         });
         
         ['dragenter', 'dragover'].forEach(eventName => {
