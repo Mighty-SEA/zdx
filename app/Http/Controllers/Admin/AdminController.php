@@ -57,6 +57,44 @@ class AdminController extends Controller
         // Chart data
         $trafficChartData = $this->analyticsService->getChartData();
         
+        // Riwayat pengunjung terbaru
+        $recentVisitors = [
+            [
+                'ip' => '192.168.1.1',
+                'page' => '/beranda',
+                'device' => 'mobile',
+                'time' => '2 menit yang lalu'
+            ],
+            [
+                'ip' => '203.45.67.89',
+                'page' => '/layanan',
+                'device' => 'desktop',
+                'time' => '5 menit yang lalu'
+            ],
+            [
+                'ip' => '157.240.22.35',
+                'page' => '/tracking',
+                'device' => 'mobile',
+                'time' => '10 menit yang lalu'
+            ],
+            [
+                'ip' => '172.217.194.100',
+                'page' => '/tarif',
+                'device' => 'tablet',
+                'time' => '15 menit yang lalu'
+            ],
+            [
+                'ip' => '118.96.123.45',
+                'page' => '/kontak',
+                'device' => 'desktop',
+                'time' => '25 menit yang lalu'
+            ]
+        ];
+        
+        // Idealnya, data ini diambil dari database atau layanan analytics
+        // Contoh jika menggunakan Analytics Service:
+        // $recentVisitors = $this->analyticsService->getRecentVisitors();
+        
         return view('admin.dashboard', compact(
             'totalUsers',
             'userGrowthRate',
@@ -75,7 +113,8 @@ class AdminController extends Controller
             'deviceDistribution',
             'topPages',
             'trafficSources',
-            'trafficChartData'
+            'trafficChartData',
+            'recentVisitors'
         ));
     }
 } 

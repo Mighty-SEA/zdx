@@ -104,6 +104,45 @@
                         <span class="text-xs text-gray-600">Social</span>
                     </div>
                 </div>
+                
+                <!-- Riwayat Pengunjung -->
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <h3 class="text-sm font-semibold text-gray-800 mb-3">Riwayat Pengunjung Terbaru</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Halaman</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Perangkat</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-100">
+                                @foreach($recentVisitors as $visitor)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-700">{{ $visitor['ip'] }}</td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-700">
+                                        <span class="max-w-xs truncate block">{{ $visitor['page'] }}</span>
+                                    </td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-700">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-{{ $visitor['device'] == 'mobile' ? 'mobile-alt' : ($visitor['device'] == 'tablet' ? 'tablet-alt' : 'desktop') }} text-gray-400 mr-1"></i>
+                                            <span>{{ ucfirst($visitor['device']) }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-700">{{ $visitor['time'] }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <a href="#" class="text-[#FF6000] text-xs font-medium hover:text-[#E65100] inline-block transition-colors duration-200">
+                            Lihat semua riwayat pengunjung
+                        </a>
+                    </div>
+                </div>
             </div>
         
             <!-- Right Side (1/3 width on large screens) -->
@@ -155,87 +194,6 @@
         
         <!-- Second row -->
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- User Growth Stats -->
-            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Pengguna</h2>
-                
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div class="text-sm text-gray-600 mb-1">Pengguna Baru (Hari Ini)</div>
-                        <div class="text-xl font-bold text-gray-800">{{ $userGrowthStats['today'] }}</div>
-                    </div>
-                    
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div class="text-sm text-gray-600 mb-1">Pengguna Baru (Minggu Ini)</div>
-                        <div class="text-xl font-bold text-gray-800">{{ $userGrowthStats['this_week'] }}</div>
-                    </div>
-                </div>
-                
-                <div class="bg-[#FFF8F4] p-4 rounded-lg border border-[#FFE0CC] mb-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <div class="text-sm text-gray-600 mb-1">Pertumbuhan Bulanan</div>
-                            <div class="text-xl font-bold text-gray-800">{{ $userGrowthStats['this_month'] }} pengguna</div>
-                        </div>
-                        <div class="text-[#FF6000] text-xl font-bold">
-                            {{ $userGrowthStats['growth_rate'] > 0 ? '+' : '' }}{{ $userGrowthStats['growth_rate'] }}%
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
-                    <a href="{{ route('admin.users') }}" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] inline-block transition-colors duration-200">
-                        Kelola pengguna
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Notifikasi -->
-            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-800">Notifikasi Terbaru</h2>
-                    <span class="px-2 py-1 text-xs bg-[#FFF0E6] text-[#FF6000] rounded-full">{{ $unreadNotifications }} belum dibaca</span>
-                </div>
-                
-                @php
-                $notifications = \App\Models\Notification::latest()->take(5)->get();
-                @endphp
-                
-                <div class="space-y-4">
-                    @if($notifications->count() > 0)
-                        @foreach($notifications as $notification)
-                        <div class="flex items-start p-3 {{ $notification->read_at === null ? 'bg-[#FFF8F4]' : 'bg-white' }} rounded-lg border border-gray-100">
-                            <div class="flex-shrink-0 mr-3">
-                                <div class="w-10 h-10 rounded-full bg-[#FFF0E6] flex items-center justify-center text-[#FF6000]">
-                                    <i class="fas fa-{{ $notification->type === 'success' ? 'check-circle' : ($notification->type === 'warning' ? 'exclamation-triangle' : 'info-circle') }}"></i>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between mb-1">
-                                    <h4 class="text-sm font-medium text-gray-800">{{ $notification->title }}</h4>
-                                    <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
-                                </div>
-                                <p class="text-xs text-gray-600">{{ $notification->message }}</p>
-                            </div>
-                        </div>
-                        @endforeach
-                    @else
-                        <div class="text-center py-8 text-gray-500">
-                            <p>Belum ada notifikasi</p>
-                        </div>
-                    @endif
-                </div>
-                
-                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
-                    <a href="{{ route('admin.notifications') }}" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] inline-block transition-colors duration-200">
-                        Lihat semua notifikasi
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Third row - Statistik Sistem & Kinerja -->
-        <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Status Sistem -->
             <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Status Sistem</h2>
@@ -275,8 +233,8 @@
                 </div>
             </div>
             
-            <!-- Kinerja & Resource -->
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <!-- Statistik Pengunjung -->
+            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Pengunjung</h2>
                 
                 <div class="grid grid-cols-3 gap-4 mb-6">
@@ -326,6 +284,51 @@
                             <div class="bg-purple-500 h-2 rounded-full" style="width: {{ $deviceDistribution['tablet'] }}%"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifikasi Section -->
+        <div class="mt-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Notifikasi Terbaru</h2>
+                    <span class="px-2 py-1 text-xs bg-[#FFF0E6] text-[#FF6000] rounded-full">{{ $unreadNotifications }} belum dibaca</span>
+                </div>
+                
+                @php
+                $notifications = \App\Models\Notification::latest()->take(5)->get();
+                @endphp
+                
+                <div class="space-y-4">
+                    @if($notifications->count() > 0)
+                        @foreach($notifications as $notification)
+                        <div class="flex items-start p-3 {{ $notification->read_at === null ? 'bg-[#FFF8F4]' : 'bg-white' }} rounded-lg border border-gray-100">
+                            <div class="flex-shrink-0 mr-3">
+                                <div class="w-10 h-10 rounded-full bg-[#FFF0E6] flex items-center justify-center text-[#FF6000]">
+                                    <i class="fas fa-{{ $notification->type === 'success' ? 'check-circle' : ($notification->type === 'warning' ? 'exclamation-triangle' : 'info-circle') }}"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="text-sm font-medium text-gray-800">{{ $notification->title }}</h4>
+                                    <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
+                                </div>
+                                <p class="text-xs text-gray-600">{{ $notification->message }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-8 text-gray-500">
+                            <p>Belum ada notifikasi</p>
+                        </div>
+                    @endif
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
+                    <a href="{{ route('admin.notifications') }}" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] inline-block transition-colors duration-200">
+                        Lihat semua notifikasi
+                    </a>
                 </div>
             </div>
         </div>
