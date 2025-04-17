@@ -88,10 +88,10 @@
                             </div>
                         </div>
                         
-                        <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                        {{-- <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                             <i class="fas fa-cog text-lg w-5 text-center"></i>
                             <span>Pengaturan</span>
-                        </a>
+                        </a> --}}
                     </nav>
                 </div>
                 

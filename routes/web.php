@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RateController;
 use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\AnalyticsSettingsController;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -66,6 +67,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/notifications/data', [NotificationController::class, 'index'])->name('notifications.data');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    
+    // Analytics Settings
+    Route::get('/analytics-settings', [AnalyticsSettingsController::class, 'index'])->name('analytics-settings.index');
+    Route::post('/analytics-settings', [AnalyticsSettingsController::class, 'store'])->name('analytics-settings.store');
     
     // Admin Users
     Route::get('/users', function () {

@@ -265,6 +265,9 @@ class PageController extends Controller
             }
         }
         
+        // Increment views counter
+        $tarif->increment('views');
+        
         // Hitung total biaya berdasarkan berat dan minimal_kg
         $beratDihitung = max($berat, $tarif->minimal_kg);
         $totalBiaya = $beratDihitung * $tarif->harga_satuan;

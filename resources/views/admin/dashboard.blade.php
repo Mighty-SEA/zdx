@@ -11,16 +11,19 @@
             </div>
         </div>
         
+        <!-- Alert jika Google Analytics belum dikonfigurasi -->
+        <x-analytics-alert />
+        
         <!-- Analytics Overview -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             <div class="bg-[#FFF0E6] p-5 rounded-lg border border-[#FF6000]/20 hover:border-[#FF6000]/40 transition-colors duration-200">
                 <div class="flex items-center justify-between mb-1">
-                    <div class="text-[#E65100] text-sm font-medium">Pengunjung</div>
+                    <div class="text-[#E65100] text-sm font-medium">Pengguna</div>
                     <div class="text-[#FF6000]"><i class="fas fa-users"></i></div>
                 </div>
-                <div class="text-2xl font-bold text-gray-800">5,842</div>
+                <div class="text-2xl font-bold text-gray-800">{{ number_format($totalUsers) }}</div>
                 <div class="text-green-600 text-xs flex items-center">
-                    <i class="fas fa-arrow-up mr-1"></i> +12.5%
+                    <i class="fas fa-arrow-up mr-1"></i> {{ number_format($userGrowthRate, 1) }}%
                 </div>
             </div>
         
@@ -29,9 +32,9 @@
                     <div class="text-[#FF8F00] text-sm font-medium">Pageviews</div>
                     <div class="text-[#FFB300]"><i class="fas fa-eye"></i></div>
                 </div>
-                <div class="text-2xl font-bold text-gray-800">18,397</div>
+                <div class="text-2xl font-bold text-gray-800">{{ number_format($pageviews) }}</div>
                 <div class="text-green-600 text-xs flex items-center">
-                    <i class="fas fa-arrow-up mr-1"></i> +8.2%
+                    <i class="fas fa-arrow-up mr-1"></i> +{{ number_format($pageviewGrowth, 1) }}%
                 </div>
             </div>
             
@@ -40,9 +43,9 @@
                     <div class="text-green-800 text-sm font-medium">Bounce Rate</div>
                     <div class="text-green-700"><i class="fas fa-undo"></i></div>
                 </div>
-                <div class="text-2xl font-bold text-gray-800">42.3%</div>
+                <div class="text-2xl font-bold text-gray-800">{{ number_format($bounceRate, 1) }}%</div>
                 <div class="text-red-600 text-xs flex items-center">
-                    <i class="fas fa-arrow-up mr-1"></i> +2.1%
+                    <i class="fas fa-arrow-up mr-1"></i> +{{ number_format($bounceRateChange, 1) }}%
                 </div>
             </div>
         
@@ -51,9 +54,9 @@
                     <div class="text-[#F57C00] text-sm font-medium">Durasi Rata-rata</div>
                     <div class="text-[#FF9800]"><i class="fas fa-clock"></i></div>
                 </div>
-                <div class="text-2xl font-bold text-gray-800">2:48</div>
+                <div class="text-2xl font-bold text-gray-800">{{ $avgDuration }}</div>
                 <div class="text-green-600 text-xs flex items-center">
-                    <i class="fas fa-arrow-up mr-1"></i> +18.5%
+                    <i class="fas fa-arrow-up mr-1"></i> +{{ number_format($durationGrowth, 1) }}%
                 </div>
             </div>
         </div>
@@ -77,12 +80,9 @@
                     </div>
                 </div>
             
-                <!-- Chart Placeholder -->
-                <div class="h-80 bg-gray-50 rounded-lg flex items-center justify-center">
-                    <div class="text-center">
-                        <i class="fas fa-chart-line text-gray-300 text-4xl mb-3"></i>
-                        <p class="text-gray-500">Grafik traffic website akan ditampilkan di sini</p>
-                    </div>
+                <!-- Chart Canvas -->
+                <div>
+                    <canvas id="trafficChart" class="w-full h-80"></canvas>
                 </div>
             
                 <!-- Chart Legend -->
@@ -113,49 +113,18 @@
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Halaman Terpopuler</h2>
                     
                     <div class="space-y-4">
+                        @foreach($topPages as $page)
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm font-medium text-gray-800">/</p>
-                                <p class="text-xs text-gray-500">Beranda</p>
+                                <p class="text-sm font-medium text-gray-800">{{ $page['url'] }}</p>
+                                <p class="text-xs text-gray-500">{{ $page['name'] }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm font-bold text-gray-800">4,827</p>
+                                <p class="text-sm font-bold text-gray-800">{{ number_format($page['views']) }}</p>
                                 <p class="text-xs text-gray-500">views</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">/layanan</p>
-                                <p class="text-xs text-gray-500">Layanan</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-bold text-gray-800">2,356</p>
-                                <p class="text-xs text-gray-500">views</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">/tarif</p>
-                                <p class="text-xs text-gray-500">Tarif</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-bold text-gray-800">1,843</p>
-                                <p class="text-xs text-gray-500">views</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">/kontak</p>
-                                <p class="text-xs text-gray-500">Kontak</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-bold text-gray-800">1,204</p>
-                                <p class="text-xs text-gray-500">views</p>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                     
                     <div class="mt-4 pt-3 border-t border-gray-100 text-center">
@@ -169,195 +138,325 @@
                 <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Sumber Traffic</h2>
                     
-                    <!-- Organic -->
+                    @foreach($trafficSources as $source)
                     <div class="mb-4">
                         <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-gray-600">Organic Search</span>
-                            <span class="text-sm font-medium text-gray-600">38%</span>
+                            <span class="text-sm font-medium text-gray-600">{{ $source['name'] }}</span>
+                            <span class="text-sm font-medium text-gray-600">{{ $source['percentage'] }}%</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-[#FF9800] h-2 rounded-full" style="width: 38%"></div>
+                            <div class="bg-{{ $source['name'] == 'Organic Search' ? '[#FF9800]' : ($source['name'] == 'Direct' ? '[#FF6000]' : ($source['name'] == 'Referral' ? '[#4CAF50]' : '[#FFB300]')) }} h-2 rounded-full" style="width: {{ $source['percentage'] }}%"></div>
                         </div>
                     </div>
-                    
-                    <!-- Direct -->
-                    <div class="mb-4">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-gray-600">Direct</span>
-                            <span class="text-sm font-medium text-gray-600">32%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-[#FF6000] h-2 rounded-full" style="width: 32%"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Referral -->
-                    <div class="mb-4">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-gray-600">Referral</span>
-                            <span class="text-sm font-medium text-gray-600">18%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-[#4CAF50] h-2 rounded-full" style="width: 18%"></div>
-                        </div>
-                    </div>
-                
-                    <!-- Social -->
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-gray-600">Social Media</span>
-                            <span class="text-sm font-medium text-gray-600">12%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-[#FFB300] h-2 rounded-full" style="width: 12%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-            
-        <!-- Analytics Configuration -->
-        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Google Analytics -->
-            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-[#FF6000]/30 transition-colors duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <img src="https://www.google.com/images/branding/product/1x/analytics_48dp.png" alt="Google Analytics" class="w-8 h-8 mr-3">
-                        <h3 class="font-medium text-gray-800 text-lg">Google Analytics</h3>
-                    </div>
-                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                        <i class="fas fa-check-circle mr-1"></i> Terhubung
-                    </span>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <label for="ga_tracking_id" class="block text-sm font-medium text-gray-700 mb-1">
-                            Google Analytics Tracking ID (GA4)
-                        </label>
-                        <div class="flex">
-                            <input type="text" id="ga_tracking_id" name="ga_tracking_id" value="G-XYZ123456"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#FF6000] transition-all duration-200">
-                            <button class="bg-gray-100 px-3 py-2 border border-gray-300 border-l-0 rounded-r-md hover:bg-gray-200 transition-colors duration-200">
-                                <i class="fas fa-paste"></i>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">ID pelacakan untuk Google Analytics 4</p>
-                    </div>
-                    
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm font-medium text-gray-700">
-                                Posisi Kode Tracking
-                            </label>
-                            <span class="text-xs text-gray-500">Direkomendasikan: Header</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="ga_position" value="header" class="form-radio text-[#FF6000]" checked>
-                                <span class="ml-2 text-sm text-gray-700">Header</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="ga_position" value="footer" class="form-radio text-[#FF6000]">
-                                <span class="ml-2 text-sm text-gray-700">Footer</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="flex space-x-4">
-                        <label class="flex items-center mb-1">
-                            <input type="checkbox" class="form-checkbox rounded text-[#FF6000] h-4 w-4" checked>
-                            <span class="ml-2 text-sm text-gray-700">Aktifkan Peningkatan Tautan</span>
-                        </label>
-                        
-                        <label class="flex items-center mb-1">
-                            <input type="checkbox" class="form-checkbox rounded text-[#FF6000] h-4 w-4" checked>
-                            <span class="ml-2 text-sm text-gray-700">Anonymize IP</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="mt-4 pt-3 border-t border-gray-200">
-                    <a href="https://analytics.google.com/" target="_blank" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] flex items-center transition-colors duration-200">
-                        <span>Buka Google Analytics</span>
-                        <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Facebook Pixel -->
-            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-[#FF6000]/30 transition-colors duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white mr-3">
-                            <i class="fab fa-facebook-f"></i>
-                        </div>
-                        <h3 class="font-medium text-gray-800 text-lg">Facebook Pixel</h3>
-                    </div>
-                    <label class="inline-flex items-center cursor-pointer">
-                        <span class="text-xs text-gray-700 mr-2">Nonaktif</span>
-                        <div class="relative">
-                            <input type="checkbox" value="" class="sr-only peer">
-                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#FF6000]"></div>
-                        </div>
-                        <span class="text-xs text-gray-700 ml-2">Aktif</span>
-                    </label>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <label for="fb_pixel_id" class="block text-sm font-medium text-gray-700 mb-1">
-                            Facebook Pixel ID
-                        </label>
-                        <div class="flex">
-                            <input type="text" id="fb_pixel_id" name="fb_pixel_id" placeholder="Contoh: 123456789012345"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#FF6000] transition-all duration-200">
-                            <button class="bg-gray-100 px-3 py-2 border border-gray-300 border-l-0 rounded-r-md hover:bg-gray-200 transition-colors duration-200">
-                                <i class="fas fa-paste"></i>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">ID untuk pelacakan konversi Facebook</p>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Event yang Dilacak
-                        </label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox rounded text-[#FF6000] h-4 w-4" checked>
-                                <span class="ml-2 text-sm text-gray-700">PageView</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox rounded text-[#FF6000] h-4 w-4" checked>
-                                <span class="ml-2 text-sm text-gray-700">ViewContent</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox rounded text-[#FF6000] h-4 w-4">
-                                <span class="ml-2 text-sm text-gray-700">Konversi</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox rounded text-[#FF6000] h-4 w-4">
-                                <span class="ml-2 text-sm text-gray-700">CustAction</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4 pt-3 border-t border-gray-200">
-                    <a href="https://business.facebook.com/events_manager/" target="_blank" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] flex items-center transition-colors duration-200">
-                        <span>Buka Facebook Business Manager</span>
-                        <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                    </a>
+                    @endforeach
                 </div>
             </div>
         </div>
         
-        <!-- Save Button -->
-        <div class="mt-6 flex justify-end">
-            <button class="bg-[#FF6000] hover:bg-[#E65100] text-white font-medium py-2 px-6 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-200">
-                <i class="fas fa-save mr-2"></i> Simpan Perubahan
-            </button>
+        <!-- Second row -->
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- User Growth Stats -->
+            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Pengguna</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <div class="text-sm text-gray-600 mb-1">Pengguna Baru (Hari Ini)</div>
+                        <div class="text-xl font-bold text-gray-800">{{ $userGrowthStats['today'] }}</div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <div class="text-sm text-gray-600 mb-1">Pengguna Baru (Minggu Ini)</div>
+                        <div class="text-xl font-bold text-gray-800">{{ $userGrowthStats['this_week'] }}</div>
+                    </div>
+                </div>
+                
+                <div class="bg-[#FFF8F4] p-4 rounded-lg border border-[#FFE0CC] mb-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-600 mb-1">Pertumbuhan Bulanan</div>
+                            <div class="text-xl font-bold text-gray-800">{{ $userGrowthStats['this_month'] }} pengguna</div>
+                        </div>
+                        <div class="text-[#FF6000] text-xl font-bold">
+                            {{ $userGrowthStats['growth_rate'] > 0 ? '+' : '' }}{{ $userGrowthStats['growth_rate'] }}%
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
+                    <a href="{{ route('admin.users') }}" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] inline-block transition-colors duration-200">
+                        Kelola pengguna
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Notifikasi -->
+            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Notifikasi Terbaru</h2>
+                    <span class="px-2 py-1 text-xs bg-[#FFF0E6] text-[#FF6000] rounded-full">{{ $unreadNotifications }} belum dibaca</span>
+                </div>
+                
+                @php
+                $notifications = \App\Models\Notification::latest()->take(5)->get();
+                @endphp
+                
+                <div class="space-y-4">
+                    @if($notifications->count() > 0)
+                        @foreach($notifications as $notification)
+                        <div class="flex items-start p-3 {{ $notification->read_at === null ? 'bg-[#FFF8F4]' : 'bg-white' }} rounded-lg border border-gray-100">
+                            <div class="flex-shrink-0 mr-3">
+                                <div class="w-10 h-10 rounded-full bg-[#FFF0E6] flex items-center justify-center text-[#FF6000]">
+                                    <i class="fas fa-{{ $notification->type === 'success' ? 'check-circle' : ($notification->type === 'warning' ? 'exclamation-triangle' : 'info-circle') }}"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="text-sm font-medium text-gray-800">{{ $notification->title }}</h4>
+                                    <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
+                                </div>
+                                <p class="text-xs text-gray-600">{{ $notification->message }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-8 text-gray-500">
+                            <p>Belum ada notifikasi</p>
+                        </div>
+                    @endif
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
+                    <a href="{{ route('admin.notifications') }}" class="text-[#FF6000] text-sm font-medium hover:text-[#E65100] inline-block transition-colors duration-200">
+                        Lihat semua notifikasi
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Third row - Statistik Sistem & Kinerja -->
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Status Sistem -->
+            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Status Sistem</h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                            <span class="text-sm font-medium text-gray-800">Website</span>
+                        </div>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">Aktif</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                            <span class="text-sm font-medium text-gray-800">Server Database</span>
+                        </div>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">Aktif</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                            <span class="text-sm font-medium text-gray-800">Cache System</span>
+                        </div>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">Aktif</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+                            <span class="text-sm font-medium text-gray-800">Queue Worker</span>
+                        </div>
+                        <span class="text-xs font-medium text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full">Perlu Pemeliharaan</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kinerja & Resource -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Pengunjung</h2>
+                
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-100 text-center">
+                        <div class="text-sm text-gray-500 mb-1">Pengunjung Hari Ini</div>
+                        <div class="text-xl font-bold text-gray-800">{{ number_format($todaysVisitors) }}</div>
+                    </div>
+                    
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-100 text-center">
+                        <div class="text-sm text-gray-500 mb-1">Pengunjung Baru</div>
+                        <div class="text-xl font-bold text-gray-800">{{ number_format($newVisitors) }}</div>
+                    </div>
+                    
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-100 text-center">
+                        <div class="text-sm text-gray-500 mb-1">Pengunjung Kembali</div>
+                        <div class="text-xl font-bold text-gray-800">{{ number_format($returningVisitors) }}</div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm text-gray-600">Perangkat Mobile</span>
+                            <span class="text-sm font-medium text-gray-800">{{ $deviceDistribution['mobile'] }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-[#FF6000] h-2 rounded-full" style="width: {{ $deviceDistribution['mobile'] }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm text-gray-600">Perangkat Desktop</span>
+                            <span class="text-sm font-medium text-gray-800">{{ $deviceDistribution['desktop'] }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $deviceDistribution['desktop'] }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm text-gray-600">Perangkat Tablet</span>
+                            <span class="text-sm font-medium text-gray-800">{{ $deviceDistribution['tablet'] }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-500 h-2 rounded-full" style="width: {{ $deviceDistribution['tablet'] }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trafik website chart
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        const trafficChartData = @json($trafficChartData);
+        
+        const datasets = [];
+        // Direct dataset (indeks 0)
+        if (trafficChartData.datasets[0]) {
+            datasets.push({
+                label: 'Direct',
+                data: trafficChartData.datasets[0].data,
+                borderColor: '#FF6000',
+                backgroundColor: 'rgba(255, 96, 0, 0.1)',
+                tension: 0.4,
+                borderWidth: 2,
+                pointBackgroundColor: '#FF6000',
+                pointRadius: 3
+            });
+        }
+        
+        // Organic dataset (indeks 1)
+        if (trafficChartData.datasets[1]) {
+            datasets.push({
+                label: 'Organic',
+                data: trafficChartData.datasets[1].data,
+                borderColor: '#FF9800',
+                backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                tension: 0.4,
+                borderWidth: 2,
+                pointBackgroundColor: '#FF9800',
+                pointRadius: 3
+            });
+        }
+        
+        // Referral dataset (indeks 2)
+        if (trafficChartData.datasets[2]) {
+            datasets.push({
+                label: 'Referral',
+                data: trafficChartData.datasets[2].data,
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                tension: 0.4,
+                borderWidth: 2,
+                pointBackgroundColor: '#4CAF50',
+                pointRadius: 3
+            });
+        }
+        
+        // Social dataset (indeks 3)
+        if (trafficChartData.datasets[3]) {
+            datasets.push({
+                label: 'Social',
+                data: trafficChartData.datasets[3].data,
+                borderColor: '#FFB300',
+                backgroundColor: 'rgba(255, 179, 0, 0.1)',
+                tension: 0.4,
+                borderWidth: 2,
+                pointBackgroundColor: '#FFB300',
+                pointRadius: 3
+            });
+        }
+        
+        const trafficChart = new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: trafficChartData.labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#333',
+                        bodyColor: '#666',
+                        borderColor: '#ddd',
+                        borderWidth: 1,
+                        padding: 10,
+                        boxPadding: 5,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [2, 4],
+                            color: '#f0f0f0'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Filter hari yang aktif
+        const dayFilters = document.querySelectorAll('.rounded-full');
+        dayFilters.forEach(filter => {
+            filter.addEventListener('click', function() {
+                dayFilters.forEach(btn => {
+                    btn.classList.remove('bg-[#FFF0E6]', 'text-[#FF6000]');
+                    btn.classList.add('bg-gray-100', 'text-gray-800');
+                });
+                
+                this.classList.remove('bg-gray-100', 'text-gray-800');
+                this.classList.add('bg-[#FFF0E6]', 'text-[#FF6000]');
+            });
+        });
+    });
+</script>
+@endpush

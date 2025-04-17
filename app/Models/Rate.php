@@ -16,6 +16,7 @@ class Rate extends Model
         'kelurahan_kecamatan',
         'harga_satuan',
         'minimal_kg',
-        'estimasi'
+        'estimasi',
+        'views'
     ];
 } 
