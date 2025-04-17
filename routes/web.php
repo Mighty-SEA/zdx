@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\AnalyticsSettingsController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SettingsController;
+use Illuminate\Http\Request;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -70,9 +72,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     
-    // Analytics Settings
-    Route::get('/analytics-settings', [AnalyticsSettingsController::class, 'index'])->name('analytics-settings.index');
-    Route::post('/analytics-settings', [AnalyticsSettingsController::class, 'store'])->name('analytics-settings.store');
+    // Settings Routes
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/analytics', [SettingsController::class, 'storeAnalytics'])->name('settings.analytics');
+    Route::post('/settings/company', [SettingsController::class, 'storeCompany'])->name('settings.company');
+    Route::post('/settings/api', [SettingsController::class, 'storeApi'])->name('settings.api');
+    
+    // Redirect analytics-settings ke tab analytics pada halaman pengaturan
+    Route::get('/analytics-settings', function() {
+        return redirect()->route('admin.settings', ['#analytics'], 301);
+    })->name('analytics-settings.index');
+    Route::post('/analytics-settings', function(Request $request) {
+        return redirect()->route('admin.settings.analytics', $request->all(), 301);
+    })->name('analytics-settings.store');
     
     // Admin Users
     Route::get('/users', function () {
@@ -83,11 +95,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/roles', function () {
         return view('admin.roles');
     })->name('users.roles');
-    
-    // Admin Settings
-    Route::get('/settings', function () {
-        return view('admin.settings');
-    })->name('settings');
     
     // Admin Profile
     Route::get('/profile', function () {

@@ -15,10 +15,13 @@ class AnalyticsSettingsController extends Controller
      */
     public function index()
     {
+        // Tampilkan notifikasi pengalihan
+        $redirectMessage = 'Pengaturan Google Analytics telah dipindahkan ke halaman Pengaturan. Anda akan dialihkan dalam beberapa detik.';
+        
         $propertyId = Setting::getValue('google_analytics_property_id', '');
         $hasCredentials = Storage::exists('app/analytics/service-account-credentials.json');
         
-        return view('admin.analytics-settings', compact('propertyId', 'hasCredentials'));
+        return view('admin.analytics-settings', compact('propertyId', 'hasCredentials', 'redirectMessage'));
     }
     
     /**
@@ -51,7 +54,8 @@ class AnalyticsSettingsController extends Controller
         // Hapus cache terkait analytics
         $this->clearAnalyticsCache();
         
-        return redirect()->route('admin.analytics-settings.index')
+        // Redirect ke halaman pengaturan yang baru dengan tab analytics
+        return redirect()->route('admin.settings', ['#analytics'])
             ->with('success', 'Pengaturan Google Analytics berhasil disimpan.');
     }
     
@@ -60,17 +64,9 @@ class AnalyticsSettingsController extends Controller
      */
     private function clearAnalyticsCache()
     {
-        // Hapus cache pageviews
-        foreach ([7, 30, 90] as $days) {
-            Cache::forget('analytics_pageviews_' . $days);
-            Cache::forget('analytics_pageviews_growth_' . $days);
-            Cache::forget('analytics_bounce_rate_' . $days);
-            Cache::forget('analytics_bounce_rate_change_' . $days);
-            Cache::forget('analytics_avg_session_duration_' . $days);
-            Cache::forget('analytics_avg_session_duration_change_' . $days);
-            Cache::forget('analytics_top_pages_' . $days . '_5');
-            Cache::forget('analytics_traffic_sources_' . $days);
-            Cache::forget('analytics_chart_data_' . $days);
-        }
+        Cache::forget('analytics_data');
+        Cache::forget('analytics_visitors');
+        Cache::forget('analytics_top_pages');
+        Cache::forget('analytics_referrers');
     }
 }
