@@ -63,7 +63,7 @@
 
     <form action="{{ route('admin.seo.update', $pageSeo->id) }}" method="POST" enctype="multipart/form-data" id="seoForm">
         @csrf
-        @method('PUT')
+        @method('POST')
         
         <div class="grid grid-cols-1 gap-6">
             <!-- Pengaturan Global -->

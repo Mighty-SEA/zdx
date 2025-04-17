@@ -100,20 +100,17 @@ class PageController extends Controller
             ->where('status', 'published')
             ->firstOrFail();
             
-        // Menggunakan SEO data services sebagai default
-        $seoData = $this->getSeoData('services');
-        
-        // Override beberapa data SEO dengan informasi dari layanan
-        $seoData['title'] = $service->title . ' - ZDX Cargo';
-        $seoData['description'] = $service->description;
-        $seoData['canonical_url'] = url('layanan/' . $service->slug);
-        $seoData['og_title'] = $service->title;
-        $seoData['og_description'] = $service->description;
+        // Cek apakah ada pengaturan SEO khusus untuk layanan ini
+        $serviceIdentifier = 'service-' . $slug;
+        $seoData = $this->getSeoData($serviceIdentifier);
         
         // Jika layanan memiliki gambar, gunakan sebagai og:image
         if ($service->image) {
-            $seoData['og_image'] = asset('storage/' . $service->image);
+            $seoData['og_image'] = asset($service->image);
         }
+        
+        // Canonical URL selalu ke layanan
+        $seoData['canonical_url'] = url('layanan/' . $service->slug);
         
         return view('service-detail', compact('service', 'seoData'));
     }

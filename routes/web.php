@@ -46,6 +46,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/seo/page/{id}/edit', [PageSeoController::class, 'edit'])->name('seo.edit');
     Route::post('/seo/page/{id}', [PageSeoController::class, 'update'])->name('seo.update');
     Route::get('/seo/initialize', [PageSeoController::class, 'initializeDefaults'])->name('seo.initialize');
+    Route::get('/seo/sync-services', [PageSeoController::class, 'syncServices'])->name('seo.sync-services');
     
     // Robots.txt routes
     Route::get('/seo/robots', [PageSeoController::class, 'showRobots'])->name('seo.robots');
