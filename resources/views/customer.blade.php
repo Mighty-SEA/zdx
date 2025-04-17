@@ -2,6 +2,7 @@
 
 @section('meta_tags')
 <title>Customer ZDX - PT. Zindan Diantar Express</title>
+<link rel="icon" href="{{ asset('asset/logo.png') }}">
 <meta name="description" content="Pelanggan terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.">
 <meta name="keywords" content="pelanggan zdx, customer logistik, testimonial pengiriman, cargo customer">
 

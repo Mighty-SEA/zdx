@@ -19,6 +19,8 @@ Route::get('/tarif', [PageController::class, 'rates']);
 Route::get('/rates', [PageController::class, 'rates']);
 Route::get('/tracking', [PageController::class, 'tracking']);
 Route::get('/customer', [PageController::class, 'customer']);
+Route::get('/commodity', [PageController::class, 'commodity']);
+Route::get('/komoditas', [PageController::class, 'commodity']);
 Route::get('/profile', [PageController::class, 'profile']);
 Route::get('/kontak', [PageController::class, 'contact']);
 Route::get('/contact', [PageController::class, 'contact']);

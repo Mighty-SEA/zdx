@@ -131,6 +131,16 @@
                 </div>
             </div>
 
+            <!-- Struktur Organisasi Section -->
+            <div class="mt-20">
+                <div class="max-w-6xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-10">Struktur Organisasi</h2>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <img src="{{ asset('asset/struktur.jpg') }}" alt="Struktur Organisasi PT. Zindan Diantar Express" class="w-full rounded-lg">
+                    </div>
+                </div>
+            </div>
+
             <!-- Layanan Section -->
             <div class="mt-20">
                 <div class="max-w-4xl mx-auto text-center">

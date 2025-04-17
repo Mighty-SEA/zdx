@@ -2,6 +2,7 @@
 
 @section('meta_tags')
 <title>{{ $seoData['title'] }}</title>
+<link rel="icon" href="{{ asset('asset/logo.png') }}">
 <meta name="description" content="{{ $seoData['description'] }}">
 <meta name="keywords" content="{{ $seoData['keywords'] }}">
 

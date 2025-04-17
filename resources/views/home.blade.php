@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-<title>{{ $seoData['title'] }}</title>
+<title>{{ $seoData['title'] }} - PT. Zindan Diantar Express</title>
+<link rel="icon" href="{{ asset('asset/logo.png') }}">
 <meta name="description" content="{{ $seoData['description'] }}">
 <meta name="keywords" content="{{ $seoData['keywords'] }}">
 
@@ -14,7 +15,7 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:title" content="{{ $seoData['og_title'] }}">
+<meta property="og:title" content="{{ $seoData['og_title'] }} - PT. Zindan Diantar Express">
 <meta property="og:description" content="{{ $seoData['og_description'] }}">
 @if($seoData['og_image'])
 <meta property="og:image" content="{{ asset($seoData['og_image']) }}">

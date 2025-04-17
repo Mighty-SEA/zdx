@@ -347,4 +347,13 @@ class PageController extends Controller
         $seoData = $this->getSeoData('contact');
         return view('contact', compact('seoData'));
     }
+    
+    /**
+     * Halaman Komoditas
+     */
+    public function commodity()
+    {
+        $seoData = $this->getSeoData('commodity');
+        return view('commodity', compact('seoData'));
+    }
 } 
