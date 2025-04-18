@@ -46,14 +46,10 @@
                     
                     <div class="mt-6 border-t border-gray-200 pt-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">Status Akun</span>
+                            <span class="text-sm font-medium text-gray-700">Status</span>
                             <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
                                 <i class="fas fa-check-circle mr-1"></i> Aktif
                             </span>
-                        </div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">Hak Akses</span>
-                            <span class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-800">Administrator</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-700">Login Terakhir</span>

@@ -99,11 +99,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         return view('admin.users');
     })->name('users');
     
-    // Admin Roles
-    Route::get('/roles', function () {
-        return view('admin.roles');
-    })->name('users.roles');
-    
     // Admin Profile
     Route::get('/profile', function () {
         return view('admin.profile');

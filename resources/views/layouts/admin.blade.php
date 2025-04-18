@@ -82,13 +82,9 @@
                             </button>
                             
                             <div x-show="open" class="pl-8 mt-1 mb-1">
-                                <a href="{{ route('admin.users') }}" class="sidebar-sublink {{ request()->routeIs('admin.users') && !request()->routeIs('admin.users.roles') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users') }}" class="sidebar-sublink {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                                     <i class="fas fa-user text-sm w-5 text-center"></i>
                                     <span>Daftar Pengguna</span>
-                                </a>
-                                <a href="{{ route('admin.users.roles') }}" class="sidebar-sublink {{ request()->routeIs('admin.users.roles') ? 'active' : '' }}">
-                                    <i class="fas fa-user-shield text-sm w-5 text-center"></i>
-                                    <span>Hak Akses</span>
                                 </a>
                             </div>
                         </div>

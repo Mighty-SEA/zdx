@@ -21,16 +21,6 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0">
             <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
                 <div class="flex items-center">
-                    <span class="text-sm text-gray-500 mr-2">Filter Hak Akses:</span>
-                    <select id="roleFilter" class="bg-white border border-gray-300 rounded-md py-1 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="">Semua Hak Akses</option>
-                        <option value="admin">Administrator</option>
-                        <option value="editor">Editor</option>
-                        <option value="staff">Staff</option>
-                    </select>
-                </div>
-                
-                <div class="flex items-center">
                     <span class="text-sm text-gray-500 mr-2">Status:</span>
                     <select id="statusFilter" class="bg-white border border-gray-300 rounded-md py-1 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="">Semua Status</option>
@@ -61,9 +51,6 @@
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Email
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Hak Akses
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
@@ -97,11 +84,6 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">admin@zdxcargo.com</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-800">
-                                Administrator
-                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
@@ -148,11 +130,6 @@
                             <div class="text-sm text-gray-900">editor@zdxcargo.com</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                Editor
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
                                 <i class="fas fa-check-circle mr-1"></i> Aktif
                             </span>
@@ -195,11 +172,6 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">staff@zdxcargo.com</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                                Staff
-                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
@@ -297,21 +269,11 @@
                     </div>
                     
                     <div>
-                        <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">Hak Akses</label>
-                        <select id="userRole" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200" required>
-                            <option value="">-- Pilih Hak Akses --</option>
-                            <option value="admin">Administrator</option>
-                            <option value="editor">Editor</option>
-                            <option value="staff">Staff</option>
-                        </select>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="active" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                            <span class="ml-2 text-sm text-gray-700">Aktifkan pengguna</span>
+                        </label>
                     </div>
-                </div>
-                
-                <div>
-                    <label class="flex items-center">
-                        <input type="checkbox" name="active" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
-                        <span class="ml-2 text-sm text-gray-700">Aktifkan pengguna</span>
-                    </label>
                 </div>
             </div>
             
@@ -380,25 +342,21 @@
         });
         
         // Filtering logic
-        const roleFilter = document.getElementById('roleFilter');
         const statusFilter = document.getElementById('statusFilter');
         const searchInput = document.getElementById('searchUsers');
         
         // Add filter functionality (simplified for demo)
         function applyFilters() {
-            const roleValue = roleFilter.value.toLowerCase();
             const statusValue = statusFilter.value.toLowerCase();
             const searchValue = searchInput.value.toLowerCase();
             
             const rows = document.querySelectorAll('tbody tr');
             
             rows.forEach(row => {
-                const userRole = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                const userStatus = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                const userStatus = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
                 const userName = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
                 const userEmail = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
                 
-                const roleMatch = roleValue === '' || userRole.includes(roleValue);
                 const statusMatch = statusValue === '' || 
                     (statusValue === 'active' && userStatus.includes('aktif') && !userStatus.includes('non-aktif')) ||
                     (statusValue === 'inactive' && userStatus.includes('non-aktif'));
@@ -406,7 +364,7 @@
                     userName.includes(searchValue) || 
                     userEmail.includes(searchValue);
                 
-                if (roleMatch && statusMatch && searchMatch) {
+                if (statusMatch && searchMatch) {
                     row.classList.remove('hidden');
                 } else {
                     row.classList.add('hidden');
@@ -414,7 +372,6 @@
             });
         }
         
-        roleFilter.addEventListener('change', applyFilters);
         statusFilter.addEventListener('change', applyFilters);
         searchInput.addEventListener('input', applyFilters);
     });
