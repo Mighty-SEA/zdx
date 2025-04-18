@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AnalyticsSettingsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\CommodityController;
 use Illuminate\Http\Request;
 
 // Frontend Routes
@@ -119,4 +120,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/partners/{id}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{id}', [PartnerController::class, 'update'])->name('partners.update');
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy'])->name('partners.destroy');
+    
+    // Commodity Management
+    Route::resource('commodity', CommodityController::class);
 });

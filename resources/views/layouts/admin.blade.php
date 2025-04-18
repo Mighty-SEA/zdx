@@ -83,6 +83,11 @@
                             <span>Layanan</span>
                         </a>
                         
+                        <a href="{{ route('admin.commodity.index') }}" class="sidebar-link {{ request()->routeIs('admin.commodity*') ? 'active' : '' }}">
+                            <i class="fas fa-boxes text-lg w-5 text-center"></i>
+                            <span>Komoditas</span>
+                        </a>
+                        
                         <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo*') ? 'active' : '' }}">
                             <i class="fas fa-search text-lg w-5 text-center"></i>
                             <span>SEO Halaman</span>
