@@ -16,12 +16,7 @@
 @endsection
 
 @section('content')
-<div class="bg-gradient-to-r from-[#E65100] to-[#FF6000] py-16 md:py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Pelanggan & Partner Kami</h1>
-        <p class="text-lg text-white/90 max-w-3xl mx-auto">Mitra bisnis terpercaya yang telah menggunakan layanan ZDX Cargo untuk pengiriman mereka. Bergabunglah dengan ratusan perusahaan yang telah memercayakan logistik mereka pada kami.</p>
-    </div>
-</div>
+
 
 {{-- Bagian testimonial dikomentari sementara
 <!-- Customer Testimonials -->

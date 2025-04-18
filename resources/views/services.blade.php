@@ -28,16 +28,6 @@
 @endsection
 
 @section('content')
-    <!-- Hero Section -->
-    <div class="relative bg-gradient-to-r from-[#E65100] to-[#FF6000] py-24">
-        <div class="absolute inset-0 bg-black opacity-30"></div>
-        <div class="max-w-7xl mx-auto px-4 relative z-10 text-center">
-            <h1 class="text-5xl font-bold text-white mb-6">Layanan Kami</h1>
-            <p class="text-xl text-gray-200 max-w-3xl mx-auto">
-                Solusi logistik lengkap yang dirancang untuk memenuhi semua kebutuhan pengiriman Anda
-            </p>
-        </div>
-    </div>
 
     <!-- Services Section -->
     <div class="max-w-7xl mx-auto px-4 py-16">

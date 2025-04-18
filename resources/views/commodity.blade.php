@@ -17,27 +17,6 @@
 @endsection
 
 @section('content')
-    <!-- Hero Section -->
-    <div class="relative bg-gradient-to-r from-[#E65100] to-[#FF6000] pt-16 pb-24">
-        <div class="absolute inset-0 bg-black opacity-30"></div>
-        
-        <!-- Pola Latar Belakang dengan Animasi -->
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-full">
-                <div class="w-64 h-64 bg-white rounded-full absolute -top-32 -right-32 opacity-5"></div>
-                <div class="w-96 h-96 bg-white rounded-full absolute -bottom-32 -left-32 opacity-5"></div>
-            </div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 relative z-10">
-            <!-- Teks Hero -->
-            <div class="text-center">
-                <h1 class="text-5xl font-bold text-white mb-6">Jenis Komoditas yang Kami Layani</h1>
-                <p class="text-xl text-gray-200 max-w-3xl mx-auto">
-                    Solusi pengiriman aman dan tepat waktu untuk berbagai jenis komoditas
-                </p>
-            </div>
-        </div>
         
         <!-- Wave Separator -->
         <div class="absolute bottom-0 left-0 w-full overflow-hidden rotate-180">
