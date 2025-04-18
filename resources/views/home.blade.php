@@ -27,8 +27,12 @@
 @endif
 @endsection
 
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('content')
-<div class="relative overflow-hidden h-screen flex items-center justify-center">
+<div class="relative overflow-hidden h-[94vh] flex items-center justify-center">
     <!-- Background dengan efek gradient yang lebih menarik -->
     <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#E65100]">
         <!-- Pattern overlay untuk tekstur -->
@@ -135,114 +139,136 @@
 
             <!-- Services Cards dengan animasi hover -->
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-10">
-                <!-- Service Card 1 -->
-                <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-                    <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
-                        <div class="absolute inset-0 bg-black opacity-10"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                            </svg>
+                @if(isset($services) && $services->count() > 0)
+                    @php $displayedServices = $services->take(3); @endphp
+                    @foreach($displayedServices as $service)
+                    <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 + 100 }}">
+                        <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
+                            @if($service->image)
+                            <img src="{{ asset($service->image) }}" alt="{{ $service->title }}" class="h-full w-full object-cover">
+                            @else
+                            <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
+                            <div class="absolute inset-0 bg-black opacity-10"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-white">
+                                <i class="fas fa-box-open text-white text-5xl"></i>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="p-4 sm:p-5 md:p-6">
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">{{ $service->title }}</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">{{ Str::limit($service->description, 80) }}</p>
+                            <a href="/layanan/{{ $service->slug }}" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
+                                Selengkapnya
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-5 md:p-6">
-                        <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Darat</h3>
-                        <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Layanan pengiriman darat cepat dan aman ke seluruh Indonesia.</p>
-                        <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Tepat Waktu</span>
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Aman</span>
-                        </div>
-                        <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                            Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    @endforeach
+                    
+                    @if($services->count() > 3)
+                    <div class="group col-span-3 mt-6 text-center" data-aos="fade-up">
+                        <a href="/layanan" class="inline-flex items-center justify-center px-6 py-3 bg-[#FF6000] text-white font-semibold rounded-lg shadow-md hover:bg-[#E65100] transition-colors duration-300">
+                            <span>Lihat {{ $services->count() - 3 }} Layanan Lainnya</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
                     </div>
-                </div>
+                    @endif
+                @else
+                    <!-- Service Card 1 -->
+                    <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
+                            <div class="absolute inset-0 bg-black opacity-10"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-5 md:p-6">
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Darat</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Layanan pengiriman darat cepat dan aman ke seluruh Indonesia.</p>
+                            <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Tepat Waktu</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Aman</span>
+                            </div>
+                            <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
+                                Selengkapnya
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
 
-                <!-- Service Card 2 -->
-                <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-                    <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
-                        <div class="absolute inset-0 bg-black opacity-10"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
+                    <!-- Service Card 2 -->
+                    <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
+                            <div class="absolute inset-0 bg-black opacity-10"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-5 md:p-6">
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Laut</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Solusi pengiriman laut efisien untuk barang dalam jumlah besar.</p>
+                            <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Volume Besar</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Ekonomis</span>
+                            </div>
+                            <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
+                                Selengkapnya
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-5 md:p-6">
-                        <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Laut</h3>
-                        <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Solusi pengiriman laut efisien untuk barang dalam jumlah besar.</p>
-                        <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Volume Besar</span>
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Ekonomis</span>
-                        </div>
-                        <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                            Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
 
-                <!-- Service Card 3 -->
-                <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="300">
-                    <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
-                        <div class="absolute inset-0 bg-black opacity-10"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                            </svg>
+                    <!-- Service Card 3 -->
+                    <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+                        <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
+                            <div class="absolute inset-0 bg-black opacity-10"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-5 md:p-6">
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Udara</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Pengiriman cepat melalui udara untuk kebutuhan mendesak.</p>
+                            <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Super Cepat</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Prioritas</span>
+                            </div>
+                            <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
+                                Selengkapnya
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-5 md:p-6">
-                        <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Udara</h3>
-                        <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Pengiriman cepat melalui udara untuk kebutuhan mendesak.</p>
-                        <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Super Cepat</span>
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Prioritas</span>
-                        </div>
-                        <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                            Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Service Card 4 (tambahan, bisa dihapus jika tidak diperlukan) -->
-                <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="400">
-                    <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
-                        <div class="absolute inset-0 bg-black opacity-10"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="p-4 sm:p-5 md:p-6">
-                        <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Logistik E-commerce</h3>
-                        <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Solusi pengiriman khusus untuk kebutuhan bisnis online Anda.</p>
-                        <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Fulfillment</span>
-                            <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">COD</span>
-                        </div>
-                        <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                            Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    
+                    <div class="group col-span-3 mt-6 text-center" data-aos="fade-up">
+                        <a href="/layanan" class="inline-flex items-center justify-center px-6 py-3 bg-[#FF6000] text-white font-semibold rounded-lg shadow-md hover:bg-[#E65100] transition-colors duration-300">
+                            <span>Lihat Layanan Lainnya</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -459,10 +485,20 @@
             <div class="mt-20 mb-0 text-center" data-aos="fade-up">
                 <h3 class="text-xl text-white font-medium mb-8">Dipercaya oleh Perusahaan Terkemuka</h3>
                 <div class="flex flex-wrap justify-center gap-8 items-center">
-                    <img src="{{ asset('asset/images/client1.png') }}" alt="Client 1" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                    <img src="{{ asset('asset/images/client2.png') }}" alt="Client 2" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                    <img src="{{ asset('asset/images/client3.png') }}" alt="Client 3" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                    <img src="{{ asset('asset/images/client4.png') }}" alt="Client 4" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                    @if(isset($partners) && $partners->count() > 0)
+                        @foreach($partners as $partner)
+                            @if($partner->logo_path)
+                                <div class="client-logo">
+                                    <img src="{{ Storage::url($partner->logo_path) }}" alt="{{ $partner->company ?: $partner->name }}" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                                </div>
+                            @endif
+                        @endforeach
+                    @else
+                        <img src="{{ asset('asset/images/client1.png') }}" alt="Client 1" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <img src="{{ asset('asset/images/client2.png') }}" alt="Client 2" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <img src="{{ asset('asset/images/client3.png') }}" alt="Client 3" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <img src="{{ asset('asset/images/client4.png') }}" alt="Client 4" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                    @endif
                 </div>
             </div>
         </div>

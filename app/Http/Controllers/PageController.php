@@ -75,7 +75,18 @@ class PageController extends Controller
     public function home()
     {
         $seoData = $this->getSeoData('home');
-        return view('home', compact('seoData'));
+        
+        // Mengambil semua layanan yang dipublikasikan dari database
+        $services = \App\Models\Service::where('status', 'published')->get();
+        
+        // Mengambil partner aktif untuk ditampilkan di bagian "Dipercaya oleh"
+        $partners = \App\Models\Partner::where('status', 'active')
+            ->whereNotNull('logo_path')
+            ->orderBy('created_at', 'desc')
+            ->limit(6)
+            ->get();
+        
+        return view('home', compact('seoData', 'services', 'partners'));
     }
     
     /**
@@ -354,7 +365,15 @@ class PageController extends Controller
     public function customer()
     {
         $seoData = $this->getSeoData('customer');
-        return view('customer', compact('seoData'));
+        
+        // Mengambil data partner yang aktif
+        $partners = \App\Models\Partner::where('status', 'active')->orderBy('created_at', 'desc')->get();
+        
+        // Memisahkan data customer dan partner untuk tampilan
+        $customers = $partners->where('type', 'customer');
+        $businessPartners = $partners->where('type', 'partner');
+        
+        return view('customer', compact('seoData', 'customers', 'businessPartners', 'partners'));
     }
     
     /**
