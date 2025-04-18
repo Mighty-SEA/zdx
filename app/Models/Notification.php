@@ -19,6 +19,7 @@ class Notification extends Model
         'user_id',
         'title',
         'message',
+        'type',
         'icon',
         'icon_background',
         'icon_color',

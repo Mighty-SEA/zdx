@@ -31,8 +31,13 @@ class AdminController extends Controller
         $userGrowthRate = $userGrowthStats['growth_rate'];
         
         // Data notifikasi
-        $totalNotifications = Notification::count();
-        $unreadNotifications = $this->businessStatsService->getUnreadNotificationsCount();
+        try {
+            $totalNotifications = Notification::count();
+            $unreadNotifications = $this->businessStatsService->getUnreadNotificationsCount();
+        } catch (\Exception $e) {
+            $totalNotifications = 0;
+            $unreadNotifications = 0;
+        }
         
         // Data analytics
         $pageviews = $this->analyticsService->getPageviews();

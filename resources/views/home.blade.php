@@ -28,33 +28,229 @@
 @endsection
 
 @section('content')
-<div class="relative overflow-hidden h-screen flex items-center justify-center">
-    <!-- Background dengan efek gradient yang lebih menarik -->
-    <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#E65100]">
-        <!-- Pattern overlay untuk tekstur -->
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNGM2LjYyNyAwIDEyLTQh1Y1JjA3yW21RewAhxjanvaUoSkVZF3PxMCAyNCAxNS4zNzMgMjQgMjJzNS4zNzMgMTQh1Y1JjA3yW21RewAhxjanvaUoSkVZF3PiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-10"></div>
+<!-- Notification untuk preview mode -->
+@if(session('preview_mode'))
+<div class="alert alert-info preview-notification" style="position: fixed; top: 0; left: 0; right: 0; z-index: 9999; margin: 0;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-eye"></i> Anda sedang melihat pratinjau konten.</span>
+            <a href="{{ route('admin.page-contents.home-editor') }}" class="btn btn-sm btn-dark">Kembali ke Editor</a>
+        </div>
     </div>
+</div>
+@endif
 
-    <!-- Floating Elements dengan efek blur yang lebih menarik -->
-    <div class="absolute top-1/4 left-1/4 w-32 h-32 md:w-80 md:h-80 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob"></div>
-    <div class="absolute top-1/3 right-1/4 w-36 h-36 md:w-96 md:h-96 bg-[#FF8C00] rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-    <div class="absolute bottom-1/4 left-1/3 w-40 h-40 md:w-96 md:h-96 bg-[#E65100] rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+<!-- Notification untuk direct edit mode -->
+@if(isset($editMode) && $editMode)
+<div class="alert alert-warning edit-notification" style="position: fixed; top: 0; left: 0; right: 0; z-index: 9999; margin: 0;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-edit"></i> Mode Edit Langsung Aktif - Klik pada elemen untuk mengedit</span>
+            <div>
+                <button id="saveDirectEdits" class="btn btn-sm btn-success me-2">Simpan Perubahan</button>
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-dark">Kembali ke Admin</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script untuk direct edit mode -->
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tambahkan class untuk elemen yang bisa diedit
+        const editableElements = document.querySelectorAll('[data-editable="true"]');
+        
+        editableElements.forEach(element => {
+            // Tambah class dan cursor style
+            element.classList.add('direct-editable');
+            element.style.cursor = 'pointer';
+            
+            // Tambah tooltip
+            element.setAttribute('title', 'Klik untuk mengedit');
+            
+            // Tambah highlight effect pada hover
+            element.addEventListener('mouseover', function() {
+                this.style.boxShadow = '0 0 0 2px rgba(255, 96, 0, 0.5)';
+            });
+            
+            element.addEventListener('mouseout', function() {
+                this.style.boxShadow = 'none';
+            });
+            
+            // Handle click untuk edit
+            element.addEventListener('click', function() {
+                const section = this.getAttribute('data-section');
+                const field = this.getAttribute('data-field');
+                const currentValue = this.textContent.trim();
+                
+                // Simpan nilai asli
+                this.setAttribute('data-original', currentValue);
+                
+                // Buat input untuk edit
+                let input;
+                if (field === 'content' && this.tagName !== 'SPAN') {
+                    input = document.createElement('textarea');
+                    input.style.minHeight = '100px';
+                } else {
+                    input = document.createElement('input');
+                    input.type = 'text';
+                }
+                
+                input.value = currentValue;
+                input.className = 'form-control direct-edit-input';
+                
+                // Ganti teks dengan input
+                this.innerHTML = '';
+                this.appendChild(input);
+                input.focus();
+                
+                // Handle selesai editing
+                const finishEditing = () => {
+                    const newValue = input.value;
+                    this.innerHTML = newValue;
+                    this.setAttribute('data-edited', 'true');
+                    this.setAttribute('data-new-value', newValue);
+                    
+                    // Highlight bahwa telah diedit
+                    this.style.backgroundColor = 'rgba(255, 96, 0, 0.1)';
+                    setTimeout(() => {
+                        this.style.backgroundColor = 'transparent';
+                    }, 1000);
+                };
+                
+                // Events untuk input
+                input.addEventListener('blur', finishEditing);
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && input.tagName !== 'TEXTAREA') {
+                        finishEditing();
+                    }
+                    if (e.key === 'Escape') {
+                        this.innerHTML = this.getAttribute('data-original');
+                    }
+                });
+            });
+        });
+        
+        // Handle tombol simpan
+        document.getElementById('saveDirectEdits').addEventListener('click', function() {
+            const editedElements = document.querySelectorAll('[data-edited="true"]');
+            const edits = {};
+            
+            // Kumpulkan semua perubahan
+            editedElements.forEach(element => {
+                const section = element.getAttribute('data-section');
+                const field = element.getAttribute('data-field');
+                const value = element.getAttribute('data-new-value');
+                
+                if (!edits[section]) {
+                    edits[section] = {};
+                }
+                edits[section][field] = value;
+            });
+            
+            // Kirim ke server
+            fetch('{{ route("admin.page-contents.save-frontend") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ data: edits })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Perubahan berhasil disimpan');
+                    // Hapus highlight
+                    editedElements.forEach(el => {
+                        el.removeAttribute('data-edited');
+                        el.removeAttribute('data-new-value');
+                    });
+                } else {
+                    alert('Gagal menyimpan perubahan: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan');
+            });
+        });
+    });
+</script>
+
+<style>
+    .direct-editable:hover {
+        outline: 2px dashed rgba(255, 96, 0, 0.5);
+        position: relative;
+    }
     
-    <!-- Particle effect (Latar belakang dengan titik-titik) -->
-    <div class="absolute inset-0 overflow-hidden" id="particles-js"></div>
+    .direct-editable:hover::before {
+        content: 'Klik untuk edit';
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 100;
+    }
+    
+    .direct-edit-input {
+        width: 100%;
+        padding: 5px;
+        margin: -5px;
+        box-sizing: border-box;
+    }
+</style>
+@endpush
+
+<div class="relative overflow-hidden h-screen flex items-center justify-center">
+        <!-- Background dengan efek gradient yang lebih menarik -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#E65100]">
+            <!-- Pattern overlay untuk tekstur -->
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNGM2LjYyNyAwIDEyLTQh1Y1JjA3yW21RewAhxjanvaUoSkVZF3PxMCAyNCAxNS4zNzMgMjQgMjJzNS4zNzMgMTQh1Y1JjA3yW21RewAhxjanvaUoSkVZF3PiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-10"></div>
+        </div>
+
+        <!-- Floating Elements dengan efek blur yang lebih menarik -->
+        <div class="absolute top-1/4 left-1/4 w-32 h-32 md:w-80 md:h-80 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-1/3 right-1/4 w-36 h-36 md:w-96 md:h-96 bg-[#FF8C00] rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-40 h-40 md:w-96 md:h-96 bg-[#E65100] rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        
+        <!-- Particle effect (Latar belakang dengan titik-titik) -->
+        <div class="absolute inset-0 overflow-hidden" id="particles-js"></div>
 
     <!-- Hero Content dengan desain yang lebih menarik -->
     <div class="relative w-full max-w-7xl mx-auto px-4 flex flex-col h-full justify-center z-10">
         <div class="text-center">
             <!-- Main headline dengan efek melayang -->
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-white">
-                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">Solusi Pengiriman</span>
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">Cepat & Terpercaya</span>
-            </h1>
+                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">
+                    @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'hero')
+                        {{ $previewContent->title }}
+                    @else
+                        {{ $heroContent->title ?? 'Solusi Pengiriman' }}
+                    @endif
+                </span>
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">
+                    @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'hero')
+                        {{ $previewContent->subtitle }}
+                    @else
+                        {{ $heroContent->subtitle ?? 'Cepat & Terpercaya' }}
+                    @endif
+                    </span>
+                </h1>
 
             <!-- Subheading dengan efek fade-in -->
             <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white max-w-2xl mx-auto opacity-90 animate-fade-in-up" style="animation-delay: 0.9s">
-                Kirim barang Anda ke seluruh Indonesia dengan layanan ekspres yang aman dan tepat waktu
+                @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'hero')
+                    {{ $previewContent->content }}
+                @else
+                    {{ $heroContent->content ?? 'Kirim barang Anda ke seluruh Indonesia dengan layanan ekspres yang aman dan tepat waktu' }}
+                @endif
             </p>
 
             <!-- CTA Buttons dengan desain yang lebih menarik -->
@@ -64,7 +260,11 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        Lacak Pengiriman
+                        @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'hero' && isset($previewContent->extra_data) && isset($previewContent->extra_data->cta_tracking_text))
+                            {{ $previewContent->extra_data->cta_tracking_text }}
+                        @else
+                            {{ isset($heroContent->extra_data) && isset($heroContent->extra_data->cta_tracking_text) ? $heroContent->extra_data->cta_tracking_text : 'Lacak Pengiriman' }}
+                        @endif
                     </span>
                     <div class="absolute inset-0 bg-gradient-to-r from-[#FFF0E6] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </a>
@@ -73,45 +273,57 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Cek Tarif
+                        @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'hero' && isset($previewContent->extra_data) && isset($previewContent->extra_data->cta_tarif_text))
+                            {{ $previewContent->extra_data->cta_tarif_text }}
+                        @else
+                            {{ isset($heroContent->extra_data) && isset($heroContent->extra_data->cta_tarif_text) ? $heroContent->extra_data->cta_tarif_text : 'Cek Tarif' }}
+                        @endif
                     </span>
                     <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                </a>
-            </div>
+                    </a>
+                </div>
 
             <!-- Stats Section dengan animasi -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 bg-white/10 backdrop-blur-md p-6 rounded-xl animate-fade-in-up" style="animation-delay: 1.5s">
+                @php
+                    $defaultStats = [
+                        ['label' => 'Partner', 'value' => '10000+'],
+                        ['label' => 'Project', 'value' => '100+'],
+                        ['label' => 'Success', 'value' => '24/7'],
+                        ['label' => 'Country', 'value' => '99%']
+                    ];
+                    
+                    if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'stats' && isset($previewContent->extra_data) && isset($previewContent->extra_data->stats)) {
+                        $stats = $previewContent->extra_data->stats;
+                    } else {
+                        $stats = isset($statsContent->extra_data) && isset($statsContent->extra_data->stats) 
+                            ? $statsContent->extra_data->stats 
+                            : $defaultStats;
+                    }
+                @endphp
+                
+                @foreach($stats as $stat)
                 <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
                     <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="10000">0</span>+
+                        @php
+                            $value = isset($stat->value) ? $stat->value : $stat['value'];
+                            $numberPart = preg_replace('/\D/', '', $value);
+                            $textPart = preg_replace('/\d+/', '', $value);
+                        @endphp
+                        <span class="counter" data-target="{{ $numberPart }}">0</span>{{ $textPart }}
+                        </div>
+                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">
+                        {{ isset($stat->label) ? $stat->label : $stat['label'] }}
                     </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Partner</div>
                 </div>
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="100">0</span>+
-                    </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Project</div>
-                </div>
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="24">0</span>/7
-                    </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Success</div>
-                </div>
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="99">0</span>%
-                    </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Country</div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
 
     <!-- Scroll Indicator yang lebih menarik -->
 
-</div>
+    </div>
 
     <!-- Services Section -->
     <div class="relative overflow-hidden py-20">
@@ -127,10 +339,20 @@
             <!-- Section Header dengan animasi -->
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="inline-block text-3xl sm:text-4xl font-bold relative">
-                    Layanan Kami
+                    @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'stats')
+                        {{ $previewContent->title }}
+                    @else
+                        {{ $statsContent->title ?? 'Layanan Kami' }}
+                    @endif
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] transform scale-x-0 transition-transform duration-500 group-hover:scale-x-100"></div>
                 </h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda</p>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">
+                    @if(session('preview_mode') && isset($previewContent) && $previewContent->section == 'stats')
+                        {{ $previewContent->subtitle }}
+                    @else
+                        {{ $statsContent->subtitle ?? 'Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda' }}
+                    @endif
+                </p>
             </div>
 
             <!-- Services Cards dengan animasi hover -->
@@ -584,6 +806,143 @@
                 observer.observe(counter);
             });
         });
+        
+        /* Listener untuk menerima update preview dari editor */
+        window.addEventListener('message', function(event) {
+            // Pastikan pesan dari editor
+            if (event.data && event.data.type === 'previewUpdate') {
+                updateContentFromEditor(event.data.data);
+            }
+        });
+        
+        /* Fungsi untuk memperbarui konten halaman berdasarkan data dari editor */
+        function updateContentFromEditor(data) {
+            // Update konten Hero section
+            if (data.hero) {
+                if (data.hero.title) {
+                    const heroTitle = document.querySelector('.hero h1 span.block.mb-2');
+                    if (heroTitle) heroTitle.textContent = data.hero.title;
+                }
+                
+                if (data.hero.subtitle) {
+                    const heroSubtitle = document.querySelector('.hero h1 span.block.text-transparent');
+                    if (heroSubtitle) heroSubtitle.textContent = data.hero.subtitle;
+                }
+                
+                if (data.hero.content) {
+                    const heroContent = document.querySelector('.hero p.text-base');
+                    if (heroContent) heroContent.textContent = data.hero.content;
+                }
+                
+                if (data.hero.cta_tracking_text) {
+                    const trackingCta = document.querySelector('.hero a[href="/tracking"] span');
+                    if (trackingCta) trackingCta.textContent = data.hero.cta_tracking_text;
+                }
+                
+                if (data.hero.cta_tarif_text) {
+                    const tarifCta = document.querySelector('.hero a[href="/tarif"] span');
+                    if (tarifCta) tarifCta.textContent = data.hero.cta_tarif_text;
+                }
+            }
+            
+            // Update konten Stats section
+            if (data.stats) {
+                if (data.stats.title) {
+                    const statsTitle = document.querySelector('.services h2');
+                    if (statsTitle) statsTitle.textContent = data.stats.title;
+                }
+                
+                if (data.stats.subtitle) {
+                    const statsSubtitle = document.querySelector('.services p.text-gray-600');
+                    if (statsSubtitle) statsSubtitle.textContent = data.stats.subtitle;
+                }
+                
+                // Update stats cards
+                if (data.stats.stats && data.stats.stats.length) {
+                    updateStatsCards(data.stats.stats);
+                }
+            }
+            
+            // Update konten Services section
+            if (data.services) {
+                // Update services section belum diimplementasikan
+            }
+            
+            // Update konten About section
+            if (data.about) {
+                if (data.about.title) {
+                    const aboutTitle = document.querySelector('.about h2');
+                    if (aboutTitle) aboutTitle.textContent = data.about.title;
+                }
+                
+                if (data.about.subtitle) {
+                    const aboutSubtitle = document.querySelector('.about h3');
+                    if (aboutSubtitle) aboutSubtitle.textContent = data.about.subtitle;
+                }
+                
+                if (data.about.content) {
+                    const aboutContent = document.querySelector('.about p');
+                    if (aboutContent) aboutContent.textContent = data.about.content;
+                }
+            }
+            
+            // Update konten Footer section
+            if (data.footer) {
+                if (data.footer.title) {
+                    const footerTitle = document.querySelector('.contact h4.card-title');
+                    if (footerTitle) footerTitle.textContent = data.footer.title;
+                }
+                
+                if (data.footer.content) {
+                    const footerContent = document.querySelector('.contact .card-body p');
+                    if (footerContent) footerContent.textContent = data.footer.content;
+                }
+                
+                if (data.footer.address) {
+                    const footerAddress = document.querySelector('.contact .card-body li:nth-child(1) span');
+                    if (footerAddress) footerAddress.textContent = data.footer.address;
+                }
+                
+                if (data.footer.phone) {
+                    const footerPhone = document.querySelector('.contact .card-body li:nth-child(2) span');
+                    if (footerPhone) footerPhone.textContent = data.footer.phone;
+                }
+                
+                if (data.footer.email) {
+                    const footerEmail = document.querySelector('.contact .card-body li:nth-child(3) span');
+                    if (footerEmail) footerEmail.textContent = data.footer.email;
+                }
+                
+                if (data.footer.copyright) {
+                    const footerCopyright = document.querySelector('.footer p');
+                    if (footerCopyright) footerCopyright.textContent = data.footer.copyright;
+                }
+            }
+        }
+        
+        /* Fungsi untuk memperbarui kartu statistik */
+        function updateStatsCards(stats) {
+            const statsContainer = document.querySelector('.hero .grid.grid-cols-2');
+            if (!statsContainer) return;
+            
+            // Hapus semua kartu statistik yang ada
+            statsContainer.innerHTML = '';
+            
+            // Tambahkan kartu-kartu statistik baru
+            stats.forEach(stat => {
+                const statHtml = `
+                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                        ${stat.value}
+                    </div>
+                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">
+                        ${stat.label}
+                    </div>
+                </div>`;
+                
+                statsContainer.insertAdjacentHTML('beforeend', statHtml);
+            });
+        }
     </script>
     
     <style>
@@ -642,4 +1001,5 @@
         }
     </style>
     @endpush
+@endif
 @endsection 

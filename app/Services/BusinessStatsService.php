@@ -123,7 +123,11 @@ class BusinessStatsService
     public function getLatestNotifications(int $limit = 5): Collection
     {
         return Cache::remember('business_latest_notifications', $this->cacheTime, function () use ($limit) {
-            return Notification::latest()->take($limit)->get();
+            try {
+                return Notification::latest()->take($limit)->get();
+            } catch (\Exception $e) {
+                return collect([]);
+            }
         });
     }
 
@@ -133,7 +137,11 @@ class BusinessStatsService
     public function getUnreadNotificationsCount(): int
     {
         return Cache::remember('business_unread_notifications', $this->cacheTime, function () {
-            return Notification::whereNull('read_at')->count();
+            try {
+                return Notification::whereNull('read_at')->count();
+            } catch (\Exception $e) {
+                return 0;
+            }
         });
     }
 

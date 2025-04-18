@@ -109,6 +109,11 @@
                             <span>SEO Halaman</span>
                         </a>
                         
+                        <a href="{{ route('admin.page-contents.index') }}" class="sidebar-link {{ request()->routeIs('admin.page-contents*') ? 'active' : '' }}">
+                            <i class="fas fa-file-alt text-lg w-5 text-center"></i>
+                            <span>Konten Halaman</span>
+                        </a>
+                        
                         <a href="{{ route('admin.services') }}" class="sidebar-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
                             <i class="fas fa-boxes text-lg w-5 text-center"></i>
                             <span>Layanan</span>

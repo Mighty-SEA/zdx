@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\PartnerController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\HomeController;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -40,10 +41,43 @@ Route::middleware(['guest'])->group(function () {
 });
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Public routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 // Admin Routes
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+    
+    // Page Contents Management - Diubah
+    Route::get('page-contents', 'App\Http\Controllers\Admin\PageContentController@directEdit')->name('page-contents.index');
+    Route::get('page-contents/list', 'App\Http\Controllers\Admin\PageContentController@index')->name('page-contents.list');
+    Route::get('page-contents/create', 'App\Http\Controllers\Admin\PageContentController@create')->name('page-contents.create');
+    Route::post('page-contents', 'App\Http\Controllers\Admin\PageContentController@store')->name('page-contents.store');
+    Route::get('page-contents/{id}/edit', 'App\Http\Controllers\Admin\PageContentController@edit')->name('page-contents.edit');
+    Route::put('page-contents/{id}', 'App\Http\Controllers\Admin\PageContentController@update')->name('page-contents.update');
+    Route::delete('page-contents/{id}', 'App\Http\Controllers\Admin\PageContentController@destroy')->name('page-contents.destroy');
+    Route::get('home-editor', 'App\Http\Controllers\Admin\PageContentController@editHomePage')->name('page-contents.home-editor');
+    Route::post('home-editor', 'App\Http\Controllers\Admin\PageContentController@updateHomePage')->name('page-contents.update-home');
+    Route::get('check-database', 'App\Http\Controllers\Admin\PageContentController@checkDatabase')->name('check-database');
+    
+    // Editor untuk halaman tertentu
+    Route::get('page-editor/{page}', 'App\Http\Controllers\Admin\PageContentController@editPage')->name('page-contents.edit-page');
+    Route::get('services-editor', 'App\Http\Controllers\Admin\PageContentController@servicesEditor')->name('page-contents.services-editor');
+    Route::get('about-editor', 'App\Http\Controllers\Admin\PageContentController@aboutEditor')->name('page-contents.about-editor');
+    Route::get('contact-editor', 'App\Http\Controllers\Admin\PageContentController@contactEditor')->name('page-contents.contact-editor');
+    
+    // Live Editor Routes
+    Route::get('live-editor', 'App\Http\Controllers\Admin\PageContentController@liveEditor')->name('page-contents.live-editor');
+    Route::post('save-live-content', 'App\Http\Controllers\Admin\PageContentController@saveLiveContent')->name('page-contents.save-live-content');
+    
+    // Frontend Editor Routes (Baru)
+    Route::get('frontend-editor', 'App\Http\Controllers\Admin\PageContentController@frontendEditor')->name('page-contents.frontend-editor');
+    Route::post('save-frontend-content', 'App\Http\Controllers\Admin\PageContentController@saveFrontendContent')->name('page-contents.save-frontend-content');
+    Route::post('frontend-content', 'App\Http\Controllers\Admin\PageContentController@saveFrontendContent')->name('page-contents.save-frontend');
+    Route::post('frontend-editor', 'App\Http\Controllers\Admin\PageContentController@saveFrontendEditor')->name('page-contents.save-frontend-editor');
     
     // SEO routes
     Route::get('/seo', [PageSeoController::class, 'index'])->name('seo');
