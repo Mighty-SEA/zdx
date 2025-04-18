@@ -135,6 +135,40 @@
             </div>
             @endif
             
+            @if(isset($throttled) && $throttled)
+            <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded mb-4" role="alert">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="block sm:inline">{{ __('Terlalu banyak percobaan login. Silakan tunggu:') }}</span>
+                </div>
+                <div class="mt-2 text-center">
+                    <div id="countdown-timer" class="text-3xl font-bold">{{ sprintf('%02d:%02d', floor($seconds / 60), $seconds % 60) }}</div>
+                    <p class="text-sm mt-2">Halaman akan dimuat ulang secara otomatis setelah waktu tunggu selesai.</p>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    let totalSeconds = {{ $seconds }};
+                    const timerEl = document.getElementById('countdown-timer');
+                    const countdownInterval = setInterval(function() {
+                        totalSeconds--;
+                        if (totalSeconds <= 0) {
+                            clearInterval(countdownInterval);
+                            window.location.reload();
+                            return;
+                        }
+                        const minutes = Math.floor(totalSeconds / 60);
+                        const seconds = totalSeconds % 60;
+                        timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    }, 1000);
+                });
+            </script>
+            @endif
+            
+            @if(!isset($throttled) || !$throttled)
             <form method="POST" action="{{ route('login') }}" class="animate-fade-in-up" style="animation-delay: 0.3s">
                 @csrf
                 <!-- Email -->
@@ -178,6 +212,7 @@
                     Masuk
                 </button>
             </form>
+            @endif
             
             <!-- Footer -->
             <div class="mt-8 text-center text-sm text-gray-500 animate-fade-in-up" style="animation-delay: 0.6s">
