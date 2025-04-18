@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\AnalyticsSettingsController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\PartnerController;
+use Illuminate\Http\Request;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -18,6 +21,7 @@ Route::get('/services', [PageController::class, 'services']);
 Route::get('/tarif', [PageController::class, 'rates']);
 Route::get('/rates', [PageController::class, 'rates']);
 Route::get('/tracking', [PageController::class, 'tracking']);
+Route::post('/track-shipment', [PageController::class, 'trackShipment'])->name('track.shipment');
 Route::get('/customer', [PageController::class, 'customer']);
 Route::get('/commodity', [PageController::class, 'commodity']);
 Route::get('/komoditas', [PageController::class, 'commodity']);
@@ -46,6 +50,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/seo/page/{id}/edit', [PageSeoController::class, 'edit'])->name('seo.edit');
     Route::post('/seo/page/{id}', [PageSeoController::class, 'update'])->name('seo.update');
     Route::get('/seo/initialize', [PageSeoController::class, 'initializeDefaults'])->name('seo.initialize');
+    Route::get('/seo/sync-services', [PageSeoController::class, 'syncServices'])->name('seo.sync-services');
     
     // Robots.txt routes
     Route::get('/seo/robots', [PageSeoController::class, 'showRobots'])->name('seo.robots');
@@ -65,6 +70,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::delete('/rates/{id}', [RateController::class, 'destroy'])->name('rates.destroy');
     Route::post('/rates/import', [RateController::class, 'import'])->name('rates.import');
     Route::get('/rates/download-template', [RateController::class, 'downloadTemplate'])->name('rates.download-template');
+    Route::delete('/rates/bulk-delete', [RateController::class, 'bulkDelete'])->name('rates.bulk-delete');
     
     // Notifications Routes
     Route::get('/notifications', [NotificationController::class, 'all'])->name('notifications');
@@ -72,9 +78,21 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     
-    // Analytics Settings
-    Route::get('/analytics-settings', [AnalyticsSettingsController::class, 'index'])->name('analytics-settings.index');
-    Route::post('/analytics-settings', [AnalyticsSettingsController::class, 'store'])->name('analytics-settings.store');
+    // Settings Routes
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/analytics', [SettingsController::class, 'storeAnalytics'])->name('settings.analytics');
+    Route::post('/settings/company', [SettingsController::class, 'storeCompany'])->name('settings.company');
+    Route::post('/settings/api', [SettingsController::class, 'storeApi'])->name('settings.api');
+    Route::post('/settings/tracking', [SettingsController::class, 'storeTracking'])->name('settings.tracking');
+    Route::post('/settings/tracking/test', [SettingsController::class, 'testTracking'])->name('settings.tracking.test');
+    
+    // Redirect analytics-settings ke tab analytics pada halaman pengaturan
+    Route::get('/analytics-settings', function() {
+        return redirect()->route('admin.settings', ['#analytics'], 301);
+    })->name('analytics-settings.index');
+    Route::post('/analytics-settings', function(Request $request) {
+        return redirect()->route('admin.settings.analytics', $request->all(), 301);
+    })->name('analytics-settings.store');
     
     // Admin Users
     Route::get('/users', function () {
@@ -85,11 +103,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/roles', function () {
         return view('admin.roles');
     })->name('users.roles');
-    
-    // Admin Settings
-    Route::get('/settings', function () {
-        return view('admin.settings');
-    })->name('settings');
     
     // Admin Profile
     Route::get('/profile', function () {
@@ -103,4 +116,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
     Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    
+    // Admin Partners (Pelanggan / Partner)
+    Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
+    Route::get('/partners/create', [PartnerController::class, 'create'])->name('partners.create');
+    Route::post('/partners', [PartnerController::class, 'store'])->name('partners.store');
+    Route::get('/partners/{id}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
+    Route::put('/partners/{id}', [PartnerController::class, 'update'])->name('partners.update');
+    Route::delete('/partners/{id}', [PartnerController::class, 'destroy'])->name('partners.destroy');
 });

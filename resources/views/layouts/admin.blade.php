@@ -59,6 +59,11 @@
                             <span>Tarif</span>
                         </a>
                         
+                        <a href="{{ route('admin.partners') }}" class="sidebar-link {{ request()->routeIs('admin.partners*') ? 'active' : '' }}">
+                            <i class="fas fa-handshake text-lg w-5 text-center"></i>
+                            <span>Pelanggan / Partner</span>
+                        </a>
+                        
                         <!-- Tambahkan menu operasional lainnya di sini jika ada -->
                     </nav>
                 </div>
@@ -88,10 +93,10 @@
                             </div>
                         </div>
                         
-                        {{-- <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                        <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                             <i class="fas fa-cog text-lg w-5 text-center"></i>
                             <span>Pengaturan</span>
-                        </a> --}}
+                        </a>
                     </nav>
                 </div>
                 

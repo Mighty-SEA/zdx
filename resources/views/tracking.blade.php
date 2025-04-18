@@ -33,7 +33,7 @@
             <!-- Tracking Search Form -->
             <div class="max-w-3xl mx-auto -mt-12 relative z-10">
                 <div class="bg-white rounded-lg shadow-lg p-6">
-                    <form action="#" method="GET">
+                    <form id="tracking-form" action="{{ url('/tracking') }}" method="GET">
                         <div class="mb-4">
                             <label for="tracking_number" class="block text-base font-medium text-gray-700 mb-2">Nomor Resi</label>
                             <div class="flex rounded-md overflow-hidden border border-gray-300">
@@ -48,6 +48,8 @@
                                     id="tracking_number"
                                     class="flex-1 p-3 focus:outline-none focus:ring-1 focus:ring-[#FF6000]"
                                     placeholder="Masukkan nomor resi pengiriman Anda"
+                                    value="{{ $trackingNumber ?? '' }}"
+                                    required
                                 >
                             </div>
                             <p class="mt-1 text-sm text-gray-500">Contoh: ZDX12345678</p>
@@ -63,123 +65,104 @@
             </div>
 
             <!-- Tracking Results (will be shown conditionally) -->
-            <div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg overflow-hidden">
+            @if(isset($trackingData))
+            <div id="tracking-results" class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="bg-gradient-to-r from-[#FF6000] to-[#FF8C00] px-5 py-3">
                     <h2 class="text-lg font-semibold text-white">Detail Pengiriman</h2>
                 </div>
                 <div class="p-5">
-                    <!-- Shipment Details -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-                            <h3 class="text-base font-semibold text-gray-800 mb-3">
-                                Informasi Pengiriman
-                            </h3>
-                            <ul class="space-y-3 text-sm">
-                                <li class="flex justify-between border-b border-gray-200 pb-2">
-                                    <span class="text-gray-600">Nomor Resi:</span>
-                                    <span class="bg-[#FFF0E6] text-[#FF6000] px-2 py-1 rounded font-medium">ZDX12345678</span>
-                                </li>
-                                <li class="flex justify-between border-b border-gray-200 pb-2">
-                                    <span class="text-gray-600">Tanggal Pengiriman:</span>
-                                    <span>12 April 2024</span>
-                                </li>
-                                <li class="flex justify-between border-b border-gray-200 pb-2">
-                                    <span class="text-gray-600">Layanan:</span>
-                                    <span>ZDX Express</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Status:</span>
-                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded flex items-center text-xs">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                                        Dalam Pengiriman
-                                    </span>
-                                </li>
-                            </ul>
+                    @if(isset($trackingData['error']) && $trackingData['error'])
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+                            {{ $trackingData['message'] ?? 'Terjadi kesalahan saat mengambil data tracking' }}
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-                            <h3 class="text-base font-semibold text-gray-800 mb-3">
-                                Informasi Alamat
-                            </h3>
-                            <div class="space-y-4 text-sm">
-                                <div class="border-b border-gray-200 pb-3">
-                                    <p class="font-medium text-gray-700 mb-1">Pengirim:</p>
-                                    <p>PT. Sinar Jaya</p>
-                                    <p class="text-gray-500">Jakarta Barat, DKI Jakarta</p>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-700 mb-1">Penerima:</p>
-                                    <p>PT. Maju Bersama</p>
-                                    <p class="text-gray-500">Bandung, Jawa Barat</p>
-                                </div>
+                    @else
+                        <!-- Shipment Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                                <h3 class="text-base font-semibold text-gray-800 mb-3">
+                                    Informasi Pengiriman
+                                </h3>
+                                <ul class="space-y-3 text-sm">
+                                    <li class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-600">Nomor Resi:</span>
+                                        <span class="bg-[#FFF0E6] text-[#FF6000] px-2 py-1 rounded font-medium">{{ $trackingData['tracking_number'] }}</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-600">Tanggal Pengiriman:</span>
+                                        <span>{{ $trackingData['date_sent'] ?? date('d F Y') }}</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-600">Layanan:</span>
+                                        <span>{{ $trackingData['service'] ?? 'ZDX Express' }}</span>
+                                    </li>
+                                    <li class="flex justify-between">
+                                        <span class="text-gray-600">Status:</span>
+                                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded flex items-center text-xs">
+                                            <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                                            {{ $trackingData['status_text'] }}
+                                        </span>
+                                    </li>
+                                </ul>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tracking Timeline -->
-                    <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-                        <h3 class="text-base font-semibold text-gray-800 mb-4">
-                            Status Pengiriman
-                        </h3>
-                        <div class="relative">
-                            <div class="absolute top-0 left-3 h-full w-0.5 bg-gray-200"></div>
-                            
-                            <!-- Timeline Items -->
-                            <div class="ml-10 space-y-6">
-                                <!-- Status 1 -->
-                                <div class="relative">
-                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-[#FF6000] flex items-center justify-center">
-                                        <span class="text-white text-xs">1</span>
+                            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                                <h3 class="text-base font-semibold text-gray-800 mb-3">
+                                    Informasi Alamat
+                                </h3>
+                                <div class="space-y-4 text-sm">
+                                    <div class="border-b border-gray-200 pb-3">
+                                        <p class="font-medium text-gray-700 mb-1">Pengirim:</p>
+                                        <p>{{ $trackingData['shipper']['name'] ?? 'PT. Sinar Jaya' }}</p>
+                                        <p class="text-gray-500">{{ $trackingData['shipper']['address'] ?? 'Jakarta Barat, DKI Jakarta' }}</p>
                                     </div>
                                     <div>
-                                        <p class="font-medium text-gray-800">
-                                            Dalam Pengiriman
-                                            <span class="ml-2 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Aktif</span>
-                                        </p>
-                                        <p class="text-sm text-gray-600 mt-1">Paket telah dikirim dan sedang dalam perjalanan</p>
-                                        <p class="text-xs text-gray-500 mt-1">11 Apr 2024, 14:30 WIB</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Status 2 -->
-                                <div class="relative">
-                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center">
-                                        <span class="text-white text-xs">2</span>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-700">Paket Diproses</p>
-                                        <p class="text-sm text-gray-600 mt-1">Paket sedang diproses di gudang Jakarta</p>
-                                        <p class="text-xs text-gray-500 mt-1">11 Apr 2024, 09:15 WIB</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Status 3 -->
-                                <div class="relative">
-                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center">
-                                        <span class="text-white text-xs">3</span>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-700">Paket Diterima</p>
-                                        <p class="text-sm text-gray-600 mt-1">Paket telah diterima di gudang Jakarta</p>
-                                        <p class="text-xs text-gray-500 mt-1">10 Apr 2024, 16:45 WIB</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Status 4 -->
-                                <div class="relative">
-                                    <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center">
-                                        <span class="text-white text-xs">4</span>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-700">Paket Dijemput</p>
-                                        <p class="text-sm text-gray-600 mt-1">Paket telah dijemput dari lokasi pengirim</p>
-                                        <p class="text-xs text-gray-500 mt-1">10 Apr 2024, 13:22 WIB</p>
+                                        <p class="font-medium text-gray-700 mb-1">Penerima:</p>
+                                        <p>{{ $trackingData['receiver']['name'] ?? 'PT. Maju Bersama' }}</p>
+                                        <p class="text-gray-500">{{ $trackingData['receiver']['address'] ?? 'Bandung, Jawa Barat' }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        
+                        <!-- Tracking Timeline -->
+                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                            <h3 class="text-base font-semibold text-gray-800 mb-4">
+                                Status Pengiriman
+                            </h3>
+                            <div class="relative">
+                                <div class="absolute top-0 left-3 h-full w-0.5 bg-gray-200"></div>
+                                
+                                <!-- Timeline Items -->
+                                <div class="ml-10 space-y-6">
+                                    @if(isset($trackingData['timeline']) && count($trackingData['timeline']) > 0)
+                                        @foreach($trackingData['timeline'] as $index => $timeline)
+                                            <div class="relative">
+                                                <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full {{ $index === 0 ? 'bg-[#FF6000]' : 'bg-gray-300' }} flex items-center justify-center">
+                                                    <span class="text-white text-xs">{{ $index + 1 }}</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-800">
+                                                        {{ $timeline['status_text'] ?? 'Status Pengiriman' }}
+                                                        @if($index === 0)
+                                                            <span class="ml-2 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Aktif</span>
+                                                        @endif
+                                                    </p>
+                                                    <p class="text-sm text-gray-600 mt-1">{{ $timeline['description'] ?? 'Detail status pengiriman' }}</p>
+                                                    <p class="text-xs text-gray-500 mt-1">{{ isset($timeline['timestamp']) ? \Carbon\Carbon::parse($timeline['timestamp'])->format('d M Y, H:i') . ' WIB' : date('d M Y, H:i') . ' WIB' }}</p>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="py-3 text-center text-gray-500">
+                                            Tidak ada data riwayat pengiriman
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
+            @endif
 
             <!-- Tracking Info -->
             <div class="max-w-4xl mx-auto mt-10 mb-16">
@@ -222,4 +205,67 @@
             </div>
         </div>
     </div>
-@endsection 
+@endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajax Track Shipment untuk pengalaman yang lebih responsif
+        const trackingForm = document.getElementById('tracking-form');
+        
+        // Aktifkan untuk ajax tracking jika diinginkan
+        /*
+        if (trackingForm) {
+            trackingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const trackingNumber = document.getElementById('tracking_number').value.trim();
+                if (!trackingNumber) {
+                    alert('Silakan masukkan nomor resi');
+                    return;
+                }
+                
+                // Tampilkan loading
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Mencari...';
+                submitBtn.disabled = true;
+                
+                // Kirim request AJAX
+                fetch('{{ route('track.shipment') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        tracking_number: trackingNumber
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset tombol
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    if (data.success) {
+                        // Update UI dengan hasil tracking
+                        // Ini harus diimplementasikan untuk memperbarui DOM dengan data tracking
+                        // Cara termudah adalah me-reload halaman dengan parameter
+                        window.location.href = `{{ url('/tracking') }}?tracking_number=${trackingNumber}`;
+                    } else {
+                        alert('Nomor resi tidak ditemukan');
+                    }
+                })
+                .catch(error => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    alert('Terjadi kesalahan saat melacak pengiriman');
+                    console.error('Error:', error);
+                });
+            });
+        }
+        */
+    });
+</script>
+@endpush 

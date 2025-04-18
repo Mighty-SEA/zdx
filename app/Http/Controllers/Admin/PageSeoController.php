@@ -112,7 +112,46 @@ class PageSeoController extends Controller
             );
         }
 
+        // Tambahkan semua layanan ke pengaturan SEO
+        $this->syncServicePages();
+
         return redirect()->route('admin.seo')->with('success', 'Pengaturan SEO default berhasil diinisialisasi');
+    }
+
+    /**
+     * Sync service pages with SEO settings
+     */
+    public function syncServicePages()
+    {
+        // Dapatkan semua layanan yang dipublikasikan
+        $services = \App\Models\Service::where('status', 'published')->get();
+        
+        foreach ($services as $service) {
+            // Bentuk identifier dari layanan dengan prefix 'service-'
+            $identifier = 'service-' . $service->slug;
+            
+            PageSeoSetting::updateOrCreate(
+                ['page_identifier' => $identifier],
+                [
+                    'page_name' => 'Layanan: ' . $service->title,
+                    'title' => $service->title . ' - ZDX Cargo',
+                    'description' => $service->description,
+                    'keywords' => 'layanan ' . $service->title . ', jasa pengiriman, zdx cargo',
+                    'og_title' => $service->title,
+                    'og_description' => $service->description,
+                    'og_image' => $service->image ? 'storage/' . $service->image : null,
+                ]
+            );
+        }
+    }
+    
+    /**
+     * Sync service pages route
+     */
+    public function syncServices()
+    {
+        $this->syncServicePages();
+        return redirect()->route('admin.seo')->with('success', 'Halaman layanan berhasil disinkronkan dengan pengaturan SEO');
     }
 
     /**

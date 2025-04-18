@@ -29,7 +29,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative overflow-hidden h-screen flex items-center justify-center">
+    <div class="relative overflow-hidden h-[92vh] flex items-center justify-center">
         <!-- Background dengan efek gradient yang lebih menarik -->
         <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#E65100]">
             <!-- Pattern overlay untuk tekstur -->
@@ -44,79 +44,120 @@
         <!-- Particle effect (Latar belakang dengan titik-titik) -->
         <div class="absolute inset-0 overflow-hidden" id="particles-js"></div>
 
-        <!-- Hero Content dengan desain yang lebih menarik -->
-        <div class="relative w-full max-w-7xl mx-auto px-4 flex flex-col h-full justify-center z-10">
-            <div class="text-center">
+        <!-- Hero Content dengan desain yang lebih informatif dan jelas -->
+        <div class="relative w-full max-w-7xl mx-auto px-4 flex flex-col md:flex-row h-full items-center justify-center z-10 gap-6">
+            <!-- Kiri: Visual Illustration -->
+            <div class="w-full md:w-1/2 flex justify-center md:justify-end animate-fade-in-right" style="animation-delay: 0.3s">
+                <div class="relative">
+                    <!-- Visual yang menunjukkan proses pengiriman -->
+                    <div class="relative bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-xl border border-white/20 transform transition-transform hover:scale-105">
+                        <div class="absolute -top-3 -right-3 bg-[#FF6000] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                            CEPAT & AMAN
+                        </div>
+                        <img src="{{ asset('asset/images/delivery-illustration.png') }}" alt="ZDX Delivery Process" class="w-full h-auto max-w-sm mx-auto" onerror="this.onerror=null; this.src='https://via.placeholder.com/500x300/FF6000/FFFFFF?text=ZDX+Cargo+Express';">
+                        <div class="grid grid-cols-3 gap-2 mt-3">
+                            <div class="bg-white/20 rounded-lg p-2 text-center backdrop-blur-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <p class="text-white text-xs mt-1">Pickup Cepat</p>
+                            </div>
+                            <div class="bg-white/20 rounded-lg p-2 text-center backdrop-blur-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="text-white text-xs mt-1">Tepat Waktu</p>
+                            </div>
+                            <div class="bg-white/20 rounded-lg p-2 text-center backdrop-blur-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                <p class="text-white text-xs mt-1">Aman Terjamin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kanan: Teks & CTA -->
+            <div class="w-full md:w-1/2 text-left md:text-left animate-fade-in-left" style="animation-delay: 0.6s">
                 <!-- Logo Animation -->
-                <div class="mb-6 md:mb-8 transform transition-all duration-1000">
-                    <img src="{{ asset('asset/logo.png') }}" alt="ZDX Logo" class="h-20 md:h-24 mx-auto animate-float">
+                <div class="mb-4 flex justify-center md:justify-start">
+                    <img src="{{ asset('asset/logo.png') }}" alt="ZDX Logo" class="h-16 animate-float">
                 </div>
 
-                <!-- Main headline dengan efek melayang -->
-                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-white">
-                    <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">Solusi Pengiriman</span>
-                    <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">Cepat & Terpercaya</span>
+                <!-- Main headline dengan pesan yang lebih jelas -->
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 tracking-tight text-white">
+                    <span class="block mb-1">Pengiriman <span class="text-yellow-300">Ekspres</span></span>
+                    <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6]">
+                        ke Seluruh Indonesia
+                    </span>
                 </h1>
 
-                <!-- Subheading dengan efek fade-in -->
-                <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white max-w-2xl mx-auto opacity-90 animate-fade-in-up" style="animation-delay: 0.9s">
-                    Kirim barang Anda ke seluruh Indonesia dengan layanan ekspres yang aman dan tepat waktu
-                </p>
-
-                <!-- CTA Buttons dengan desain yang lebih menarik -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10 sm:mb-12 animate-fade-in-up" style="animation-delay: 1.2s">
-                    <a href="/tracking" class="group relative px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-white text-[#FF6000] font-semibold overflow-hidden transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                        <span class="relative z-10 text-sm sm:text-base flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Value proposition yang jelas -->
+                <div class="space-y-2 mb-4">
+                    <p class="text-base text-white flex items-center">
+                        <span class="inline-flex items-center justify-center bg-white/20 rounded-full w-6 h-6 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                        <span>Pickup & pengiriman <b>dalam 24 jam</b></span>
+                    </p>
+                    <p class="text-base text-white flex items-center">
+                        <span class="inline-flex items-center justify-center bg-white/20 rounded-full w-6 h-6 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
-                            Lacak Pengiriman
                         </span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#FFF0E6] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <span>Lacak kiriman secara <b>real-time</b></span>
+                    </p>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <a href="/tracking" class="group px-5 py-2 rounded-full bg-white text-[#FF6000] font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Lacak Pengiriman
                     </a>
-                    <a href="/tarif" class="group relative px-6 py-3 sm:px-8 sm:py-4 rounded-full border-2 border-white text-white font-semibold overflow-hidden transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                        <span class="relative z-10 text-sm sm:text-base flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Cek Tarif
-                        </span>
-                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <a href="/tarif" class="group px-5 py-2 rounded-full border-2 border-white text-white font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Cek Tarif
                     </a>
                 </div>
 
-                <!-- Stats Section dengan animasi -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 bg-white/10 backdrop-blur-md p-6 rounded-xl animate-fade-in-up" style="animation-delay: 1.5s">
-                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                            <span class="counter" data-target="10000">0</span>+
+                <!-- Endorsement/Testimonial -->
+                <div class="bg-white/10 backdrop-blur-sm p-3 rounded-lg border border-white/20">
+                    <div class="flex items-center">
+                        <div class="flex -space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-[#FF8C00] flex items-center justify-center text-white text-xs font-bold">JD</div>
+                            <div class="w-6 h-6 rounded-full bg-[#FF6000] flex items-center justify-center text-white text-xs font-bold">SP</div>
+                            <div class="w-6 h-6 rounded-full bg-[#E65100] flex items-center justify-center text-white text-xs font-bold">MB</div>
                         </div>
-                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Partner</div>
-                    </div>
-                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                            <span class="counter" data-target="100">0</span>+
+                        <div class="ml-3">
+                            <p class="text-white text-xs"><span class="font-bold text-yellow-300">4.9/5</span> • <span class="font-bold">10,000+</span> pelanggan puas</p>
+                            <div class="flex text-yellow-300 text-xs">
+                                ★★★★★
+                            </div>
                         </div>
-                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Project</div>
-                    </div>
-                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                            <span class="counter" data-target="24">0</span>/7
-                        </div>
-                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Success</div>
-                    </div>
-                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                            <span class="counter" data-target="99">0</span>%
-                        </div>
-                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Country</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Scroll Indicator yang lebih menarik -->
-
+        <!-- Scroll Indicator yang lebih mencolok -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20">
+            <div class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex flex-col items-center animate-bounce">
+                <p class="text-white text-xs font-medium">Lihat Layanan</p>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+        </div>
     </div>
 
     <!-- Services Section -->

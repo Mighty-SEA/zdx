@@ -11,6 +11,22 @@
             </div>
         </div>
         
+        @if(isset($redirectMessage))
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded mb-6">
+                <p>{{ $redirectMessage }}</p>
+                <p class="mt-2">
+                    <a href="{{ route('admin.settings', ['#analytics']) }}" class="text-indigo-600 hover:underline font-medium">Klik di sini</a> untuk langsung menuju ke halaman pengaturan baru.
+                </p>
+            </div>
+            
+            <script>
+                // Redirect otomatis setelah 5 detik
+                setTimeout(function() {
+                    window.location.href = "{{ route('admin.settings', ['#analytics']) }}";
+                }, 5000);
+            </script>
+        @endif
+        
         @if(session('success'))
             <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6">
                 {{ session('success') }}

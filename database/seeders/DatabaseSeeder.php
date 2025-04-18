@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CreateAdminUserSeeder::class,
             NotificationSeeder::class,
+            SettingsSeeder::class,
         ]);
 
         User::factory()->create([

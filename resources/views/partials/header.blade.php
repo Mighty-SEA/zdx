@@ -51,7 +51,7 @@
                             <i class="fas fa-building mr-2 text-sm"></i>Profile
                         </a>
                         <a href="/customer" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('customer') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
-                            <i class="fas fa-user-friends mr-2 text-sm"></i>Customer
+                            <i class="fas fa-user-friends mr-2 text-sm"></i>Pelanggan / Partner
                         </a>
                         <a href="/commodity" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('commodity') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                             <i class="fas fa-box mr-2 text-sm"></i>Commodity
@@ -97,7 +97,7 @@
                     <i class="fas fa-building w-5 text-center"></i><span>Profile</span>
                 </a>
                 <a href="/customer" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('customer') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
-                    <i class="fas fa-user-friends w-5 text-center"></i><span>Customer</span>
+                    <i class="fas fa-user-friends w-5 text-center"></i><span>Pelanggan / Partner</span>
                 </a>
                 <a href="/commodity" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('commodity') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                     <i class="fas fa-box w-5 text-center"></i><span>Commodity</span>

@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Semua kolom sudah ditambahkan di migrasi create_services_table
+        Schema::table('page_seo_settings', function (Blueprint $table) {
+            $table->boolean('uses_global_settings')->default(false)->after('custom_schema');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Tidak ada perubahan yang perlu di-rollback
+        Schema::table('page_seo_settings', function (Blueprint $table) {
+            $table->dropColumn('uses_global_settings');
+        });
     }
 };

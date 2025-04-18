@@ -204,6 +204,60 @@ class RateController extends Controller
         return redirect()->route('admin.rates')->with('success', 'Data tarif berhasil dihapus');
     }
 
+    /**
+     * Bulk delete selected rates.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'selected_ids' => 'required'
+        ]);
+
+        try {
+            // Decode JSON array dari string input
+            $selectedIds = json_decode($request->selected_ids);
+            
+            if (!is_array($selectedIds) || count($selectedIds) === 0) {
+                return redirect()->route('admin.rates')
+                    ->with('error', 'Tidak ada data yang dipilih untuk dihapus');
+            }
+            
+            // Dapatkan jumlah data yang akan dihapus untuk pesan
+            $totalSelected = count($selectedIds);
+            
+            // Hapus semua data yang dipilih
+            $deletedCount = 0;
+            foreach ($selectedIds as $id) {
+                $rate = Rate::find($id);
+                if ($rate) {
+                    $rate->delete();
+                    $deletedCount++;
+                }
+            }
+            
+            // Buat notifikasi untuk penghapusan massal
+            NotificationController::addNotification(
+                Auth::id(),
+                'Penghapusan Massal Tarif',
+                "$deletedCount data tarif telah dihapus melalui penghapusan massal",
+                'fas fa-trash-alt',
+                'bg-red-100',
+                'text-red-500',
+                route('admin.rates')
+            );
+            
+            return redirect()->route('admin.rates')
+                ->with('success', "Berhasil menghapus $deletedCount data tarif");
+                
+        } catch (\Exception $e) {
+            return redirect()->route('admin.rates')
+                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
+
     public function downloadTemplate()
     {
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();

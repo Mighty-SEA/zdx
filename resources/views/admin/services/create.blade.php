@@ -85,7 +85,7 @@
                             <span class="inline-flex items-center px-3 rounded-l-md border-2 border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                                 /layanan/
                             </span>
-                            <input type="text" name="slug" id="slug" value="{{ old('slug') }}" 
+                            <input type="text" name="slug" id="slug" value="{{ old('slug') }}" data-auto="true"
                                 class="flex-1 min-w-0 block w-full rounded-none rounded-r-md border-2 border-gray-300 focus:border-[#FF6000] focus:ring focus:ring-[#FF6000] focus:ring-opacity-20 shadow-sm transition-all"
                                 placeholder="layanan-pengiriman-ekspres">
                         </div>
@@ -175,6 +175,34 @@
                         @error('image')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
+                        
+                        <div id="image-meta-fields" class="mt-3 space-y-3 hidden">
+                            <div>
+                                <label for="image_alt" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Alt Text (Teks Alternatif) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="image_alt" id="image_alt" value="{{ old('image_alt') }}" data-auto="true"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                    placeholder="Deskripsi gambar untuk aksesibilitas">
+                                <p class="text-xs text-gray-500 mt-1">Deskripsi gambar untuk teknologi pembaca layar</p>
+                                @error('image_alt')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <div>
+                                <label for="image_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Nama File
+                                </label>
+                                <input type="text" name="image_name" id="image_name" value="{{ old('image_name') }}" data-auto="true"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                    placeholder="nama-file-gambar">
+                                <p class="text-xs text-gray-500 mt-1">Biarkan kosong untuk nama file otomatis</p>
+                                @error('image_name')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                     
                     <div>
@@ -182,20 +210,20 @@
                         <div class="mt-2 space-y-3">
                             <div class="relative flex items-start p-3 border border-gray-200 rounded-md hover:border-[#FF6000] transition-all">
                                 <div class="flex items-center h-5">
-                                    <input id="status-draft" name="status" value="draft" type="radio" {{ old('status') == 'draft' || !old('status') ? 'checked' : '' }} class="focus:ring-[#FF6000] h-4 w-4 text-[#FF6000] border-gray-300">
-                                </div>
-                                <div class="ml-3 text-sm">
-                                    <label for="status-draft" class="font-medium text-gray-700">Draft</label>
-                                    <p class="text-gray-500">Simpan sebagai draft (tidak akan ditampilkan)</p>
-                                </div>
-                            </div>
-                            <div class="relative flex items-start p-3 border border-gray-200 rounded-md hover:border-[#FF6000] transition-all">
-                                <div class="flex items-center h-5">
-                                    <input id="status-published" name="status" value="published" type="radio" {{ old('status') == 'published' ? 'checked' : '' }} class="focus:ring-[#FF6000] h-4 w-4 text-[#FF6000] border-gray-300">
+                                    <input id="status-published" name="status" value="published" type="radio" {{ old('status') == 'published' || !old('status') ? 'checked' : '' }} class="focus:ring-[#FF6000] h-4 w-4 text-[#FF6000] border-gray-300">
                                 </div>
                                 <div class="ml-3 text-sm">
                                     <label for="status-published" class="font-medium text-gray-700">Publikasikan</label>
                                     <p class="text-gray-500">Publikasikan sekarang di website</p>
+                                </div>
+                            </div>
+                            <div class="relative flex items-start p-3 border border-gray-200 rounded-md hover:border-[#FF6000] transition-all">
+                                <div class="flex items-center h-5">
+                                    <input id="status-draft" name="status" value="draft" type="radio" {{ old('status') == 'draft' ? 'checked' : '' }} class="focus:ring-[#FF6000] h-4 w-4 text-[#FF6000] border-gray-300">
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <label for="status-draft" class="font-medium text-gray-700">Draft</label>
+                                    <p class="text-gray-500">Simpan sebagai draft (tidak akan ditampilkan)</p>
                                 </div>
                             </div>
                         </div>
@@ -237,28 +265,64 @@
             content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 16px; line-height: 1.6; }',
             branding: false,
             promotion: false,
-            language: 'id',
-            placeholder: 'Mulai mengetik konten layanan Anda di sini...'
         });
-            
-        // Auto-generate slug from title
+        
+        // Slug Generator
         const titleInput = document.getElementById('title');
         const slugInput = document.getElementById('slug');
+        const imageAltInput = document.getElementById('image_alt');
+        const imageNameInput = document.getElementById('image_name');
         
+        // Function to convert title to slug
+        function generateSlug(text) {
+            return text
+                .toString()
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word characters
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start
+                .replace(/-+$/, '');            // Trim - from end
+        }
+        
+        // Generate slug when title changes
         titleInput.addEventListener('input', function() {
-            if (!slugInput.value) {
-                slugInput.value = createSlug(titleInput.value);
+            const titleValue = titleInput.value.trim();
+            
+            // Update slug
+            if (!slugInput.value || slugInput.dataset.auto === 'true') {
+                slugInput.value = generateSlug(titleValue);
+                slugInput.dataset.auto = 'true';
+            }
+            
+            // Update alt text if empty or auto-generated
+            if (!imageAltInput.value || imageAltInput.dataset.auto === 'true') {
+                imageAltInput.value = titleValue ? `Gambar ${titleValue}` : '';
+                imageAltInput.dataset.auto = 'true';
+            }
+            
+            // Update image name if empty or auto-generated
+            if (!imageNameInput.value || imageNameInput.dataset.auto === 'true') {
+                imageNameInput.value = generateSlug(titleValue);
+                imageNameInput.dataset.auto = 'true';
             }
         });
         
-        function createSlug(text) {
-            return text.toString().toLowerCase()
-                .replace(/\s+/g, '-')        // Replace spaces with -
-                .replace(/[^\w\-]+/g, '')    // Remove all non-word chars
-                .replace(/\-\-+/g, '-')      // Replace multiple - with single -
-                .replace(/^-+/, '')          // Trim - from start of text
-                .replace(/-+$/, '');         // Trim - from end of text
-        }
+        // When slug is manually edited, stop automatic updates
+        slugInput.addEventListener('input', function() {
+            slugInput.dataset.auto = 'false';
+        });
+        
+        // When alt text is manually edited, stop automatic updates
+        imageAltInput.addEventListener('input', function() {
+            imageAltInput.dataset.auto = 'false';
+        });
+        
+        // When image name is manually edited, stop automatic updates
+        imageNameInput.addEventListener('input', function() {
+            imageNameInput.dataset.auto = 'false';
+        });
         
         // Character counter for description
         const descriptionTextarea = document.getElementById('description');
@@ -270,54 +334,69 @@
             
             if (count > 255) {
                 descriptionCount.classList.add('text-red-500');
-                descriptionCount.classList.remove('text-gray-500');
             } else {
                 descriptionCount.classList.remove('text-red-500');
-                descriptionCount.classList.add('text-gray-500');
             }
         });
         
-        // Trigger input event to update counter on page load
-        descriptionTextarea.dispatchEvent(new Event('input'));
+        // Trigger the input event to initialize the count
+        const descriptionEvent = new Event('input');
+        descriptionTextarea.dispatchEvent(descriptionEvent);
         
-        // Image preview functionality
+        // Image Upload Preview
         const imageInput = document.getElementById('image');
-        const previewImage = document.getElementById('preview-image');
         const previewContainer = document.getElementById('preview-container');
+        const previewImage = document.getElementById('preview-image');
         const uploadPrompt = document.getElementById('upload-prompt');
-        const removeImageBtn = document.getElementById('remove-image');
+        const removeButton = document.getElementById('remove-image');
         const dropzoneUpload = document.getElementById('dropzone-upload');
-        
-        imageInput.addEventListener('change', updateImagePreview);
+        const imageMetaFields = document.getElementById('image-meta-fields');
         
         function updateImagePreview() {
-            const file = imageInput.files[0];
-            if (file) {
+            if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
+                const file = imageInput.files[0];
+                
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
                     previewContainer.classList.remove('hidden');
                     uploadPrompt.classList.add('hidden');
-                };
+                    imageMetaFields.classList.remove('hidden');
+                    
+                    // Prefill image name field with sanitized filename (without extension) if empty or auto
+                    if (!imageNameInput.value || imageNameInput.dataset.auto === 'true') {
+                        const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+                        imageNameInput.value = sanitizeFileName(fileName);
+                        imageNameInput.dataset.auto = 'true';
+                    }
+                }
+                
                 reader.readAsDataURL(file);
             }
         }
         
-        removeImageBtn.addEventListener('click', function() {
+        // Function to sanitize filename for URL
+        function sanitizeFileName(name) {
+            return name
+                .toLowerCase()
+                .replace(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
+                .replace(/\s+/g, '-')     // Replace spaces with hyphens
+                .replace(/-+/g, '-')      // Remove consecutive hyphens
+                .trim();
+        }
+        
+        imageInput.addEventListener('change', updateImagePreview);
+        
+        removeButton.addEventListener('click', function() {
             imageInput.value = '';
             previewContainer.classList.add('hidden');
             uploadPrompt.classList.remove('hidden');
+            imageMetaFields.classList.add('hidden');
+            imageNameInput.value = '';
+            imageNameInput.dataset.auto = 'true';
+            imageAltInput.value = '';
+            imageAltInput.dataset.auto = 'true';
         });
-        
-        // Drag and drop functionality
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropzoneUpload.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
         
         ['dragenter', 'dragover'].forEach(eventName => {
             dropzoneUpload.addEventListener(eventName, highlight, false);

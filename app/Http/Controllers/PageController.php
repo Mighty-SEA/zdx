@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PageSeoSetting;
+use App\Services\TrackingService;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -100,20 +101,17 @@ class PageController extends Controller
             ->where('status', 'published')
             ->firstOrFail();
             
-        // Menggunakan SEO data services sebagai default
-        $seoData = $this->getSeoData('services');
-        
-        // Override beberapa data SEO dengan informasi dari layanan
-        $seoData['title'] = $service->title . ' - ZDX Cargo';
-        $seoData['description'] = $service->description;
-        $seoData['canonical_url'] = url('layanan/' . $service->slug);
-        $seoData['og_title'] = $service->title;
-        $seoData['og_description'] = $service->description;
+        // Cek apakah ada pengaturan SEO khusus untuk layanan ini
+        $serviceIdentifier = 'service-' . $slug;
+        $seoData = $this->getSeoData($serviceIdentifier);
         
         // Jika layanan memiliki gambar, gunakan sebagai og:image
         if ($service->image) {
-            $seoData['og_image'] = asset('storage/' . $service->image);
+            $seoData['og_image'] = asset($service->image);
         }
+        
+        // Canonical URL selalu ke layanan
+        $seoData['canonical_url'] = url('layanan/' . $service->slug);
         
         return view('service-detail', compact('service', 'seoData'));
     }
@@ -315,14 +313,43 @@ class PageController extends Controller
     /**
      * Halaman Tracking
      */
-    public function tracking()
+    public function tracking(Request $request)
     {
         $seoData = $this->getSeoData('tracking');
-        return view('tracking', compact('seoData'));
+        
+        // Cek jika ada parameter tracking_number
+        $trackingNumber = $request->tracking_number;
+        $trackingData = null;
+        
+        if ($trackingNumber) {
+            $trackingService = new TrackingService();
+            $trackingData = $trackingService->trackShipment($trackingNumber);
+        }
+        
+        return view('tracking', compact('seoData', 'trackingData', 'trackingNumber'));
     }
     
     /**
-     * Halaman Customer
+     * Track pengiriman via AJAX
+     */
+    public function trackShipment(Request $request)
+    {
+        $request->validate([
+            'tracking_number' => 'required|string|min:5|max:50',
+        ]);
+        
+        $trackingNumber = $request->tracking_number;
+        $trackingService = new TrackingService();
+        $trackingData = $trackingService->trackShipment($trackingNumber);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $trackingData,
+        ]);
+    }
+    
+    /**
+     * Halaman Pelanggan & Partner
      */
     public function customer()
     {
