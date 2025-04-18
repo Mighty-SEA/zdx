@@ -349,7 +349,7 @@ class PageController extends Controller
     }
     
     /**
-     * Halaman Customer
+     * Halaman Pelanggan & Partner
      */
     public function customer()
     {

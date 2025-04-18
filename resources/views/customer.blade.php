@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-<title>Customer ZDX - PT. Zindan Diantar Express</title>
-<meta name="description" content="Pelanggan terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.">
-<meta name="keywords" content="pelanggan zdx, customer logistik, testimonial pengiriman, cargo customer">
+<title>Pelanggan / Partner ZDX - PT. Zindan Diantar Express</title>
+<meta name="description" content="Pelanggan dan partner terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.">
+<meta name="keywords" content="pelanggan zdx, partner zdx, customer logistik, partner logistik, testimonial pengiriman, cargo customer">
 
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ url('/customer') }}">
@@ -11,24 +11,25 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url('/customer') }}">
-<meta property="og:title" content="Customer ZDX - PT. Zindan Diantar Express">
-<meta property="og:description" content="Pelanggan terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.">
+<meta property="og:title" content="Pelanggan / Partner ZDX - PT. Zindan Diantar Express">
+<meta property="og:description" content="Pelanggan dan partner terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.">
 @endsection
 
 @section('content')
 <div class="bg-gradient-to-r from-[#E65100] to-[#FF6000] py-16 md:py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Pelanggan Kami</h1>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Pelanggan & Partner Kami</h1>
         <p class="text-lg text-white/90 max-w-3xl mx-auto">Mitra bisnis terpercaya yang telah menggunakan layanan ZDX Cargo untuk pengiriman mereka. Bergabunglah dengan ratusan perusahaan yang telah memercayakan logistik mereka pada kami.</p>
     </div>
 </div>
 
+{{-- Bagian testimonial dikomentari sementara
 <!-- Customer Testimonials -->
 <div class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-gray-800 mb-4">Apa Kata Mereka</h2>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Berikut testimoni dari beberapa pelanggan kami yang telah merasakan layanan pengiriman ZDX Cargo.</p>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Berikut testimoni dari beberapa pelanggan dan partner kami yang telah merasakan layanan pengiriman ZDX Cargo.</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -97,13 +98,14 @@
         </div>
     </div>
 </div>
+--}}
 
 <!-- Client Logos -->
 <div class="py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-gray-800 mb-4">Dipercaya Oleh</h2>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Beberapa perusahaan terkemuka yang telah bermitra dengan ZDX Cargo untuk kebutuhan logistik mereka.</p>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Beberapa perusahaan terkemuka yang telah bermitra dan menjadi pelanggan ZDX Cargo untuk kebutuhan logistik mereka.</p>
         </div>
         
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
@@ -190,7 +192,7 @@
 <!-- Join as Customer CTA -->
 <div class="py-12 bg-gradient-to-r from-[#E65100] to-[#FF6000]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-white mb-6">Bergabunglah dengan Pelanggan ZDX Cargo</h2>
+        <h2 class="text-3xl font-bold text-white mb-6">Bergabunglah dengan Pelanggan & Partner ZDX Cargo</h2>
         <p class="text-lg text-white/90 max-w-3xl mx-auto mb-8">Dapatkan solusi pengiriman yang handal, cepat, dan efisien untuk kebutuhan bisnis Anda. Kami siap menjadi mitra logistik terpercaya Anda.</p>
         <div class="flex flex-col sm:flex-row justify-center gap-4">
             <a href="/contact" class="px-8 py-3 bg-white text-[#FF6000] rounded-lg font-semibold shadow-md hover:bg-gray-100 transition-colors">Hubungi Kami</a>
