@@ -28,43 +28,46 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
-    @apply bg-white h-screen fixed z-30 border-r border-gray-200 transition-all;
+    @apply bg-white h-screen fixed z-30 border-r border-gray-200 transition-all duration-200;
     width: 260px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 /* Sidebar Links */
 .sidebar-link {
-    @apply flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-700 font-medium transition-all;
+    @apply flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-700 font-medium transition-all duration-200;
+    margin: 2px 0;
 }
 
 .sidebar-link:hover {
-    @apply bg-gray-50 text-[#FF6000];
+    @apply bg-[#FFF7F1] text-[#FF6000];
+    transform: translateX(3px);
 }
 
 .sidebar-link.active {
-    @apply bg-[#FFF0E6] text-[#FF6000];
+    @apply bg-[#FFF0E6] text-[#FF6000] font-semibold;
+    box-shadow: 0 2px 5px rgba(255,96,0,0.1);
 }
 
 .sidebar-link i {
-    @apply text-lg w-5 text-center;
+    @apply text-lg w-5 text-center transition-all duration-200;
 }
 
-.sidebar-link i.fa-chevron-down {
-    @apply text-xs text-gray-400;
+.sidebar h3 {
+    @apply text-xs uppercase font-medium text-gray-500 mb-2 tracking-wider;
+    padding-left: 5px;
 }
 
-.sidebar-sublink {
-    @apply flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 text-sm transition-all;
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
+/* Sidebar Section Dividers */
+.sidebar hr {
+    @apply border-gray-200 my-2;
+    border-top-width: 1px;
+    opacity: 0.7;
 }
 
-.sidebar-sublink:hover {
-    @apply bg-gray-50 text-[#FF6000];
-}
-
-.sidebar-sublink.active {
-    @apply text-[#FF6000] font-medium;
+/* Sidebar Footer */
+.sidebar .mt-auto {
+    margin-top: auto;
 }
 
 /* Main Content */

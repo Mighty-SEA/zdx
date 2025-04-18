@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') - ZDX Cargo Admin</title>
+    <title>@yield('title', 'Dashboard') - ZDX  Admin</title>
     
     <!-- Meta Tags Dasar -->
-    <meta name="description" content="ZDX Cargo - Admin Panel">
-    <meta name="keywords" content="cargo, shipping, admin, dashboard">
+    <meta name="description" content="ZDX  - Admin Panel">
+    <meta name="keywords" content=", shipping, admin, dashboard">
     <meta name="robots" content="noindex, nofollow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="ZDX Cargo Admin">
-    <meta property="og:description" content="ZDX Cargo Admin Panel">
+    <meta property="og:title" content="ZDX ">
+    <meta property="og:description" content="ZDX  Panel">
     
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -31,7 +31,7 @@
             <div class="px-6 py-4 flex items-center h-16">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center">
                     <div class="flex-shrink-0 mr-2">
-                        <img src="{{ asset('asset/logo.png') }}" alt="ZDX Cargo" class="h-10 w-auto animate-float">
+                        <img src="{{ asset('asset/logo.png') }}" alt="ZDX" class="h-10 w-auto animate-float">
                     </div>
                     <span class="text-xl font-bold text-gray-800 ml-1">Admin</span>
                 </a>
@@ -39,87 +39,94 @@
             
             <!-- Sidebar Menu -->
             <div class="py-4 overflow-y-auto no-scrollbar h-[calc(100vh-5rem)] flex flex-col">
-                <!-- Main Menu -->
+                <!-- Dashboard Menu -->
                 <div class="px-5 mb-4">
-                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Menu Utama</h3>
                     <nav>
                         <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-tachometer-alt text-lg w-5 text-center"></i>
-                            <span>Dashboard</span>
+                            <i class="fas fa-home text-lg w-5 text-center"></i>
+                            <span>Beranda</span>
                         </a>
                     </nav>
                 </div>
                 
-                <!-- Operasional -->
+                <!-- Divider -->
                 <div class="px-5 mb-4">
-                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Operasional</h3>
+                    <hr class="border-gray-200">
+                </div>
+                
+                <!-- Operasional Menu -->
+                <div class="px-5 mb-4">
+                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2 flex items-center">
+                        <i class="fas fa-truck-moving mr-2 text-gray-400"></i>Operasional
+                    </h3>
                     <nav class="space-y-1">
                         <a href="{{ route('admin.rates') }}" class="sidebar-link {{ request()->routeIs('admin.rates') ? 'active' : '' }}">
-                            <i class="fas fa-dollar-sign text-lg w-5 text-center"></i>
-                            <span>Tarif</span>
+                            <i class="fas fa-tags text-lg w-5 text-center"></i>
+                            <span>Tarif Pengiriman</span>
                         </a>
                         
                         <a href="{{ route('admin.partners') }}" class="sidebar-link {{ request()->routeIs('admin.partners*') ? 'active' : '' }}">
                             <i class="fas fa-handshake text-lg w-5 text-center"></i>
-                            <span>Pelanggan / Partner</span>
+                            <span>Pelanggan & Partner</span>
                         </a>
-                        
-                        <!-- Tambahkan menu operasional lainnya di sini jika ada -->
                     </nav>
                 </div>
                 
-                <!-- Sistem & Pengaturan -->
+                <!-- Marketing Menu -->
                 <div class="px-5 mb-4">
-                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Sistem & Pengaturan</h3>
+                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2 flex items-center">
+                        <i class="fas fa-bullhorn mr-2 text-gray-400"></i>Marketing
+                    </h3>
                     <nav class="space-y-1">
-                        <div x-data="{ open: {{ request()->routeIs('admin.users*') ? 'true' : 'false' }} }">
-                            <button @click="open = !open" class="sidebar-link w-full text-left flex items-center justify-between {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-users text-lg w-5 text-center"></i>
-                                    <span>Manajemen Pengguna</span>
-                                </div>
-                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{'transform rotate-180': open}"></i>
-                            </button>
-                            
-                            <div x-show="open" class="pl-8 mt-1 mb-1">
-                                <a href="{{ route('admin.users') }}" class="sidebar-sublink {{ request()->routeIs('admin.users') ? 'active' : '' }}">
-                                    <i class="fas fa-user text-sm w-5 text-center"></i>
-                                    <span>Daftar Pengguna</span>
-                                </a>
-                            </div>
-                        </div>
+                        <a href="{{ route('admin.services') }}" class="sidebar-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
+                            <i class="fas fa-cubes text-lg w-5 text-center"></i>
+                            <span>Layanan</span>
+                        </a>
+                        
+                        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo*') ? 'active' : '' }}">
+                            <i class="fas fa-search text-lg w-5 text-center"></i>
+                            <span>SEO Halaman</span>
+                        </a>
+                    </nav>
+                </div>
+                
+                <!-- Pengaturan Menu -->
+                <div class="px-5 mb-4">
+                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2 flex items-center">
+                        <i class="fas fa-cogs mr-2 text-gray-400"></i>Sistem
+                    </h3>
+                    <nav class="space-y-1">
+                        <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+                            <i class="fas fa-users text-lg w-5 text-center"></i>
+                            <span>Pengguna</span>
+                        </a>
                         
                         <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                             <i class="fas fa-cog text-lg w-5 text-center"></i>
                             <span>Pengaturan</span>
                         </a>
+
+                        <a href="{{ route('admin.profile') }}" class="sidebar-link {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
+                            <i class="fas fa-user-circle text-lg w-5 text-center"></i>
+                            <span>Profil Saya</span>
+                        </a>
                     </nav>
                 </div>
                 
-                <!-- Marketing & SEO -->
-                <div class="px-5 mb-4">
-                    <h3 class="text-xs uppercase font-medium text-gray-500 mb-2">Marketing & SEO</h3>
-                    <nav class="space-y-1">
-                        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo*') ? 'active' : '' }}">
-                            <i class="fas fa-search text-lg w-5 text-center"></i>
-                            <span>SEO Halaman</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.services') }}" class="sidebar-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
-                            <i class="fas fa-boxes text-lg w-5 text-center"></i>
-                            <span>Layanan</span>
-                        </a>
-                        
-                        <!-- Tambahkan menu marketing lainnya di sini jika ada -->
-                    </nav>
+                <!-- Divider -->
+                <div class="px-5 mb-2 mt-auto">
+                    <hr class="border-gray-200">
                 </div>
                 
                 <!-- Sidebar Footer -->
-                <div class="mt-auto">
+                <div class="mt-2">
                     <div class="px-5 py-3">
-                        <div class="text-xs text-gray-500 text-center">
-                            <p>ZDX Cargo Admin</p>
-                            <p>v1.0.0</p>
+                        <div class="text-xs text-gray-500 text-center px-1">
+                            <div class="flex justify-between items-center pb-1 mb-2 border-b border-gray-200">
+                                <span>ZDX ADMIN</span>
+                                <span>v2.0.0</span>
+                            </div>
+                            <p class="text-[10px]">© {{ date('Y') }} ZDX. All rights reserved.</p>
                         </div>
                     </div>
                 </div>
