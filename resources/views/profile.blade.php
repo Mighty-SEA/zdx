@@ -30,6 +30,8 @@
 
     <div class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           
+
             <!-- Breadcrumb -->
             <div class="mb-8 flex space-x-2 text-gray-500 text-sm">
                 <a href="/" class="hover:text-[#FF6000]">Home</a>
@@ -41,35 +43,42 @@
             <div class="mt-8 lg:flex lg:items-center lg:gap-12">
                 <div class="lg:w-1/2">
                     <div class="bg-white p-8 rounded-lg shadow-md">
-                        <h2 class="text-3xl font-bold text-[#FF6000] mb-6">Tentang Kami</h2>
-                        <p class="text-lg text-gray-600 leading-relaxed">
-                            PT. ZINDAN DIANTAR EXPRESS (ZDX) merupakan perusahaan yang didirikan pada tanggal 10 April 2023 
-                            dan mulai beroperasi di tahun 2023. Meski terbilang baru, PT. ZDX sudah memiliki berbagai pengalaman 
-                            dalam bidang jasa pengiriman barang melalui darat, laut dan udara.
-                        </p>
-                        <p class="text-lg text-gray-600 mt-6 leading-relaxed">
-                            PT. ZDX memiliki service pengiriman Door to Door (Home Service) & Port to Port (Airport Service) 
-                            dengan harga yang bersaing, pelayanan yang baik, dan kecepatan pengiriman.
-                        </p>
-                        <p class="text-lg text-gray-600 mt-6 leading-relaxed">
-                            PT. ZDX mulai beroperasional secara mandiri dengan bisnis utama pengiriman barang via udara, 
-                            dan juga perusahaan yang independen, dalam arti kata bahwa bukan merupakan perusahaan yang terafiliasi 
-                            atau bukan merupakan anak perusahaan dari suatu group.
-                        </p>
+                        @if(isset($contents['about']) && count($contents['about']) > 0)
+                            <h2 class="text-3xl font-bold text-[#FF6000] mb-6">{{ $contents['about'][0]->title }}</h2>
+                            <div class="text-lg text-gray-600 leading-relaxed">
+                                {!! $contents['about'][0]->content !!}
+                            </div>
+                        @else
+                            <h2 class="text-3xl font-bold text-[#FF6000] mb-6">Tentang Kami</h2>
+                            <p class="text-lg text-gray-600 leading-relaxed">
+                                PT. ZINDAN DIANTAR EXPRESS (ZDX) merupakan perusahaan yang didirikan pada tanggal 10 April 2023 
+                                dan mulai beroperasi di tahun 2023. Meski terbilang baru, PT. ZDX sudah memiliki berbagai pengalaman 
+                                dalam bidang jasa pengiriman barang melalui darat, laut dan udara.
+                            </p>
+                            <p class="text-lg text-gray-600 mt-6 leading-relaxed">
+                                PT. ZDX memiliki service pengiriman Door to Door (Home Service) & Port to Port (Airport Service) 
+                                dengan harga yang bersaing, pelayanan yang baik, dan kecepatan pengiriman.
+                            </p>
+                            <p class="text-lg text-gray-600 mt-6 leading-relaxed">
+                                PT. ZDX mulai beroperasional secara mandiri dengan bisnis utama pengiriman barang via udara, 
+                                dan juga perusahaan yang independen, dalam arti kata bahwa bukan merupakan perusahaan yang terafiliasi 
+                                atau bukan merupakan anak perusahaan dari suatu group.
+                            </p>
+                        @endif
                     </div>
                 </div>
                 <div class="lg:w-1/2 mt-8 lg:mt-0">
                     <div class="flex flex-col gap-4">
                         <!-- Logo Perusahaan tanpa frame -->
                         <div class="relative">
-                            <img src="{{ asset('asset/logo.png') }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
+                            <img src="{{ asset('asset/logo.png') }}?v={{ time() }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
                         </div>
                         
                         <!-- Gambar Pengiriman Logistik -->
                         <div class="relative">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] rounded-lg blur"></div>
                             <div class="relative bg-white p-2 rounded-lg">
-                                <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Logistics Operations" class="rounded-lg w-full h-96 object-cover">
+                                <img src="{{ asset('asset/logistics.jpg') }}?v={{ time() }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-cover">
                             </div>
                             <div class="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
                                 <div class="text-lg font-bold text-[#FF6000]">100+</div>
@@ -88,11 +97,18 @@
                     <div class="bg-gradient-to-br from-[#FF6000] to-[#FF8C00] text-white w-16 h-16 rounded-full flex items-center justify-center mb-6">
                         <i class="fas fa-eye text-2xl"></i>
                     </div>
-                    <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">Visi</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        Menjadi perusahaan terbaik dan terpercaya dalam bidang jasa pengiriman barang diwilayah Indonesia 
-                        dengan memberikan jasa layanan yang berkualitas dan terpercaya.
-                    </p>
+                    @if(isset($contents['vision']) && count($contents['vision']) > 0)
+                        <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">{{ $contents['vision'][0]->title }}</h2>
+                        <div class="text-lg text-gray-600 leading-relaxed">
+                            {!! $contents['vision'][0]->content !!}
+                        </div>
+                    @else
+                        <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">Visi</h2>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            Menjadi perusahaan terbaik dan terpercaya dalam bidang jasa pengiriman barang diwilayah Indonesia 
+                            dengan memberikan jasa layanan yang berkualitas dan terpercaya.
+                        </p>
+                    @endif
                 </div>
 
                 <!-- Misi -->
@@ -101,12 +117,19 @@
                     <div class="bg-gradient-to-br from-[#FF6000] to-[#FF8C00] text-white w-16 h-16 rounded-full flex items-center justify-center mb-6">
                         <i class="fas fa-bullseye text-2xl"></i>
                     </div>
-                    <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">Misi</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        Peningkatan jasa layanan dan sumber daya (Manusia, metode, teknologi, infrastruktur) secara berkesinambungan, 
-                        sekaligus memperluas jaringan kerja dengan dukungan tenaga-tenaga ahli dibidangnya profesional dan 
-                        berpengalaman serta bertanggung jawab.
-                    </p>
+                    @if(isset($contents['mission']) && count($contents['mission']) > 0)
+                        <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">{{ $contents['mission'][0]->title }}</h2>
+                        <div class="text-lg text-gray-600 leading-relaxed">
+                            {!! $contents['mission'][0]->content !!}
+                        </div>
+                    @else
+                        <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">Misi</h2>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            Peningkatan jasa layanan dan sumber daya (Manusia, metode, teknologi, infrastruktur) secara berkesinambungan, 
+                            sekaligus memperluas jaringan kerja dengan dukungan tenaga-tenaga ahli dibidangnya profesional dan 
+                            berpengalaman serta bertanggung jawab.
+                        </p>
+                    @endif
                 </div>
             </div>
 
@@ -115,10 +138,126 @@
                 <div class="max-w-6xl mx-auto text-center">
                     <h2 class="text-3xl font-bold text-gray-900 mb-10">Struktur Organisasi</h2>
                     <div class="bg-white p-6 rounded-lg shadow-lg">
-                        <img src="{{ asset('asset/struktur.jpg') }}" alt="Struktur Organisasi PT. Zindan Diantar Express" class="w-full rounded-lg">
+                        @if(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->org_structure_path))
+                            <img src="{{ asset($contents['about'][0]->org_structure_path) }}?v={{ time() }}" alt="Struktur Organisasi PT. Zindan Diantar Express" class="w-full rounded-lg">
+                        @else
+                            <img src="{{ asset('asset/struktur.jpg') }}?v={{ time() }}" alt="Struktur Organisasi PT. Zindan Diantar Express" class="w-full rounded-lg">
+                        @endif
                     </div>
                 </div>
             </div>
+
+            <!-- Kontak Perusahaan Section -->
+            @if(isset($contents['about']) && count($contents['about']) > 0 && 
+                (!empty($contents['about'][0]->contact_phone) || 
+                !empty($contents['about'][0]->contact_email) || 
+                !empty($contents['about'][0]->contact_address) || 
+                !empty($contents['about'][0]->contact_maps_link) || 
+                !empty($contents['about'][0]->contact_facebook) || 
+                !empty($contents['about'][0]->contact_instagram) || 
+                !empty($contents['about'][0]->contact_twitter) || 
+                !empty($contents['about'][0]->contact_youtube)))
+            <div class="mt-20">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-10 text-center">Kontak Kami</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Informasi Kontak -->
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <h3 class="text-2xl font-bold text-[#FF6000] mb-6">Informasi Kontak</h3>
+                            
+                            <div class="space-y-6">
+                                @if(!empty($contents['about'][0]->contact_phone))
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-[#FF6000] bg-opacity-10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-phone-alt text-[#FF6000] text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Telepon</h4>
+                                        <p class="text-gray-600">{{ $contents['about'][0]->contact_phone }}</p>
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                @if(!empty($contents['about'][0]->contact_email))
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-[#FF6000] bg-opacity-10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-envelope text-[#FF6000] text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Email</h4>
+                                        <p class="text-gray-600">{{ $contents['about'][0]->contact_email }}</p>
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                @if(!empty($contents['about'][0]->contact_address))
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-[#FF6000] bg-opacity-10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-map-marker-alt text-[#FF6000] text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Alamat</h4>
+                                        <p class="text-gray-600">{{ $contents['about'][0]->contact_address }}</p>
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                <!-- Social Media -->
+                                @if(!empty($contents['about'][0]->contact_facebook) || 
+                                    !empty($contents['about'][0]->contact_instagram) || 
+                                    !empty($contents['about'][0]->contact_twitter) || 
+                                    !empty($contents['about'][0]->contact_youtube))
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-[#FF6000] bg-opacity-10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-share-alt text-[#FF6000] text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Media Sosial</h4>
+                                        <div class="flex space-x-4 mt-2">
+                                            @if(!empty($contents['about'][0]->contact_facebook))
+                                            <a href="{{ $contents['about'][0]->contact_facebook }}" target="_blank" class="text-gray-600 hover:text-[#FF6000] transition-colors duration-300">
+                                                <i class="fab fa-facebook fa-lg"></i>
+                                            </a>
+                                            @endif
+                                            
+                                            @if(!empty($contents['about'][0]->contact_instagram))
+                                            <a href="{{ $contents['about'][0]->contact_instagram }}" target="_blank" class="text-gray-600 hover:text-[#FF6000] transition-colors duration-300">
+                                                <i class="fab fa-instagram fa-lg"></i>
+                                            </a>
+                                            @endif
+                                            
+                                            @if(!empty($contents['about'][0]->contact_twitter))
+                                            <a href="{{ $contents['about'][0]->contact_twitter }}" target="_blank" class="text-gray-600 hover:text-[#FF6000] transition-colors duration-300">
+                                                <i class="fab fa-twitter fa-lg"></i>
+                                            </a>
+                                            @endif
+                                            
+                                            @if(!empty($contents['about'][0]->contact_youtube))
+                                            <a href="{{ $contents['about'][0]->contact_youtube }}" target="_blank" class="text-gray-600 hover:text-[#FF6000] transition-colors duration-300">
+                                                <i class="fab fa-youtube fa-lg"></i>
+                                            </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <!-- Google Maps -->
+                        @if(!empty($contents['about'][0]->contact_maps_link))
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <h3 class="text-2xl font-bold text-[#FF6000] mb-6">Lokasi Kami</h3>
+                            <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                                <iframe src="{{ $contents['about'][0]->contact_maps_link }}" allowfullscreen="" loading="lazy" class="w-full h-full min-h-[300px] rounded-lg border-0"></iframe>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Layanan Section -->
             <div class="mt-20">
@@ -130,98 +269,42 @@
                 </div>
 
                 <div class="mt-12 grid gap-8 md:grid-cols-3">
-                    <!-- Service 1 -->
+                    @foreach($services as $service)
                     <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:-translate-y-2 group">
                         <div class="relative h-64">
-                            <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pengiriman Darat" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            @if($service->image)
+                                <img src="{{ asset($service->image) }}?v={{ time() }}" alt="{{ $service->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            @else
+                                <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="{{ $service->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            @endif
                             <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="fas fa-truck text-white text-6xl"></i>
+                                @if(str_contains(strtolower($service->title), 'darat'))
+                                    <i class="fas fa-truck text-white text-6xl"></i>
+                                @elseif(str_contains(strtolower($service->title), 'laut'))
+                                    <i class="fas fa-ship text-white text-6xl"></i>
+                                @elseif(str_contains(strtolower($service->title), 'udara'))
+                                    <i class="fas fa-plane text-white text-6xl"></i>
+                                @else
+                                    <i class="fas fa-box text-white text-6xl"></i>
+                                @endif
                             </div>
                         </div>
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Zindan Diantar Express Darat</h3>
-                            <p class="text-gray-600">Metode pengiriman melalui transportasi darat dengan jaringan yang luas dan armada yang handal.</p>
-                        </div>
-                    </div>
-
-                    <!-- Service 2 -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:-translate-y-2 group">
-                        <div class="relative h-64">
-                            <img src="https://images.unsplash.com/photo-1577127294100-e200e65fab92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pengiriman Laut" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="fas fa-ship text-white text-6xl"></i>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ $service->title }}</h3>
+                            <div class="text-gray-600">{!! $service->description !!}</div>
+                            <div class="mt-4">
+                                <a href="{{ url('layanan/' . $service->slug) }}" class="text-[#FF6000] hover:text-[#FF8C00] font-medium">
+                                    Selengkapnya <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
                             </div>
                         </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Zindan Diantar Express Laut</h3>
-                            <p class="text-gray-600">Metode pengiriman melalui transportasi laut untuk pengiriman antar pulau dengan biaya yang efisien.</p>
-                        </div>
                     </div>
-
-                    <!-- Service 3 -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:-translate-y-2 group">
-                        <div class="relative h-64">
-                            <img src="https://images.unsplash.com/photo-1531265726475-52ad60219627?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pengiriman Udara" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="fas fa-plane text-white text-6xl"></i>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Zindan Diantar Express Udara</h3>
-                            <p class="text-gray-600">Metode pengiriman melalui transportasi udara untuk pengiriman cepat dan aman ke seluruh wilayah Indonesia.</p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
-            <!-- Stats Section -->
-            <div class="mt-20">
-                <div class="relative overflow-hidden">
-                    <div class="absolute inset-0">
-                        <img src="https://images.unsplash.com/photo-1566536063027-25d957a60459?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Logistics Background" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black opacity-80"></div>
-                    </div>
-                    <div class="relative py-16 px-6">
-                        <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
-                            <div class="text-center">
-                                <div class="bg-[#FF6000] bg-opacity-20 rounded-full w-20 h-20 mx-auto flex items-center justify-center mb-4">
-                                    <i class="fas fa-handshake text-[#FF6000] text-3xl"></i>
-                                </div>
-                                <div class="text-5xl font-bold text-white">20+</div>
-                                <div class="mt-2 text-xl font-medium text-[#FF6000]">PARTNER</div>
-                            </div>
-
-                            <div class="text-center">
-                                <div class="bg-[#FF6000] bg-opacity-20 rounded-full w-20 h-20 mx-auto flex items-center justify-center mb-4">
-                                    <i class="fas fa-project-diagram text-[#FF6000] text-3xl"></i>
-                                </div>
-                                <div class="text-5xl font-bold text-white">100+</div>
-                                <div class="mt-2 text-xl font-medium text-[#FF6000]">PROJECT</div>
-                            </div>
-
-                            <div class="text-center">
-                                <div class="bg-[#FF6000] bg-opacity-20 rounded-full w-20 h-20 mx-auto flex items-center justify-center mb-4">
-                                    <i class="fas fa-thumbs-up text-[#FF6000] text-3xl"></i>
-                                </div>
-                                <div class="text-5xl font-bold text-white">95%</div>
-                                <div class="mt-2 text-xl font-medium text-[#FF6000]">SUCCESS</div>
-                            </div>
-
-                            <div class="text-center">
-                                <div class="bg-[#FF6000] bg-opacity-20 rounded-full w-20 h-20 mx-auto flex items-center justify-center mb-4">
-                                    <i class="fas fa-map-marked-alt text-[#FF6000] text-3xl"></i>
-                                </div>
-                                <div class="text-5xl font-bold text-white">34</div>
-                                <div class="mt-2 text-xl font-medium text-[#FF6000]">PROVINCES</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+        
             <!-- Call to Action -->
             <div class="mt-20 text-center">
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Butuh Informasi Lebih Lanjut?</h2>

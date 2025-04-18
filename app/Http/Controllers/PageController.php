@@ -6,6 +6,9 @@ use App\Models\PageSeoSetting;
 use App\Services\TrackingService;
 use Illuminate\Http\Request;
 use App\Models\HomeContent;
+use App\Models\ProfileContent;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -394,7 +397,38 @@ class PageController extends Controller
     public function profile()
     {
         $seoData = $this->getSeoData('profile');
-        return view('profile', compact('seoData'));
+        
+        // Benar-benar hapus cache terlebih dahulu
+        Cache::forget('profile_contents');
+        
+        // Ambil data langsung dari database tanpa cache
+        $contents = ProfileContent::where('is_active', true)
+            ->orderBy('order')
+            ->get();
+            
+        // Lakukan grouping secara manual
+        $groupedContents = [];
+        foreach ($contents as $content) {
+            $groupedContents[$content->section][] = $content;
+        }
+        
+        // Ambil data layanan dari tabel services
+        $services = \App\Models\Service::where('status', 'published')
+            ->orderBy('id')
+            ->limit(3)
+            ->get();
+        
+        // Log data untuk debugging
+        Log::info('Profile Contents Count: ' . $contents->count());
+        Log::info('Profile Contents Data: ' . json_encode($groupedContents));
+        Log::info('Services Count: ' . $services->count());
+        
+        // Kirim data ke view
+        return view('profile', [
+            'contents' => $groupedContents,
+            'services' => $services,
+            'seoData' => $seoData
+        ]);
     }
     
     /**

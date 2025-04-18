@@ -6,18 +6,18 @@
                 <a href="/" class="flex items-center space-x-3 group">
                     <!-- Logo tanpa frame -->
                     <div class="relative">
-                        <img src="{{ asset('asset/logo.png') }}" alt="ZINDAN DIANTAR EXPRESS" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                        <img src="{{ asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
                     </div>
                     
                     <!-- Teks logo -->
                     <div class="hidden sm:block">
                         <div class="relative overflow-hidden">
                             <p class="text-[#FF6000] font-bold tracking-wide text-lg group-hover:translate-y-0 transition-all duration-300">
-                                ZINDAN <span class="text-black font-normal">DIANTAR</span> <span class="text-[#FF6000]">EXPRESS</span>
+                                {{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}
                             </p>
                             <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] group-hover:w-full transition-all duration-500 delay-100"></div>
                         </div>
-                        <p class="text-gray-500 text-xs tracking-wider italic">Solusi Tepat Pengiriman Cepat</p>
+                        <p class="text-gray-500 text-xs tracking-wider italic">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>
                     </div>
                 </a>
             </div>
