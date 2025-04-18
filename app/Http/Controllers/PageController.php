@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PageSeoSetting;
 use App\Services\TrackingService;
 use Illuminate\Http\Request;
+use App\Models\HomeContent;
 
 class PageController extends Controller
 {
@@ -76,6 +77,17 @@ class PageController extends Controller
     {
         $seoData = $this->getSeoData('home');
         
+        // Mengambil data konten home dari database
+        $homeContent = [];
+        $contentSections = HomeContent::where('is_active', true)
+            ->orderBy('order', 'asc')
+            ->get();
+        
+        // Mengatur konten berdasarkan section key
+        foreach ($contentSections as $section) {
+            $homeContent[$section->section_key] = $section;
+        }
+        
         // Mengambil semua layanan yang dipublikasikan dari database
         $services = \App\Models\Service::where('status', 'published')->get();
         
@@ -86,7 +98,7 @@ class PageController extends Controller
             ->limit(6)
             ->get();
         
-        return view('home', compact('seoData', 'services', 'partners'));
+        return view('home', compact('seoData', 'services', 'partners', 'homeContent'));
     }
     
     /**

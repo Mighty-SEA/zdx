@@ -78,6 +78,11 @@
                         <i class="fas fa-bullhorn mr-2 text-gray-400"></i>Marketing
                     </h3>
                     <nav class="space-y-1">
+                        <a href="{{ route('admin.home-content.index') }}" class="sidebar-link {{ request()->routeIs('admin.home-content*') ? 'active' : '' }}">
+                            <i class="fas fa-home text-lg w-5 text-center"></i>
+                            <span>Konten Home</span>
+                        </a>
+                        
                         <a href="{{ route('admin.services') }}" class="sidebar-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
                             <i class="fas fa-cubes text-lg w-5 text-center"></i>
                             <span>Layanan</span>

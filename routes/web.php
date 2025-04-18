@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AnalyticsSettingsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\HomeContentController;
 use Illuminate\Http\Request;
 
 // Frontend Routes
@@ -119,4 +120,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/partners/{id}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{id}', [PartnerController::class, 'update'])->name('partners.update');
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy'])->name('partners.destroy');
+    
+    // Admin Home Content
+    Route::get('/home-content', [HomeContentController::class, 'index'])->name('home-content.index');
+    Route::get('/home-content/{id}/edit', [HomeContentController::class, 'edit'])->name('home-content.edit');
+    Route::put('/home-content/{id}', [HomeContentController::class, 'update'])->name('home-content.update');
+    Route::post('/home-content/order', [HomeContentController::class, 'updateOrder'])->name('home-content.order');
 });
