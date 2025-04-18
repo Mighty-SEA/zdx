@@ -58,14 +58,14 @@ class ServiceController extends Controller
             $image = $request->file('image');
             $imageName = time() . '_' . ($request->image_name ? Str::slug($request->image_name) : $image->getClientOriginalName());
             
-            // Simpan gambar ke public/uploads/services
-            $path = public_path('uploads/services');
-            if (!file_exists($path)) {
-                mkdir($path, 0755, true);
-            }
+            // Simpan gambar ke storage publik
+            $path = Storage::disk('public')->putFileAs(
+                'services', 
+                $image, 
+                $imageName
+            );
             
-            $image->move($path, $imageName);
-            $service->image = 'uploads/services/' . $imageName;
+            $service->image = Storage::url($path);
         }
 
         $service->save();
@@ -119,22 +119,26 @@ class ServiceController extends Controller
 
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
-            if ($service->image && file_exists(public_path($service->image))) {
-                unlink(public_path($service->image));
+            if ($service->image) {
+                // Ekstrak path relatif dari URL
+                $oldPath = str_replace('/storage/', '', $service->image);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
             }
 
             // Upload gambar baru
             $image = $request->file('image');
             $imageName = time() . '_' . ($request->image_name ? Str::slug($request->image_name) : $image->getClientOriginalName());
             
-            // Simpan gambar ke public/uploads/services
-            $path = public_path('uploads/services');
-            if (!file_exists($path)) {
-                mkdir($path, 0755, true);
-            }
+            // Simpan gambar ke storage publik
+            $path = Storage::disk('public')->putFileAs(
+                'services', 
+                $image, 
+                $imageName
+            );
             
-            $image->move($path, $imageName);
-            $service->image = 'uploads/services/' . $imageName;
+            $service->image = Storage::url($path);
         }
 
         $service->save();
@@ -162,8 +166,12 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
         
         // Hapus gambar jika ada
-        if ($service->image && file_exists(public_path($service->image))) {
-            unlink(public_path($service->image));
+        if ($service->image) {
+            // Ekstrak path relatif dari URL
+            $path = str_replace('/storage/', '', $service->image);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
         }
         
         // Hapus pengaturan SEO terkait

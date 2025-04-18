@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('page_seo_settings', function (Blueprint $table) {
-            $table->boolean('uses_global_settings')->default(false)->after('custom_schema');
+        Schema::create('partners', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('page_seo_settings', function (Blueprint $table) {
-            $table->dropColumn('uses_global_settings');
-        });
+        Schema::dropIfExists('partners');
     }
 };
