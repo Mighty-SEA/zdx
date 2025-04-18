@@ -243,11 +243,41 @@
                     </button>
                 </div>
             </div>
+            
+            <!-- Bulk Actions -->
+            <div class="flex flex-col md:flex-row gap-4 mb-6 items-center">
+                <div id="bulkActionContainer" class="hidden w-full">
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <span class="text-sm font-medium text-gray-700">Aksi Masal:</span>
+                        <button type="button" id="bulkDeleteBtn" class="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                            <i class="fas fa-trash-alt mr-1.5"></i> Hapus Data Terpilih
+                        </button>
+                        <span id="selectedCount" class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">
+                            0 item terpilih
+                        </span>
+                        <button type="button" id="clearSelection" class="text-xs text-gray-500 hover:text-gray-700 underline">
+                            Batal pilih
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bulk Delete Form -->
+            <form id="bulkDeleteForm" action="{{ route('admin.rates.bulk-delete') }}" method="POST" class="hidden">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="selected_ids" id="selectedIdsInput">
+            </form>
 
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th scope="col" class="px-3 py-3 text-center">
+                                <div class="flex items-center justify-center">
+                                    <input type="checkbox" id="selectAll" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded cursor-pointer">
+                                </div>
+                            </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pulau</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provinsi</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kota/Kabupaten</th>
@@ -261,6 +291,9 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($rates as $rate)
                         <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-3 py-4 whitespace-nowrap text-center">
+                                <input type="checkbox" class="select-item focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded cursor-pointer" data-id="{{ $rate->id }}">
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $rate->pulau }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $rate->provinsi }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $rate->kota_kab }}</td>
@@ -285,7 +318,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                            <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">
                                 Tidak ada data tarif yang ditemukan
                             </td>
                         </tr>
@@ -497,6 +530,79 @@ jQuery(document).ready(function($) {
     if (urlParams.get('pulau')) {
         $('#filter_pulau').val(urlParams.get('pulau'));
     }
+    
+    // Bulk Actions
+    const selectAll = document.getElementById('selectAll');
+    const selectItems = document.querySelectorAll('.select-item');
+    const bulkActionContainer = document.getElementById('bulkActionContainer');
+    const selectedCount = document.getElementById('selectedCount');
+    const clearSelection = document.getElementById('clearSelection');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+    const selectedIdsInput = document.getElementById('selectedIdsInput');
+    
+    // Handle select all checkbox
+    selectAll.addEventListener('change', function() {
+        const isChecked = this.checked;
+        
+        selectItems.forEach(item => {
+            item.checked = isChecked;
+        });
+        
+        updateBulkActionVisibility();
+    });
+    
+    // Handle individual checkbox changes
+    selectItems.forEach(item => {
+        item.addEventListener('change', function() {
+            updateSelectAllCheckbox();
+            updateBulkActionVisibility();
+        });
+    });
+    
+    // Update the "Select All" checkbox based on individual selections
+    function updateSelectAllCheckbox() {
+        const checkedItems = document.querySelectorAll('.select-item:checked');
+        selectAll.checked = checkedItems.length === selectItems.length && selectItems.length > 0;
+    }
+    
+    // Show/hide bulk action options and update count
+    function updateBulkActionVisibility() {
+        const checkedItems = document.querySelectorAll('.select-item:checked');
+        
+        if (checkedItems.length > 0) {
+            bulkActionContainer.classList.remove('hidden');
+            selectedCount.textContent = checkedItems.length + ' item terpilih';
+        } else {
+            bulkActionContainer.classList.add('hidden');
+        }
+    }
+    
+    // Clear selection
+    clearSelection.addEventListener('click', function() {
+        selectAll.checked = false;
+        selectItems.forEach(item => {
+            item.checked = false;
+        });
+        bulkActionContainer.classList.add('hidden');
+    });
+    
+    // Bulk Delete action
+    bulkDeleteBtn.addEventListener('click', function() {
+        const checkedItems = document.querySelectorAll('.select-item:checked');
+        
+        if (checkedItems.length === 0) {
+            alert('Silakan pilih minimal satu data untuk dihapus');
+            return;
+        }
+        
+        const selectedIds = Array.from(checkedItems).map(item => item.dataset.id);
+        
+        if (confirm(`Apakah Anda yakin ingin menghapus ${checkedItems.length} data yang dipilih? Tindakan ini tidak dapat dibatalkan.`)) {
+            selectedIdsInput.value = JSON.stringify(selectedIds);
+            bulkDeleteForm.submit();
+        }
+    });
 
     // Modal functionality - Enhanced with animations
     const modal = document.getElementById('importModal');
