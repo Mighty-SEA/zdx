@@ -52,13 +52,17 @@ use Illuminate\Support\Facades\Storage;
         <div class="text-center">
             <!-- Main headline dengan efek melayang -->
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-white">
-                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">Solusi Pengiriman</span>
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">Cepat & Terpercaya</span>
+                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">
+                    @editable('hero-title-1', 'text', 'Solusi Pengiriman')
+                </span>
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">
+                    @editable('hero-title-2', 'text', 'Cepat & Terpercaya')
+                </span>
             </h1>
 
             <!-- Subheading dengan efek fade-in -->
             <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white max-w-2xl mx-auto opacity-90 animate-fade-in-up" style="animation-delay: 0.9s">
-                Kirim barang Anda ke seluruh Indonesia dengan layanan ekspres yang aman dan tepat waktu
+                @editable('hero-description', 'text', 'Kirim barang Anda ke seluruh Indonesia dengan layanan ekspres yang aman dan tepat waktu')
             </p>
 
             <!-- CTA Buttons dengan desain yang lebih menarik -->
@@ -130,11 +134,11 @@ use Illuminate\Support\Facades\Storage;
         <div class="max-w-7xl mx-auto px-4 relative">
             <!-- Section Header dengan animasi -->
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="inline-block text-3xl sm:text-4xl font-bold relative">
+                <h2 class="inline-block text-3xl sm:text-4xl font-bold relative" data-editable="text" data-section="services-title">
                     Layanan Kami
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] transform scale-x-0 transition-transform duration-500 group-hover:scale-x-100"></div>
                 </h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda</p>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4" data-editable="text" data-section="services-description">Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda</p>
             </div>
 
             <!-- Services Cards dengan animasi hover -->
@@ -184,25 +188,21 @@ use Illuminate\Support\Facades\Storage;
                             <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
                             <div class="absolute inset-0 bg-black opacity-10"></div>
                             <div class="absolute inset-0 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                @editable('service-card1-image', 'image', '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                                </svg>
+                                </svg>')
                             </div>
                         </div>
                         <div class="p-4 sm:p-5 md:p-6">
-                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Darat</h3>
-                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Layanan pengiriman darat cepat dan aman ke seluruh Indonesia.</p>
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">@editable('service-card1-title', 'text', 'Pengiriman Darat')</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">@editable('service-card1-description', 'text', 'Layanan pengiriman darat cepat dan aman ke seluruh Indonesia.')</p>
                             <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Tepat Waktu</span>
-                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Aman</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card1-tag1', 'text', 'Tepat Waktu')</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card1-tag2', 'text', 'Aman')</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card1-tag3', 'text', 'Terjangkau')</span>
                             </div>
-                            <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                                Selengkapnya
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
+                            <a href="#" class="inline-block px-4 py-2 bg-[#FF6000] text-white font-medium rounded-lg hover:bg-[#FF8C00] transition-colors duration-300">@editable('service-card1-button', 'text', 'Info Lebih Lanjut')</a>
                         </div>
                     </div>
 
@@ -212,24 +212,20 @@ use Illuminate\Support\Facades\Storage;
                             <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
                             <div class="absolute inset-0 bg-black opacity-10"></div>
                             <div class="absolute inset-0 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
+                                @editable('service-card2-image', 'image', '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0v1a2 2 0 01-2 2H9a2 2 0 01-2-2v-1m8-10l-4 4m0 0l-4-4m4 4V3" />
+                                </svg>')
                             </div>
                         </div>
                         <div class="p-4 sm:p-5 md:p-6">
-                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Laut</h3>
-                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Solusi pengiriman laut efisien untuk barang dalam jumlah besar.</p>
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">@editable('service-card2-title', 'text', 'Pengiriman Laut')</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">@editable('service-card2-description', 'text', 'Solusi pengiriman laut untuk barang berat dan volume besar.')</p>
                             <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Volume Besar</span>
-                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Ekonomis</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card2-tag1', 'text', 'Hemat Biaya')</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card2-tag2', 'text', 'Volume Besar')</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card2-tag3', 'text', 'Terintegrasi')</span>
                             </div>
-                            <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                                Selengkapnya
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
+                            <a href="#" class="inline-block px-4 py-2 bg-[#FF6000] text-white font-medium rounded-lg hover:bg-[#FF8C00] transition-colors duration-300">@editable('service-card2-button', 'text', 'Pelajari Lebih Lanjut')</a>
                         </div>
                     </div>
 
@@ -239,24 +235,20 @@ use Illuminate\Support\Facades\Storage;
                             <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
                             <div class="absolute inset-0 bg-black opacity-10"></div>
                             <div class="absolute inset-0 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                @editable('service-card3-image', 'image', '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                </svg>
+                                </svg>')
                             </div>
                         </div>
                         <div class="p-4 sm:p-5 md:p-6">
-                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">Pengiriman Udara</h3>
-                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">Pengiriman cepat melalui udara untuk kebutuhan mendesak.</p>
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">@editable('service-card3-title', 'text', 'Pengiriman Udara')</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">@editable('service-card3-description', 'text', 'Pengiriman super cepat melalui udara untuk kebutuhan mendesak.')</p>
                             <div class="flex flex-wrap gap-1 sm:gap-2 mb-3 md:mb-4">
-                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Super Cepat</span>
-                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">Prioritas</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card3-tag1', 'text', 'Super Cepat')</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card3-tag2', 'text', 'Prioritas')</span>
+                                <span class="px-2 py-1 bg-[#FFF0E6] text-[#FF6000] text-xs font-medium rounded-full">@editable('service-card3-tag3', 'text', 'Terjamin')</span>
                             </div>
-                            <a href="/layanan" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
-                                Selengkapnya
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
+                            <a href="#" class="inline-block px-4 py-2 bg-[#FF6000] text-white font-medium rounded-lg hover:bg-[#FF8C00] transition-colors duration-300">@editable('service-card3-button', 'text', 'Hubungi Kami')</a>
                         </div>
                     </div>
                     
@@ -404,43 +396,28 @@ use Illuminate\Support\Facades\Storage;
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <!-- Left Column -->
                     <div data-aos="fade-right" class="order-2 md:order-1">
-                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Siap Mengirim Barang Anda?</h2>
-                        <p class="text-white text-opacity-90 text-lg mb-6">
-                            Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.
-                        </p>
+                        @editable('cta-heading', 'text', 'Siap Mengirim Barang Anda?')
                         
-                        <!-- Checklist items -->
+                        <div class="text-white text-opacity-90 text-lg mb-6">
+                            @editable('cta-description', 'textarea', 'Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.')
+                        </div>
+                        
                         <div class="space-y-3 mb-8">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-white">Tarif bersaing untuk semua jenis pengiriman</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-white">Konsultasi gratis untuk kebutuhan logistik</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-white">Jaminan kepuasan untuk setiap pengiriman</span>
-                            </div>
+                            @editable('cta-points', 'textarea', 'Tarif bersaing untuk semua jenis pengiriman
+Konsultasi gratis untuk kebutuhan logistik
+Jaminan kepuasan untuk setiap pengiriman')
                         </div>
                         
                         <!-- CTA Buttons -->
                         <div class="flex flex-wrap gap-4">
                             <a href="/contact" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
-                                Hubungi Kami
+                                @editable('cta-button-1', 'text', 'Hubungi Kami')
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                             </a>
                             <a href="/tracking" class="inline-flex items-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg transition-all duration-300 hover:bg-white/10">
-                                Lacak Kiriman
+                                @editable('cta-button-2', 'text', 'Lacak Kiriman')
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -454,13 +431,13 @@ use Illuminate\Support\Facades\Storage;
                         <div class="relative w-full max-w-md">
                             <div class="absolute top-0 left-0 right-0 bottom-0 bg-[#FF6000]/20 rounded-xl blur-2xl"></div>
                             <div class="relative bg-white p-6 rounded-xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500">
-                                <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">
+                                @editable('cta-image', 'image', '<img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">')
                                 
                                 <!-- Badge -->
                                 <div class="absolute -top-4 -right-4 bg-[#FF6000] text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg transform rotate-12">
                                     <div class="text-center leading-tight">
-                                        <div class="text-xs">MULAI</div>
-                                        <div class="font-bold text-lg">HARI INI</div>
+                                        <div class="text-xs">@editable('cta-badge-small', 'text', 'MULAI')</div>
+                                        <div class="font-bold text-lg">@editable('cta-badge-large', 'text', 'HARI INI')</div>
                                     </div>
                                 </div>
                                 
@@ -471,7 +448,7 @@ use Illuminate\Support\Facades\Storage;
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                                         </svg>
                                         <p class="text-gray-600 text-sm">
-                                            "Layanan terbaik yang pernah kami gunakan untuk logistik perusahaan kami."
+                                            @editable('cta-quote', 'text', '"Layanan terbaik yang pernah kami gunakan untuk logistik perusahaan kami."')
                                         </p>
                                     </div>
                                 </div>
@@ -483,7 +460,7 @@ use Illuminate\Support\Facades\Storage;
             
             <!-- Clients -->
             <div class="mt-20 mb-0 text-center" data-aos="fade-up">
-                <h3 class="text-xl text-white font-medium mb-8">Dipercaya oleh Perusahaan Terkemuka</h3>
+                <h3 class="text-xl text-white font-medium mb-8">@editable('clients-heading', 'text', 'Dipercaya oleh Perusahaan Terkemuka')</h3>
                 <div class="flex flex-wrap justify-center gap-8 items-center">
                     @if(isset($partners) && $partners->count() > 0)
                         @foreach($partners as $partner)
@@ -494,10 +471,10 @@ use Illuminate\Support\Facades\Storage;
                             @endif
                         @endforeach
                     @else
-                        <img src="{{ asset('asset/images/client1.png') }}" alt="Client 1" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                        <img src="{{ asset('asset/images/client2.png') }}" alt="Client 2" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                        <img src="{{ asset('asset/images/client3.png') }}" alt="Client 3" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                        <img src="{{ asset('asset/images/client4.png') }}" alt="Client 4" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        @editable('clients-logos', 'html', '<img src="{{ asset("asset/images/client1.png") }}" alt="Client 1" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <img src="{{ asset("asset/images/client2.png") }}" alt="Client 2" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <img src="{{ asset("asset/images/client3.png") }}" alt="Client 3" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <img src="{{ asset("asset/images/client4.png") }}" alt="Client 4" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">')
                     @endif
                 </div>
             </div>

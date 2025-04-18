@@ -124,4 +124,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/partners/{id}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{id}', [PartnerController::class, 'update'])->name('partners.update');
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy'])->name('partners.destroy');
+    
+    // Live Edit Routes
+    Route::get('/live-edit', function () {
+        return view('admin.live-edit.index');
+    })->name('live-edit');
+    
+    Route::post('/live-edit/enable', [App\Http\Controllers\Admin\LiveEditController::class, 'enableEditMode'])->name('live-edit.enable');
+    Route::post('/live-edit/disable', [App\Http\Controllers\Admin\LiveEditController::class, 'disableEditMode'])->name('live-edit.disable');
+    Route::get('/live-edit/content', [App\Http\Controllers\Admin\LiveEditController::class, 'getPageContent'])->name('live-edit.content');
+    Route::post('/live-edit/content', [App\Http\Controllers\Admin\LiveEditController::class, 'savePageContent'])->name('live-edit.save');
+});
+
+// Live Edit API Routes
+Route::prefix('api/live-edit')->name('api.live-edit.')->middleware(['auth'])->group(function () {
+    Route::get('/content', [App\Http\Controllers\Admin\LiveEditController::class, 'getPageContent'])->name('content');
+    Route::post('/content', [App\Http\Controllers\Admin\LiveEditController::class, 'savePageContent'])->name('save');
 });

@@ -114,6 +114,11 @@
                             <span>Layanan</span>
                         </a>
                         
+                        <a href="{{ route('admin.live-edit') }}" class="sidebar-link {{ request()->routeIs('admin.live-edit*') ? 'active' : '' }}">
+                            <i class="fas fa-edit text-lg w-5 text-center"></i>
+                            <span>Live Edit</span>
+                        </a>
+                        
                         <!-- Tambahkan menu marketing lainnya di sini jika ada -->
                     </nav>
                 </div>
