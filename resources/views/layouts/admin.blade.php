@@ -6,6 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') - ZDX  Admin</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('asset/logo.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('asset/logo.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('asset/logo.png') }}">
+    
     <!-- Meta Tags Dasar -->
     <meta name="description" content="ZDX  - Admin Panel">
     <meta name="keywords" content=", shipping, admin, dashboard">

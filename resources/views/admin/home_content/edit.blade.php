@@ -42,6 +42,23 @@
                 @csrf
                 @method('PUT')
                 
+                <!-- Debug info -->
+                @if($errors->any())
+                <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-3 text-lg"></i>
+                        <div>
+                            <p class="font-medium">Terjadi kesalahan:</p>
+                            <ul class="list-disc ml-5 mt-1">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                
                 <!-- Status Switch -->
                 <div class="flex items-center p-4 mb-6 bg-gray-50 rounded-lg">
                     <div class="mr-4">
@@ -90,8 +107,6 @@
                     @include('admin.home_content.partials.features_form', ['section' => $section, 'metadata' => $metadata])
                 @elseif($section->section_key === 'service_cards')
                     @include('admin.home_content.partials.service_cards_form', ['section' => $section])
-                @elseif($section->section_key === 'partners')
-                    @include('admin.home_content.partials.partners_form', ['section' => $section])
                 @else
                     <!-- Default form untuk section yang tidak spesifik -->
                     <div class="mb-6">
@@ -199,21 +214,54 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function handleFiles(files) {
             if (files.length > 0) {
-                const preview = dropArea.querySelector('img');
+                const file = files[0];
                 const reader = new FileReader();
+                const previewContainer = dropArea.querySelector('.file-preview') || document.createElement('div');
+                
+                if (!dropArea.querySelector('.file-preview')) {
+                    previewContainer.classList.add('file-preview', 'mt-4');
+                    dropArea.appendChild(previewContainer);
+                }
                 
                 reader.onload = function(e) {
-                    if (preview) {
-                        preview.src = e.target.result;
-                    } else {
-                        const newPreview = document.createElement('div');
-                        newPreview.className = 'mb-3';
-                        newPreview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="mx-auto h-32 object-cover">`;
-                        dropArea.querySelector('.space-y-1').prepend(newPreview);
+                    previewContainer.innerHTML = `
+                        <div class="relative mx-auto max-w-xs">
+                            <img src="${e.target.result}" alt="Preview" class="max-h-48 mx-auto rounded">
+                            <div class="mt-2 text-center">
+                                <span class="text-xs text-green-600">${file.name} (${Math.round(file.size / 1024)} KB)</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Tampilkan notifikasi file telah dipilih
+                    const filePreview = dropArea.querySelector('#file-preview');
+                    if (filePreview) {
+                        filePreview.classList.remove('hidden');
                     }
-                }
-                reader.readAsDataURL(files[0]);
+                    
+                    // Sembunyikan placeholder upload jika ada
+                    const uploadPlaceholder = dropArea.querySelector('svg');
+                    if (uploadPlaceholder) {
+                        uploadPlaceholder.style.display = 'none';
+                    }
+                };
+                
+                reader.readAsDataURL(file);
             }
+        }
+    });
+    
+    // Validasi gambar sebelum form submit
+    document.getElementById('edit-section-form').addEventListener('submit', function(e) {
+        const fileInput = document.querySelector('input[type="file"][name="image"]');
+        // Jika tidak ada file yang dipilih tapi input file ada, set nilai ke empty string daripada empty object
+        if (fileInput && fileInput.files.length === 0) {
+            // Cegah pengiriman object kosong dengan membuat hidden input baru
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'no_image';
+            hiddenInput.value = '1';
+            this.appendChild(hiddenInput);
         }
     });
 });

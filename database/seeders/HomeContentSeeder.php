@@ -118,19 +118,6 @@ class HomeContentSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-            // 6. Partner
-            [
-                'section_name' => 'Partner',
-                'section_key' => 'partners',
-                'title' => 'Dipercaya oleh Perusahaan Terkemuka',
-                'subtitle' => 'Perusahaan dan brand yang telah mempercayakan pengiriman mereka kepada kami',
-                'order' => 6,
-                'is_active' => true,
-                'use_rich_editor' => false,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ];
 
         // Insert data

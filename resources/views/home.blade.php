@@ -53,8 +53,8 @@ use Illuminate\Support\Facades\Storage;
             <!-- Main headline dengan efek melayang -->
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-white">
                 @if(isset($homeContent['hero']))
-                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">{{ Str::beforeLast($homeContent['hero']->title, '&') }}</span>
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">{{ Str::afterLast($homeContent['hero']->title, '&') }}</span>
+                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">{{ \Illuminate\Support\Str::beforeLast($homeContent['hero']->title, '&') }}</span>
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">{{ \Illuminate\Support\Str::afterLast($homeContent['hero']->title, '&') }}</span>
                 @else
                 <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">Solusi Pengiriman</span>
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">Cepat & Terpercaya</span>
@@ -229,9 +229,9 @@ use Illuminate\Support\Facades\Storage;
                             @endif
                         </div>
                         <div class="p-4 sm:p-5 md:p-6">
-                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-800 group-hover:text-[#FF6000] transition-colors duration-300">{{ $service->title }}</h3>
-                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">{{ Str::limit($service->description, 80) }}</p>
-                            <a href="/layanan/{{ $service->slug }}" class="inline-flex items-center text-sm sm:text-base font-medium text-[#FF6000] hover:text-[#E65100] transition-colors">
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{{ $service->title }}</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-3 md:mb-4">{{ \Illuminate\Support\Str::limit($service->description, 80) }}</p>
+                            <a href="{{ url('layanan/' . $service->slug) }}" class="inline-flex items-center text-[#FF6000] hover:text-[#FF8C00] transition-colors">
                                 Selengkapnya
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -455,9 +455,19 @@ use Illuminate\Support\Facades\Storage;
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <!-- Left Column -->
                     <div data-aos="fade-right" class="order-2 md:order-1">
-                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Siap Mengirim Barang Anda?</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                            @if(isset($homeContent) && isset($homeContent['service_cards']) && !empty($homeContent['service_cards']->title))
+                                {{ $homeContent['service_cards']->title }}
+                            @else
+                                Siap Mengirim Barang Anda?
+                            @endif
+                        </h2>
                         <p class="text-white text-opacity-90 text-lg mb-6">
-                            Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.
+                            @if(isset($homeContent) && isset($homeContent['service_cards']) && !empty($homeContent['service_cards']->subtitle))
+                                {{ $homeContent['service_cards']->subtitle }}
+                            @else
+                                Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.
+                            @endif
                         </p>
                         
                         <!-- Checklist items -->
@@ -466,32 +476,40 @@ use Illuminate\Support\Facades\Storage;
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                 </svg>
-                                <span class="text-white">Tarif bersaing untuk semua jenis pengiriman</span>
+                                <span class="text-white">
+                                    @php
+                                        $metadata = isset($homeContent) && isset($homeContent['service_cards']) && $homeContent['service_cards']->metadata 
+                                            ? json_decode($homeContent['service_cards']->metadata, true) : [];
+                                    @endphp
+                                    {{ $metadata['point1'] ?? ($homeContent['service_cards']->content ?? 'Tarif bersaing untuk semua jenis pengiriman') }}
+                                </span>
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                 </svg>
-                                <span class="text-white">Konsultasi gratis untuk kebutuhan logistik</span>
+                                <span class="text-white">
+                                    {{ $metadata['point2'] ?? 'Konsultasi gratis untuk kebutuhan logistik' }}
+                                </span>
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                 </svg>
-                                <span class="text-white">Jaminan kepuasan untuk setiap pengiriman</span>
+                                <span class="text-white">{{ $metadata['point3'] ?? 'Jaminan kepuasan untuk setiap pengiriman' }}</span>
                             </div>
                         </div>
                         
                         <!-- CTA Buttons -->
                         <div class="flex flex-wrap gap-4">
-                            <a href="/contact" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
-                                Hubungi Kami
+                            <a href="{{ isset($homeContent) && isset($homeContent['service_cards']) && !empty($homeContent['service_cards']->button_url) ? $homeContent['service_cards']->button_url : '/contact' }}" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                                {{ isset($homeContent) && isset($homeContent['service_cards']) && !empty($homeContent['service_cards']->button_text) ? $homeContent['service_cards']->button_text : 'Hubungi Kami' }}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                             </a>
-                            <a href="/tracking" class="inline-flex items-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg transition-all duration-300 hover:bg-white/10">
-                                Lacak Kiriman
+                            <a href="{{ $metadata['secondary_button_url'] ?? '/tracking' }}" class="inline-flex items-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg transition-all duration-300 hover:bg-white/10">
+                                {{ $metadata['secondary_button_text'] ?? 'Lacak Kiriman' }}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -505,7 +523,11 @@ use Illuminate\Support\Facades\Storage;
                         <div class="relative w-full max-w-md">
                             <div class="absolute top-0 left-0 right-0 bottom-0 bg-[#FF6000]/20 rounded-xl blur-2xl"></div>
                             <div class="relative bg-white p-6 rounded-xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500">
-                                <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">
+                                @if(isset($homeContent) && isset($homeContent['service_cards']) && !empty($homeContent['service_cards']->image_path))
+                                    <img src="{{ asset('storage/' . $homeContent['service_cards']->image_path) }}" alt="CTA Image" class="w-full h-auto rounded-lg shadow">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">
+                                @endif
                                 
                                 <!-- Badge -->
                                 <div class="absolute -top-4 -right-4 bg-[#FF6000] text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg transform rotate-12">
@@ -522,7 +544,7 @@ use Illuminate\Support\Facades\Storage;
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                                         </svg>
                                         <p class="text-gray-600 text-sm">
-                                            "Layanan terbaik yang pernah kami gunakan untuk logistik perusahaan kami."
+                                            {{ $metadata['quote_text'] ?? '"Layanan terbaik yang pernah kami gunakan untuk logistik perusahaan kami."' }}
                                         </p>
                                     </div>
                                 </div>

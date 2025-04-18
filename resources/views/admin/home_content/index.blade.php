@@ -64,10 +64,16 @@
                             {{ $section->order }}
                         </div>
                         <div class="col-span-4 text-sm text-gray-900">
-                            <p class="font-medium">{{ $section->section_name }}</p>
+                            <p class="font-medium">
+                            @if($section->section_key === 'service_cards')
+                                CTA Section
+                            @else
+                                {{ $section->section_name }}
+                            @endif
+                            </p>
                             <p class="text-xs text-gray-500 mt-1">{{ $section->section_key }}</p>
                         </div>
-                        <div class="col-span-5 text-sm text-gray-600">{{ Str::limit($section->title, 60) }}</div>
+                        <div class="col-span-5 text-sm text-gray-600">{{ \Illuminate\Support\Str::limit($section->title, 60) }}</div>
                         <div class="col-span-1">
                             @if($section->is_active)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

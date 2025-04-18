@@ -437,7 +437,13 @@ class PageController extends Controller
     public function contact()
     {
         $seoData = $this->getSeoData('contact');
-        return view('contact', compact('seoData'));
+        
+        // Mengambil data kontak dari ProfileContent 'about'
+        $contactInfo = ProfileContent::where('section', 'about')
+            ->where('is_active', true)
+            ->first();
+            
+        return view('contact', compact('seoData', 'contactInfo'));
     }
     
     /**

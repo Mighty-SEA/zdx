@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
 <div class="space-y-6">
@@ -8,9 +12,16 @@
             <input type="file" name="image" id="image" class="hidden" accept="image/*">
             <label for="image" class="cursor-pointer block">
                 <div class="space-y-1 text-center">
-                    @if($section->image_path)
+                    @if($section->image_path && Storage::disk('public')->exists($section->image_path))
                         <div class="mb-3">
-                            <img src="{{ asset('storage/' . $section->image_path) }}" alt="Current image" class="mx-auto h-32 object-cover">
+                            <img src="{{ asset('storage/' . $section->image_path) }}?v={{ time() }}" alt="Current image" class="mx-auto h-32 object-cover">
+                            <p class="text-xs text-green-600 mt-1">Gambar saat ini: {{ basename($section->image_path) }}</p>
+                        </div>
+                    @elseif($section->image_path)
+                        <div class="mb-3">
+                            <div class="bg-red-100 text-red-700 p-2 rounded text-xs">
+                                <i class="fas fa-exclamation-triangle mr-1"></i> Gambar tidak ditemukan: {{ $section->image_path }}
+                            </div>
                         </div>
                     @endif
                     <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -23,6 +34,9 @@
                         </label>
                     </div>
                     <p class="text-xs text-gray-500">PNG, JPG, GIF hingga 2MB</p>
+                    <div id="file-preview" class="hidden mt-3 text-center">
+                        <p class="text-xs text-green-600">File dipilih, klik Simpan untuk mengupload</p>
+                    </div>
                 </div>
             </label>
         </div>
