@@ -17,10 +17,21 @@
     <meta property="og:title" content="ZDX ">
     <meta property="og:description" content="ZDX  Panel">
     
+    @yield('meta')
+    
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+    
+    <style>
+        .logo-image {
+            height: 40px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <!-- Main Container -->
@@ -31,7 +42,7 @@
             <div class="px-6 py-4 flex items-center h-16">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center">
                     <div class="flex-shrink-0 mr-2">
-                        <img src="{{ asset('asset/logo.png') }}" alt="ZDX" class="h-10 w-auto animate-float">
+                        <img id="admin-sidebar-logo" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('placeholder-image.png') }}" alt="ZDX" class="logo-image animate-float">
                     </div>
                     <span class="text-xl font-bold text-gray-800 ml-1">Admin</span>
                 </a>
@@ -373,6 +384,31 @@
         // Mobile Search Toggle
         mobileSearchToggle.addEventListener('click', function() {
             mobileSearchBar.classList.toggle('hidden');
+        });
+        
+        // Fungsi untuk memperbarui logo admin
+        function refreshAdminLogo() {
+            const adminLogo = document.getElementById('admin-sidebar-logo');
+            if (adminLogo) {
+                // Ambil URL dasar
+                let currentSrc = adminLogo.src.split('?')[0];
+                // Tambahkan parameter untuk memaksa refresh
+                adminLogo.src = currentSrc + '?v=' + new Date().getTime() + '&nocache=' + Math.random();
+            }
+        }
+        
+        // Auto refresh logo saat halaman di-load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check URL parameter untuk melihat apakah baru upload logo
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('nocache') || urlParams.has('t')) {
+                refreshAdminLogo();
+            }
+            
+            // Refresh logo secara periodik jika berada di halaman admin settings
+            if (window.location.href.includes('admin/settings')) {
+                setInterval(refreshAdminLogo, 30000); // Refresh setiap 30 detik
+            }
         });
     </script>
     

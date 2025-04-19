@@ -2,6 +2,12 @@
 
 @section('title', 'Pengaturan')
 
+@section('meta')
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+@endsection
+
 @section('content')
 <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
@@ -338,7 +344,7 @@
                                         <!-- Logo 1 -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img src="{{ asset('asset/logo1.png') }}?v={{ time() }}" alt="Logo 1" class="w-full h-32 object-contain">
+                                                <img id="logo1-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Logo 1" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 1 <span class="text-xs text-indigo-600">(Utama)</span></span>
@@ -351,7 +357,7 @@
                                         <!-- Logo 2 -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img src="{{ asset('asset/logo2.png') }}?v={{ time() }}" alt="Logo 2" class="w-full h-32 object-contain">
+                                                <img id="logo2-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo2.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo2.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Logo 2" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 2</span>
@@ -364,7 +370,7 @@
                                         <!-- Logo 3 -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img src="{{ asset('asset/logo3.png') }}?v={{ time() }}" alt="Logo 3" class="w-full h-32 object-contain">
+                                                <img id="logo3-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo3.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo3.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Logo 3" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 3</span>
@@ -391,7 +397,7 @@
                                             </button>
                                         </div>
                                         <div class="border rounded-lg p-2">
-                                            <img src="{{ asset('asset/logistics.jpg') }}?v={{ time() }}" alt="Operasi Logistik" class="w-full h-48 object-cover rounded">
+                                            <img id="logistics-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('images/logistics.jpg') ? \Illuminate\Support\Facades\Storage::url('images/logistics.jpg').'?v='.rand() : asset('placeholder-image.png') }}" alt="Operasi Logistik" class="w-full h-48 object-cover rounded">
                                         </div>
                                         <div class="text-xs text-gray-500 mt-2">
                                             <i class="fas fa-info-circle mr-1"></i> Gambar ini ditampilkan di bawah logo pada halaman profil perusahaan.
@@ -946,6 +952,11 @@
             if (activePanel) {
                 activePanel.classList.remove('hidden');
             }
+            
+            // Jika panelnya adalah logos, refresh gambar
+            if (panelId === 'panel-logos') {
+                refreshLogos(true);
+            }
         }
         
         // Tambahkan event listener untuk klik pada tab perusahaan
@@ -1116,15 +1127,64 @@
 
 <script>
     // Fungsi untuk memperbarui gambar logo setelah upload berhasil
-    function refreshLogos() {
-        // Dapatkan semua elemen gambar logo
-        const logoImages = document.querySelectorAll('img[src*="asset/logo"]');
+    function refreshLogos(forceRefresh = false) {
+        // Dapatkan semua elemen gambar logo berdasarkan ID
+        const logo1Image = document.getElementById('logo1-preview');
+        const logo2Image = document.getElementById('logo2-preview');
+        const logo3Image = document.getElementById('logo3-preview');
+        const logisticsImage = document.getElementById('logistics-preview');
         
         // Tambahkan parameter random ke URL gambar untuk memaksa browser mengambil gambar baru
-        logoImages.forEach(img => {
-            const currentSrc = img.src.split('?')[0];
-            img.src = currentSrc + '?v=' + new Date().getTime();
-        });
+        const timestamp = new Date().getTime();
+        
+        if (logo1Image) {
+            const baseUrl = logo1Image.src.split('?')[0];
+            logo1Image.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
+            
+            // Untuk memaksa browser me-reload gambar secara visual
+            if (forceRefresh) {
+                logo1Image.style.opacity = '0.5';
+                setTimeout(() => {
+                    logo1Image.style.opacity = '1';
+                }, 300);
+            }
+        }
+        
+        if (logo2Image) {
+            const baseUrl = logo2Image.src.split('?')[0];
+            logo2Image.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
+            
+            if (forceRefresh) {
+                logo2Image.style.opacity = '0.5';
+                setTimeout(() => {
+                    logo2Image.style.opacity = '1';
+                }, 300);
+            }
+        }
+        
+        if (logo3Image) {
+            const baseUrl = logo3Image.src.split('?')[0];
+            logo3Image.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
+            
+            if (forceRefresh) {
+                logo3Image.style.opacity = '0.5';
+                setTimeout(() => {
+                    logo3Image.style.opacity = '1';
+                }, 300);
+            }
+        }
+        
+        if (logisticsImage) {
+            const baseUrl = logisticsImage.src.split('?')[0];
+            logisticsImage.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
+            
+            if (forceRefresh) {
+                logisticsImage.style.opacity = '0.5';
+                setTimeout(() => {
+                    logisticsImage.style.opacity = '1';
+                }, 300);
+            }
+        }
     }
     
     // Tambahkan event untuk memperbarui gambar setelah modal ditutup
@@ -1132,22 +1192,80 @@
         // Cek apakah ada pesan sukses untuk upload logo
         const successMessage = "{{ session('success') }}";
         if (successMessage && successMessage.includes('Logo berhasil')) {
-            refreshLogos();
+            // Tambahkan timeout untuk memastikan halaman sudah sepenuhnya di-load
+            setTimeout(() => {
+                refreshLogos(true);
+            }, 500);
         }
         
-        // Tambahkan event listener untuk tombol "Refresh Gambar"
-        const refreshBtn = document.createElement('button');
-        refreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Refresh Gambar';
-        refreshBtn.className = 'px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-md hover:bg-gray-700 focus:outline-none focus:ring mt-2';
-        refreshBtn.onclick = function() {
-            refreshLogos();
-            alert('Gambar logo diperbarui!');
-        }
-        
-        // Tambahkan tombol ke panel logo
+        // Tambahkan tombol "Refresh Gambar" ke panel logo
         const logoPanel = document.getElementById('panel-logos');
         if (logoPanel) {
-            logoPanel.querySelector('.bg-indigo-50').appendChild(refreshBtn);
+            const refreshBtn = document.createElement('button');
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Refresh Gambar';
+            refreshBtn.className = 'px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-md hover:bg-gray-700 focus:outline-none focus:ring mt-2';
+            refreshBtn.id = 'refreshLogosBtn';
+            refreshBtn.onclick = function() {
+                refreshLogos(true);
+                alert('Gambar logo diperbarui!');
+            }
+            
+            // Tambahkan tombol ke panel logo jika belum ada
+            if (!document.getElementById('refreshLogosBtn')) {
+                logoPanel.querySelector('.bg-indigo-50').appendChild(refreshBtn);
+            }
+            
+            // Tambahkan tombol di atas semua panel logo
+            const hardRefreshBtn = document.createElement('button');
+            hardRefreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Hard Refresh Gambar';
+            hardRefreshBtn.className = 'px-3 py-1 ml-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring';
+            hardRefreshBtn.onclick = function() {
+                // Paksa gambar mereload dari server tanpa cache
+                refreshLogos(true);
+                
+                // Lakukan hard reload pada halaman dengan clear cache
+                const currentUrl = window.location.href.split('?')[0];
+                const newUrl = currentUrl + '?tab=logos&t=' + new Date().getTime() + '&nocache=' + Math.random();
+                window.location.href = newUrl;
+            }
+            
+            const companyTabsContainer = document.querySelector('.mb-6.border-b.border-gray-200 ul');
+            if (companyTabsContainer && !document.getElementById('hardRefreshBtn')) {
+                companyTabsContainer.insertAdjacentElement('afterend', hardRefreshBtn);
+                hardRefreshBtn.id = 'hardRefreshBtn';
+            }
+        }
+        
+        // Tambahkan event untuk merefresh gambar ketika form logo disubmit
+        const logoForm = document.querySelector('form[action*="logo.upload"]');
+        if (logoForm) {
+            logoForm.addEventListener('submit', function() {
+                // Tambahkan flag untuk menandai bahwa form telah disubmit
+                sessionStorage.setItem('logoFormSubmitted', 'true');
+            });
+        }
+        
+        // Cek jika form telah disubmit sebelumnya
+        if (sessionStorage.getItem('logoFormSubmitted') === 'true') {
+            // Reset flag
+            sessionStorage.removeItem('logoFormSubmitted');
+            // Refresh gambar
+            setTimeout(() => {
+                refreshLogos(true);
+            }, 500);
+        }
+        
+        // Tambahkan event listener untuk menutup modal yang akan refresh gambar
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        if (closeModalBtns.length > 0) {
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Force refresh gambar saat modal ditutup
+                    setTimeout(() => {
+                        refreshLogos(true);
+                    }, 300);
+                });
+            });
         }
     });
 </script>

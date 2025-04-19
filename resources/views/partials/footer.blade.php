@@ -27,7 +27,7 @@
             <!-- Tentang Perusahaan -->
             <div class="transform transition-all duration-500 hover:translate-y-[-5px]">
                 <div class="flex items-center mb-5">
-                    <img src="{{ asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 mr-3">
+                    <img id="footer-logo" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 mr-3">
                     <div>
                         <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">{{ $companyInfo->company_name ?? 'ZINDAN' }}</h3>
                         <p class="text-gray-400 text-xs tracking-wider">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>

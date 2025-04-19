@@ -2,7 +2,7 @@
 
 @section('meta_tags')
     <title>Profile - PT. Zindan Diantar Express</title>
-    <link rel="icon" href="asset/logo.png">
+    <link rel="icon" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}">
     <meta name="description" content="Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.">
     <meta name="keywords" content="profil zdx, sejarah zdx, visi misi zdx, pengiriman barang, cargo indonesia">
 
@@ -71,14 +71,14 @@
                     <div class="flex flex-col gap-4">
                         <!-- Logo Perusahaan tanpa frame -->
                         <div class="relative">
-                            <img src="{{ asset('asset/logo.png') }}?v={{ time() }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
                         </div>
                         
                         <!-- Gambar Pengiriman Logistik -->
                         <div class="relative">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] rounded-lg blur"></div>
                             <div class="relative bg-white p-2 rounded-lg">
-                                <img src="{{ asset('asset/logo2.png') }}?v={{ time() }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-contain">
+                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('images/logistics.jpg') ? \Illuminate\Support\Facades\Storage::url('images/logistics.jpg').'?v='.time() : asset('asset/logo2.png') }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-contain">
                             </div>
                         </div>
                     </div>
