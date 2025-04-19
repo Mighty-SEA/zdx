@@ -62,6 +62,10 @@
                     <i class="fas fa-headset text-sm"></i>
                     <span>Hubungi Kami</span>
                 </a>
+                <a href="/login" class="ml-2 px-4 py-2 border border-[#FF6000] text-[#FF6000] rounded-md shadow-sm hover:shadow-md hover:bg-[#FFF0E6] transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 font-medium">
+                    <i class="fas fa-sign-in-alt text-sm"></i>
+                    <span>Login</span>
+                </a>
             </div>
             
             <!-- Mobile Menu Button -->
@@ -105,6 +109,10 @@
                 
                 <a href="/contact" class="mt-3 mx-4 px-4 py-3 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white rounded-md flex items-center justify-center space-x-2 shadow-sm">
                     <i class="fas fa-headset"></i><span>Hubungi Kami</span>
+                </a>
+                
+                <a href="/login" class="mt-3 mx-4 px-4 py-3 border border-[#FF6000] text-[#FF6000] bg-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:bg-[#FFF0E6] transition-colors">
+                    <i class="fas fa-sign-in-alt"></i><span>Login</span>
                 </a>
             </div>
         </div>
