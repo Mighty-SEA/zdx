@@ -137,166 +137,363 @@
                         <form action="{{ route('admin.settings.company') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
-                            <div class="mt-4 flex items-center">
-                                <div class="flex-1 mr-4">
-                                    <div class="relative w-32 h-32 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
-                                        @if(!empty($company->logo_path))
-                                            <img id="company-logo-preview" src="{{ asset('storage/' . $company->logo_path) }}" class="w-full h-full object-cover" alt="Logo Perusahaan">
-                                        @else
-                                            <div id="company-logo-placeholder" class="flex items-center justify-center w-full h-full text-gray-400">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
+                            <!-- Tabs di dalam konten perusahaan -->
+                            <div class="mb-6 border-b border-gray-200">
+                                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+                                    <li class="mr-2">
+                                        <a href="#" id="tab-general" class="inline-block p-3 border-b-2 border-indigo-600 rounded-t-lg text-indigo-600 active">Informasi Dasar</a>
+                                    </li>
+                                    <li class="mr-2">
+                                        <a href="#" id="tab-logos" class="inline-block p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300">Logo & Media</a>
+                                    </li>
+                                    <li class="mr-2">
+                                        <a href="#" id="tab-about" class="inline-block p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300">Profil Lengkap</a>
+                                    </li>
+                                    <li class="mr-2">
+                                        <a href="#" id="tab-mission" class="inline-block p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300">Visi & Misi</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- INFORMASI DASAR PANEL -->
+                            <div id="panel-general" class="company-panel">
+                                <div class="mt-4 flex items-center">
+                                    {{-- <div class="flex-1 mr-4">
+                                        <div class="relative w-32 h-32 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
+                                            @if(!empty($company->logo_path))
+                                                <img id="company-logo-preview" src="{{ asset('storage/' . $company->logo_path) }}" class="w-full h-full object-cover" alt="Logo Perusahaan">
+                                            @else
+                                                <div id="company-logo-placeholder" class="flex items-center justify-center w-full h-full text-gray-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <img id="company-logo-preview" src="#" class="w-full h-full object-cover hidden" alt="Logo Perusahaan">
+                                            @endif
+                                        </div>
+                                    </div> --}}
+                                    {{-- <div class="flex-1">
+                                        <label for="logo" class="block text-sm font-medium text-gray-700">Logo Perusahaan</label>
+                                        <input type="file" name="logo" id="logo" class="mt-1 block w-full text-sm text-gray-500
+                                            file:mr-4 file:py-2 file:px-4
+                                            file:rounded-md file:border-0
+                                            file:text-sm file:font-medium
+                                            file:bg-indigo-50 file:text-indigo-700
+                                            hover:file:bg-indigo-100" onchange="previewCompanyLogo(this)" accept="image/*">
+                                        <p class="mt-1 text-xs text-gray-500">Ukuran optimal 200x200 pixel (PNG, JPG)</p>
+                                        @error('logo')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div> --}}
+                                </div>
+                                
+                                <!-- Informasi Dasar Perusahaan -->
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
+                                    <h4 class="font-medium text-gray-800 mb-3">Informasi Dasar</h4>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Nama Perusahaan <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" id="company_name" name="company_name" value="{{ $companyName }}" required 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                            @error('company_name')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="company_website" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Website
+                                            </label>
+                                            <input type="text" id="company_website" name="company_website" value="{{ $companyWebsite }}"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                                placeholder="www.contoh.com">
+                                            @error('company_website')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Alamat <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea id="company_address" name="company_address" rows="3" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress }}</textarea>
+                                        @error('company_address')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label for="company_phone" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Telepon <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" id="company_phone" name="company_phone" value="{{ $companyPhone }}" required
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                            @error('company_phone')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="company_email" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Email <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="email" id="company_email" name="company_email" value="{{ $companyEmail }}" required
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                            @error('company_email')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <label for="company_tax_id" class="block text-sm font-medium text-gray-700 mb-1">
+                                            NPWP
+                                        </label>
+                                        <input type="text" id="company_tax_id" name="company_tax_id" value="{{ $companyTaxId }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        @error('company_tax_id')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <!-- Social Media -->
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
+                                    <h4 class="font-medium text-gray-800 mb-3">Social Media</h4>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="company_facebook" class="block text-sm font-medium text-gray-700 mb-1">
+                                                <i class="fab fa-facebook text-blue-600 mr-1"></i> Facebook
+                                            </label>
+                                            <input type="text" id="company_facebook" name="company_facebook" value="{{ $companySocials['facebook'] }}"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                                placeholder="https://facebook.com/namahalaman">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="company_instagram" class="block text-sm font-medium text-gray-700 mb-1">
+                                                <i class="fab fa-instagram text-pink-600 mr-1"></i> Instagram
+                                            </label>
+                                            <input type="text" id="company_instagram" name="company_instagram" value="{{ $companySocials['instagram'] }}"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                                placeholder="https://instagram.com/username">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="company_twitter" class="block text-sm font-medium text-gray-700 mb-1">
+                                                <i class="fab fa-twitter text-blue-400 mr-1"></i> Twitter
+                                            </label>
+                                            <input type="text" id="company_twitter" name="company_twitter" value="{{ $companySocials['twitter'] }}"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                                placeholder="https://twitter.com/username">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="company_linkedin" class="block text-sm font-medium text-gray-700 mb-1">
+                                                <i class="fab fa-linkedin text-blue-700 mr-1"></i> LinkedIn
+                                            </label>
+                                            <input type="text" id="company_linkedin" name="company_linkedin" value="{{ $companySocials['linkedin'] }}"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                                placeholder="https://linkedin.com/company/nama">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="company_youtube" class="block text-sm font-medium text-gray-700 mb-1">
+                                                <i class="fab fa-youtube text-red-600 mr-1"></i> YouTube
+                                            </label>
+                                            <input type="text" id="company_youtube" name="company_youtube" value="{{ $companySocials['youtube'] }}"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                                placeholder="https://youtube.com/channel/ID">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- LOGO & MEDIA PANEL -->
+                            <div id="panel-logos" class="company-panel hidden">
+                                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200 mb-4">
+                                    <h4 class="font-medium text-indigo-800 mb-3">Logo Perusahaan</h4>
+                                    
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <!-- Logo 1 -->
+                                        <div class="border rounded-lg p-2 bg-white">
+                                            <div class="aspect-w-1 aspect-h-1">
+                                                <img src="{{ asset('asset/logo1.png') }}?v={{ time() }}" alt="Logo 1" class="w-full h-32 object-contain">
                                             </div>
-                                            <img id="company-logo-preview" src="#" class="w-full h-full object-cover hidden" alt="Logo Perusahaan">
-                                        @endif
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="text-sm font-medium text-gray-700">Logo 1 <span class="text-xs text-indigo-600">(Utama)</span></span>
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="1">
+                                                    <i class="fas fa-edit mr-1"></i> Ubah
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Logo 2 -->
+                                        <div class="border rounded-lg p-2 bg-white">
+                                            <div class="aspect-w-1 aspect-h-1">
+                                                <img src="{{ asset('asset/logo2.png') }}?v={{ time() }}" alt="Logo 2" class="w-full h-32 object-contain">
+                                            </div>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="text-sm font-medium text-gray-700">Logo 2</span>
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="2">
+                                                    <i class="fas fa-edit mr-1"></i> Ubah
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Logo 3 -->
+                                        <div class="border rounded-lg p-2 bg-white">
+                                            <div class="aspect-w-1 aspect-h-1">
+                                                <img src="{{ asset('asset/logo3.png') }}?v={{ time() }}" alt="Logo 3" class="w-full h-32 object-contain">
+                                            </div>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="text-sm font-medium text-gray-700">Logo 3</span>
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="3">
+                                                    <i class="fas fa-edit mr-1"></i> Ubah
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-2">
+                                        <i class="fas fa-info-circle mr-1"></i> Logo 1 akan digunakan sebagai logo utama di halaman profil dan favicon.
                                     </div>
                                 </div>
-                                <div class="flex-1">
-                                    <label for="logo" class="block text-sm font-medium text-gray-700">Logo Perusahaan</label>
-                                    <input type="file" name="logo" id="logo" class="mt-1 block w-full text-sm text-gray-500
-                                        file:mr-4 file:py-2 file:px-4
-                                        file:rounded-md file:border-0
-                                        file:text-sm file:font-medium
-                                        file:bg-indigo-50 file:text-indigo-700
-                                        hover:file:bg-indigo-100" onchange="previewCompanyLogo(this)" accept="image/*">
-                                    <p class="mt-1 text-xs text-gray-500">Ukuran optimal 200x200 pixel (PNG, JPG)</p>
-                                    @error('logo')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
+                                
+                                <!-- Gambar Logistik -->
+                                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                    <h4 class="font-medium text-red-800 mb-3">Gambar Logistik</h4>
+                                    
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h4 class="font-medium text-gray-700">Gambar Operasi Logistik</h4>
+                                            <button id="changeLogisticsBtn" type="button" class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring">
+                                                Ubah Gambar
+                                            </button>
+                                        </div>
+                                        <div class="border rounded-lg p-2">
+                                            <img src="{{ asset('asset/logistics.jpg') }}?v={{ time() }}" alt="Operasi Logistik" class="w-full h-48 object-cover rounded">
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-2">
+                                            <i class="fas fa-info-circle mr-1"></i> Gambar ini ditampilkan di bawah logo pada halaman profil perusahaan.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <!-- Informasi Dasar Perusahaan -->
-                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
-                                <h4 class="font-medium text-gray-800 mb-3">Informasi Dasar</h4>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Nama Perusahaan <span class="text-red-500">*</span>
-                                        </label>
-                                        <input type="text" id="company_name" name="company_name" value="{{ $companyName }}" required 
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                        @error('company_name')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                        @enderror
+                            <!-- PROFIL LENGKAP PANEL -->
+                            <div id="panel-about" class="company-panel hidden">
+                                <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                                    <h4 class="font-medium text-purple-800 mb-3">Tentang Perusahaan</h4>
+                                    
+                                    @php
+                                        $aboutContent = isset($aboutContents) && !empty($aboutContents) ? $aboutContents->first() : null;
+                                    @endphp
+                                    
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Judul Profil
+                                            </label>
+                                            <input type="text" name="about_title" value="{{ $aboutContent ? $aboutContent->title : 'Tentang ZDX Cargo' }}" 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200">
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Konten Profil
+                                            </label>
+                                            <textarea name="about_content" id="about_content" rows="10" 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200">{{ $aboutContent ? $aboutContent->content : '' }}</textarea>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Struktur Organisasi
+                                            </label>
+                                            <input type="file" name="org_structure_image" accept="image/*" 
+                                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                                            
+                                            @if($aboutContent && $aboutContent->org_structure_path)
+                                            <div class="mt-3 border p-2 rounded">
+                                                <img src="{{ asset($aboutContent->org_structure_path) }}?v={{ time() }}" alt="Struktur Organisasi" class="max-h-40 max-w-full">
+                                            </div>
+                                            @endif
+                                        </div>
                                     </div>
+                                </div>
+                                
+                                <!-- Deskripsi Perusahaan -->
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
+                                    <h4 class="font-medium text-gray-800 mb-3">Deskripsi Perusahaan</h4>
                                     
                                     <div>
-                                        <label for="company_website" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Website
-                                        </label>
-                                        <input type="text" id="company_website" name="company_website" value="{{ $companyWebsite }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                            placeholder="www.contoh.com">
-                                        @error('company_website')
+                                        <textarea id="company_description" name="company_description" rows="4"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyDescription }}</textarea>
+                                        <p class="mt-1 text-xs text-gray-500">Deskripsi singkat tentang perusahaan Anda, akan ditampilkan di beberapa halaman website</p>
+                                        @error('company_description')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                </div>
-                                
-                                <div>
-                                    <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Alamat <span class="text-red-500">*</span>
-                                    </label>
-                                    <textarea id="company_address" name="company_address" rows="3" required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress }}</textarea>
-                                    @error('company_address')
-                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    <div>
-                                        <label for="company_phone" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Telepon <span class="text-red-500">*</span>
-                                        </label>
-                                        <input type="text" id="company_phone" name="company_phone" value="{{ $companyPhone }}" required
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                        @error('company_phone')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="company_email" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Email <span class="text-red-500">*</span>
-                                        </label>
-                                        <input type="email" id="company_email" name="company_email" value="{{ $companyEmail }}" required
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                        @error('company_email')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-4">
-                                    <label for="company_tax_id" class="block text-sm font-medium text-gray-700 mb-1">
-                                        NPWP
-                                    </label>
-                                    <input type="text" id="company_tax_id" name="company_tax_id" value="{{ $companyTaxId }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                    @error('company_tax_id')
-                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
                                 </div>
                             </div>
                             
-                            <!-- Social Media -->
-                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
-                                <h4 class="font-medium text-gray-800 mb-3">Social Media</h4>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="company_facebook" class="block text-sm font-medium text-gray-700 mb-1">
-                                            <i class="fab fa-facebook text-blue-600 mr-1"></i> Facebook
-                                        </label>
-                                        <input type="text" id="company_facebook" name="company_facebook" value="{{ $companySocials['facebook'] }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                            placeholder="https://facebook.com/namahalaman">
+                            <!-- VISI & MISI PANEL -->
+                            <div id="panel-mission" class="company-panel hidden">
+                                <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                                    <h4 class="font-medium text-blue-800 mb-3">Visi & Misi Perusahaan</h4>
+                                    
+                                    @php
+                                        $visionContent = isset($visionContents) && !empty($visionContents) ? $visionContents->first() : null;
+                                        $missionContent = isset($missionContents) && !empty($missionContents) ? $missionContents->first() : null;
+                                    @endphp
+                                    
+                                    <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                                        <div class="mb-1">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Judul Visi
+                                            </label>
+                                            <input type="text" name="vision_title" value="{{ $visionContent ? $visionContent->title : 'Visi Perusahaan' }}" 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Konten Visi
+                                            </label>
+                                            <textarea name="vision_content" id="vision_content" rows="6" 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">{{ $visionContent ? $visionContent->content : '' }}</textarea>
+                                        </div>
                                     </div>
                                     
-                                    <div>
-                                        <label for="company_instagram" class="block text-sm font-medium text-gray-700 mb-1">
-                                            <i class="fab fa-instagram text-pink-600 mr-1"></i> Instagram
-                                        </label>
-                                        <input type="text" id="company_instagram" name="company_instagram" value="{{ $companySocials['instagram'] }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                            placeholder="https://instagram.com/username">
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="company_twitter" class="block text-sm font-medium text-gray-700 mb-1">
-                                            <i class="fab fa-twitter text-blue-400 mr-1"></i> Twitter
-                                        </label>
-                                        <input type="text" id="company_twitter" name="company_twitter" value="{{ $companySocials['twitter'] }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                            placeholder="https://twitter.com/username">
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="company_linkedin" class="block text-sm font-medium text-gray-700 mb-1">
-                                            <i class="fab fa-linkedin text-blue-700 mr-1"></i> LinkedIn
-                                        </label>
-                                        <input type="text" id="company_linkedin" name="company_linkedin" value="{{ $companySocials['linkedin'] }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                            placeholder="https://linkedin.com/company/nama">
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="company_youtube" class="block text-sm font-medium text-gray-700 mb-1">
-                                            <i class="fab fa-youtube text-red-600 mr-1"></i> YouTube
-                                        </label>
-                                        <input type="text" id="company_youtube" name="company_youtube" value="{{ $companySocials['youtube'] }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                            placeholder="https://youtube.com/channel/ID">
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="mb-1">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Judul Misi
+                                            </label>
+                                            <input type="text" name="mission_title" value="{{ $missionContent ? $missionContent->title : 'Misi Perusahaan' }}" 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Konten Misi
+                                            </label>
+                                            <textarea name="mission_content" id="mission_content" rows="6" 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">{{ $missionContent ? $missionContent->content : '' }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Lokasi Pada Peta -->
-                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
+                            {{-- <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
                                 <h4 class="font-medium text-gray-800 mb-3">Lokasi Pada Peta</h4>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
@@ -323,23 +520,9 @@
                                     Koordinat ini akan digunakan untuk menampilkan lokasi kantor di Google Maps pada halaman kontak.
                                     Anda bisa mendapatkan koordinat dengan mengunjungi <a href="https://maps.google.com" target="_blank" class="text-indigo-600 hover:underline">Google Maps</a>.
                                 </p>
-                            </div>
+                            </div> --}}
                             
-                            <!-- Deskripsi Perusahaan -->
-                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
-                                <h4 class="font-medium text-gray-800 mb-3">Deskripsi Perusahaan</h4>
-                                
-                                <div>
-                                    <textarea id="company_description" name="company_description" rows="4"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyDescription }}</textarea>
-                                    <p class="mt-1 text-xs text-gray-500">Deskripsi singkat tentang perusahaan Anda, akan ditampilkan di beberapa halaman website</p>
-                                    @error('company_description')
-                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-                            
-                            <div>
+                            <div class="mt-6">
                                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-save mr-2"></i> Simpan Informasi Perusahaan
                                 </button>
@@ -707,6 +890,46 @@
             });
         });
         
+        // Company tab navigation
+        const companyTabs = document.querySelectorAll('[id^="tab-"]');
+        const companyPanels = document.querySelectorAll('.company-panel');
+        
+        // Fungsi untuk mengaktifkan tab perusahaan
+        function activateCompanyTab(tabId) {
+            // Nonaktifkan semua tab
+            companyTabs.forEach(tab => {
+                tab.classList.remove('border-indigo-600', 'text-indigo-600');
+                tab.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+            });
+            
+            // Aktifkan tab yang dipilih
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.classList.add('border-indigo-600', 'text-indigo-600');
+                activeTab.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+            }
+            
+            // Sembunyikan semua panel
+            companyPanels.forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            // Tampilkan panel yang sesuai dengan tab
+            const panelId = tabId.replace('tab-', 'panel-');
+            const activePanel = document.getElementById(panelId);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+            }
+        }
+        
+        // Tambahkan event listener untuk klik pada tab perusahaan
+        companyTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                activateCompanyTab(this.id);
+            });
+        });
+        
         // Tracking API Test
         const testTrackingApiBtn = document.getElementById('test_tracking_api');
         if (testTrackingApiBtn) {
@@ -804,6 +1027,63 @@
             
             trackingProviderSelect.addEventListener('change', toggleCustomFields);
             toggleCustomFields(); // Run once on init
+        }
+        
+        // Logo edit buttons
+        const logoEditButtons = document.querySelectorAll('.logo-edit');
+        const logoUploadModal = document.getElementById('logoUploadModal');
+        const logoNumber = document.getElementById('logoNumber');
+        const closeModalButtons = document.querySelectorAll('.close-modal');
+        
+        if (logoEditButtons.length > 0 && logoUploadModal) {
+            logoEditButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const logo = this.getAttribute('data-logo');
+                    logoNumber.value = logo;
+                    logoUploadModal.classList.remove('hidden');
+                });
+            });
+            
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    logoUploadModal.classList.add('hidden');
+                });
+            });
+        }
+        
+        // Logo preview
+        const logoFile = document.getElementById('logoFile');
+        const logoPreview = document.getElementById('logoPreview');
+        const previewContainer = document.getElementById('previewContainer');
+        
+        if (logoFile && logoPreview) {
+            logoFile.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        logoPreview.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+        
+        // Logistics image edit
+        const changeLogisticsBtn = document.getElementById('changeLogisticsBtn');
+        const logisticsUploadModal = document.getElementById('logisticsUploadModal');
+        const closeLogisticsModalButtons = document.querySelectorAll('.close-logistics-modal');
+        
+        if (changeLogisticsBtn && logisticsUploadModal) {
+            changeLogisticsBtn.addEventListener('click', function() {
+                logisticsUploadModal.classList.remove('hidden');
+            });
+            
+            closeLogisticsModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    logisticsUploadModal.classList.add('hidden');
+                });
+            });
         }
     });
 </script>

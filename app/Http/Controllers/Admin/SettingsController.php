@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\ProfileContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -42,6 +43,11 @@ class SettingsController extends Controller
             'longitude' => Setting::getValue('company_longitude', '106.8456'),
         ];
         
+        // Data dari ProfileContent untuk tab Profile Lengkap
+        $aboutContents = ProfileContent::where('section', 'about')->get();
+        $visionContents = ProfileContent::where('section', 'vision')->get();
+        $missionContents = ProfileContent::where('section', 'mission')->get();
+        
         // Data untuk tab API
         $apiKey = Setting::getValue('api_key', '');
         $apiEnabled = Setting::getValue('api_enabled', false);
@@ -70,6 +76,9 @@ class SettingsController extends Controller
             'companyWebsite',
             'companySocials',
             'companyLocation',
+            'aboutContents',
+            'visionContents',
+            'missionContents',
             'apiKey',
             'apiEnabled',
             'webhookUrl',
@@ -139,6 +148,13 @@ class SettingsController extends Controller
             'company_latitude' => 'nullable|string|max:20',
             'company_longitude' => 'nullable|string|max:20',
             'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'about_title' => 'nullable|string|max:100',
+            'about_content' => 'nullable|string',
+            'vision_title' => 'nullable|string|max:100',
+            'vision_content' => 'nullable|string',
+            'mission_title' => 'nullable|string|max:100',
+            'mission_content' => 'nullable|string',
+            'org_structure_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
         // Simpan semua pengaturan perusahaan
@@ -181,6 +197,76 @@ class SettingsController extends Controller
             $image->move($path, $imageName);
             Setting::setValue('company_logo', 'uploads/company/' . $imageName, 'company');
         }
+        
+        // Update konten profil jika ada perubahan
+        if ($request->filled('about_title') || $request->filled('about_content')) {
+            $aboutContent = ProfileContent::firstOrCreate(['section' => 'about'], [
+                'title' => 'Tentang ZDX Cargo', 
+                'content' => '',
+                'is_active' => true,
+                'order' => 1
+            ]);
+            
+            $aboutData = [
+                'title' => $request->about_title,
+                'content' => $request->about_content,
+            ];
+            
+            // Upload gambar struktur organisasi jika ada
+            if ($request->hasFile('org_structure_image')) {
+                $image = $request->file('org_structure_image');
+                $imageName = 'struktur_' . time() . '.' . $image->getClientOriginalExtension();
+                
+                // Simpan gambar ke public/uploads/struktur
+                $path = public_path('uploads/struktur');
+                if (!file_exists($path)) {
+                    mkdir($path, 0755, true);
+                }
+                
+                // Hapus gambar lama jika ada
+                if ($aboutContent->org_structure_path && file_exists(public_path($aboutContent->org_structure_path))) {
+                    unlink(public_path($aboutContent->org_structure_path));
+                }
+                
+                $image->move($path, $imageName);
+                $aboutData['org_structure_path'] = 'uploads/struktur/' . $imageName;
+            }
+            
+            $aboutContent->update($aboutData);
+        }
+        
+        // Update visi perusahaan
+        if ($request->filled('vision_title') || $request->filled('vision_content')) {
+            $visionContent = ProfileContent::firstOrCreate(['section' => 'vision'], [
+                'title' => 'Visi Perusahaan', 
+                'content' => '',
+                'is_active' => true,
+                'order' => 2
+            ]);
+            
+            $visionContent->update([
+                'title' => $request->vision_title,
+                'content' => $request->vision_content,
+            ]);
+        }
+        
+        // Update misi perusahaan
+        if ($request->filled('mission_title') || $request->filled('mission_content')) {
+            $missionContent = ProfileContent::firstOrCreate(['section' => 'mission'], [
+                'title' => 'Misi Perusahaan', 
+                'content' => '',
+                'is_active' => true,
+                'order' => 3
+            ]);
+            
+            $missionContent->update([
+                'title' => $request->mission_title,
+                'content' => $request->mission_content,
+            ]);
+        }
+        
+        // Hapus cache
+        Cache::flush();
         
         return redirect()->route('admin.settings', ['#company'])
             ->with('success', 'Informasi perusahaan berhasil disimpan.');

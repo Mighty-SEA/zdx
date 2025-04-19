@@ -100,6 +100,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         return redirect()->route('admin.settings.analytics', $request->all(), 301);
     })->name('analytics-settings.store');
     
+    // Redirect profile-content ke tab company pada halaman pengaturan
+    Route::get('/profile-content', function() {
+        return redirect()->route('admin.settings', ['#company'], 301);
+    })->name('profile-content.index');
+    Route::get('/profile-content/{id}/edit', function($id) {
+        return redirect()->route('admin.settings', ['#company'], 301);
+    })->name('profile-content.edit');
+    
     // Admin Users
     Route::get('/users', function () {
         return view('admin.users');
