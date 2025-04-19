@@ -1,3 +1,7 @@
+@php
+use Illuminate\Support\Str;
+@endphp
+
 @extends('layouts.admin')
 
 @section('title', 'Kelola Konten Halaman Home')

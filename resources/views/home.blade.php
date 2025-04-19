@@ -29,6 +29,7 @@
 
 @php
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 @endphp
 
 @section('content')

@@ -157,160 +157,173 @@
                             
                             <!-- INFORMASI DASAR PANEL -->
                             <div id="panel-general" class="company-panel">
-                                <div class="mt-4 flex items-center">
+                            <div class="mt-4 flex items-center">
                                     {{-- <div class="flex-1 mr-4">
-                                        <div class="relative w-32 h-32 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
-                                            @if(!empty($company->logo_path))
-                                                <img id="company-logo-preview" src="{{ asset('storage/' . $company->logo_path) }}" class="w-full h-full object-cover" alt="Logo Perusahaan">
-                                            @else
-                                                <div id="company-logo-placeholder" class="flex items-center justify-center w-full h-full text-gray-400">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                </div>
-                                                <img id="company-logo-preview" src="#" class="w-full h-full object-cover hidden" alt="Logo Perusahaan">
-                                            @endif
-                                        </div>
+                                    <div class="relative w-32 h-32 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
+                                        @if(!empty($company->logo_path))
+                                            <img id="company-logo-preview" src="{{ asset('storage/' . $company->logo_path) }}" class="w-full h-full object-cover" alt="Logo Perusahaan">
+                                        @else
+                                            <div id="company-logo-placeholder" class="flex items-center justify-center w-full h-full text-gray-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                            <img id="company-logo-preview" src="#" class="w-full h-full object-cover hidden" alt="Logo Perusahaan">
+                                        @endif
+                                    </div>
                                     </div> --}}
                                     {{-- <div class="flex-1">
-                                        <label for="logo" class="block text-sm font-medium text-gray-700">Logo Perusahaan</label>
-                                        <input type="file" name="logo" id="logo" class="mt-1 block w-full text-sm text-gray-500
-                                            file:mr-4 file:py-2 file:px-4
-                                            file:rounded-md file:border-0
-                                            file:text-sm file:font-medium
-                                            file:bg-indigo-50 file:text-indigo-700
-                                            hover:file:bg-indigo-100" onchange="previewCompanyLogo(this)" accept="image/*">
-                                        <p class="mt-1 text-xs text-gray-500">Ukuran optimal 200x200 pixel (PNG, JPG)</p>
-                                        @error('logo')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
+                                    <label for="logo" class="block text-sm font-medium text-gray-700">Logo Perusahaan</label>
+                                    <input type="file" name="logo" id="logo" class="mt-1 block w-full text-sm text-gray-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-md file:border-0
+                                        file:text-sm file:font-medium
+                                        file:bg-indigo-50 file:text-indigo-700
+                                        hover:file:bg-indigo-100" onchange="previewCompanyLogo(this)" accept="image/*">
+                                    <p class="mt-1 text-xs text-gray-500">Ukuran optimal 200x200 pixel (PNG, JPG)</p>
+                                    @error('logo')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
                                     </div> --}}
-                                </div>
-                                
-                                <!-- Informasi Dasar Perusahaan -->
+                            </div>
+                            
+                            <!-- Informasi Dasar Perusahaan -->
                                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
-                                    <h4 class="font-medium text-gray-800 mb-3">Informasi Dasar</h4>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                        <div>
-                                            <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">
-                                                Nama Perusahaan <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="text" id="company_name" name="company_name" value="{{ $companyName }}" required 
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                            @error('company_name')
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        
-                                        <div>
-                                            <label for="company_website" class="block text-sm font-medium text-gray-700 mb-1">
-                                                Website
-                                            </label>
-                                            <input type="text" id="company_website" name="company_website" value="{{ $companyWebsite }}"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                                placeholder="www.contoh.com">
-                                            @error('company_website')
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+                                <h4 class="font-medium text-gray-800 mb-3">Informasi Dasar</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Nama Perusahaan <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="company_name" name="company_name" value="{{ $companyName }}" required 
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        @error('company_name')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                     
                                     <div>
-                                        <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Alamat <span class="text-red-500">*</span>
+                                        <label for="company_slogan" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Slogan Perusahaan
                                         </label>
-                                        <textarea id="company_address" name="company_address" rows="3" required
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress }}</textarea>
-                                        @error('company_address')
+                                        <input type="text" id="company_slogan" name="company_slogan" value="{{ $companySlogan ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="Masukkan slogan perusahaan">
+                                        <p class="text-gray-500 text-xs mt-1">Slogan akan ditampilkan di website dan dokumen perusahaan</p>
+                                        @error('company_slogan')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                     
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        <div>
-                                            <label for="company_phone" class="block text-sm font-medium text-gray-700 mb-1">
-                                                Telepon <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="text" id="company_phone" name="company_phone" value="{{ $companyPhone }}" required
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                            @error('company_phone')
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        
-                                        <div>
-                                            <label for="company_email" class="block text-sm font-medium text-gray-700 mb-1">
-                                                Email <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="email" id="company_email" name="company_email" value="{{ $companyEmail }}" required
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                            @error('company_email')
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mt-4">
-                                        <label for="company_tax_id" class="block text-sm font-medium text-gray-700 mb-1">
-                                            NPWP
+                                    <div>
+                                        <label for="company_website" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Website
                                         </label>
-                                        <input type="text" id="company_tax_id" name="company_tax_id" value="{{ $companyTaxId }}"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                        @error('company_tax_id')
+                                        <input type="text" id="company_website" name="company_website" value="{{ $companyWebsite }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="www.contoh.com">
+                                        @error('company_website')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                 </div>
                                 
-                                <!-- Social Media -->
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
-                                    <h4 class="font-medium text-gray-800 mb-3">Social Media</h4>
+                                <div>
+                                    <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Alamat <span class="text-red-500">*</span>
+                                    </label>
+                                    <textarea id="company_address" name="company_address" rows="3" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress }}</textarea>
+                                    @error('company_address')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="company_phone" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Telepon <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="company_phone" name="company_phone" value="{{ $companyPhone }}" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        @error('company_phone')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                     
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label for="company_facebook" class="block text-sm font-medium text-gray-700 mb-1">
-                                                <i class="fab fa-facebook text-blue-600 mr-1"></i> Facebook
-                                            </label>
-                                            <input type="text" id="company_facebook" name="company_facebook" value="{{ $companySocials['facebook'] }}"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                                placeholder="https://facebook.com/namahalaman">
-                                        </div>
-                                        
-                                        <div>
-                                            <label for="company_instagram" class="block text-sm font-medium text-gray-700 mb-1">
-                                                <i class="fab fa-instagram text-pink-600 mr-1"></i> Instagram
-                                            </label>
-                                            <input type="text" id="company_instagram" name="company_instagram" value="{{ $companySocials['instagram'] }}"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                                placeholder="https://instagram.com/username">
-                                        </div>
-                                        
-                                        <div>
-                                            <label for="company_twitter" class="block text-sm font-medium text-gray-700 mb-1">
-                                                <i class="fab fa-twitter text-blue-400 mr-1"></i> Twitter
-                                            </label>
-                                            <input type="text" id="company_twitter" name="company_twitter" value="{{ $companySocials['twitter'] }}"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                                placeholder="https://twitter.com/username">
-                                        </div>
-                                        
-                                        <div>
-                                            <label for="company_linkedin" class="block text-sm font-medium text-gray-700 mb-1">
-                                                <i class="fab fa-linkedin text-blue-700 mr-1"></i> LinkedIn
-                                            </label>
-                                            <input type="text" id="company_linkedin" name="company_linkedin" value="{{ $companySocials['linkedin'] }}"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                                placeholder="https://linkedin.com/company/nama">
-                                        </div>
-                                        
-                                        <div>
-                                            <label for="company_youtube" class="block text-sm font-medium text-gray-700 mb-1">
-                                                <i class="fab fa-youtube text-red-600 mr-1"></i> YouTube
-                                            </label>
-                                            <input type="text" id="company_youtube" name="company_youtube" value="{{ $companySocials['youtube'] }}"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-                                                placeholder="https://youtube.com/channel/ID">
+                                    <div>
+                                        <label for="company_email" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Email <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="email" id="company_email" name="company_email" value="{{ $companyEmail }}" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        @error('company_email')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <label for="company_tax_id" class="block text-sm font-medium text-gray-700 mb-1">
+                                        NPWP
+                                    </label>
+                                    <input type="text" id="company_tax_id" name="company_tax_id" value="{{ $companyTaxId }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                    @error('company_tax_id')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <!-- Social Media -->
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
+                                <h4 class="font-medium text-gray-800 mb-3">Social Media</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="company_facebook" class="block text-sm font-medium text-gray-700 mb-1">
+                                            <i class="fab fa-facebook text-blue-600 mr-1"></i> Facebook
+                                        </label>
+                                        <input type="text" id="company_facebook" name="company_facebook" value="{{ $companySocials['facebook'] }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="https://facebook.com/namahalaman">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="company_instagram" class="block text-sm font-medium text-gray-700 mb-1">
+                                            <i class="fab fa-instagram text-pink-600 mr-1"></i> Instagram
+                                        </label>
+                                        <input type="text" id="company_instagram" name="company_instagram" value="{{ $companySocials['instagram'] }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="https://instagram.com/username">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="company_twitter" class="block text-sm font-medium text-gray-700 mb-1">
+                                            <i class="fab fa-twitter text-blue-400 mr-1"></i> Twitter
+                                        </label>
+                                        <input type="text" id="company_twitter" name="company_twitter" value="{{ $companySocials['twitter'] }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="https://twitter.com/username">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="company_linkedin" class="block text-sm font-medium text-gray-700 mb-1">
+                                            <i class="fab fa-linkedin text-blue-700 mr-1"></i> LinkedIn
+                                        </label>
+                                        <input type="text" id="company_linkedin" name="company_linkedin" value="{{ $companySocials['linkedin'] }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="https://linkedin.com/company/nama">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="company_youtube" class="block text-sm font-medium text-gray-700 mb-1">
+                                            <i class="fab fa-youtube text-red-600 mr-1"></i> YouTube
+                                        </label>
+                                        <input type="text" id="company_youtube" name="company_youtube" value="{{ $companySocials['youtube'] }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                                            placeholder="https://youtube.com/channel/ID">
                                         </div>
                                     </div>
                                 </div>
@@ -430,7 +443,7 @@
                                 </div>
                                 
                                 <!-- Deskripsi Perusahaan -->
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
                                     <h4 class="font-medium text-gray-800 mb-3">Deskripsi Perusahaan</h4>
                                     
                                     <div>

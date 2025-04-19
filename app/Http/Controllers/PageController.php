@@ -445,7 +445,7 @@ class PageController extends Controller
      */
     public function commodity()
     {
-        $seoData = $this->getSeoData('commodity');
+        $seoData = $this->getSeoData('komoditas');
         $commodities = \App\Models\Commodity::all();
         return view('commodity', compact('seoData', 'commodities'));
     }

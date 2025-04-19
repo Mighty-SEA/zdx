@@ -156,7 +156,7 @@
                             <div class="space-y-1 text-center">
                                 <div id="preview-container" class="{{ $service->image ? '' : 'hidden' }} mb-3">
                                     <img id="preview-image" src="{{ $service->image ? asset($service->image) : '' }}" class="mx-auto h-32 object-cover rounded" alt="Preview gambar">
-                                    <button type="button" id="remove-image" class="mt-2 text-sm text-red-600 hover:text-red-700">
+                                    <button type="button" id="delete-image-completely" class="mt-2 text-sm text-red-600 hover:text-red-700">
                                         <i class="fas fa-trash-alt mr-1"></i> Hapus Gambar
                                     </button>
                                 </div>
@@ -339,7 +339,7 @@
         const previewContainer = document.getElementById('preview-container');
         const previewImage = document.getElementById('preview-image');
         const uploadPrompt = document.getElementById('upload-prompt');
-        const removeButton = document.getElementById('remove-image');
+        const removeButton = document.getElementById('delete-image-completely');
         const dropzoneUpload = document.getElementById('dropzone-upload');
         const imageMetaFields = document.getElementById('image-meta-fields');
         
@@ -355,12 +355,15 @@
                     uploadPrompt.classList.add('hidden');
                     imageMetaFields.classList.remove('hidden');
                     
+                    // Selalu isi alt text dengan judul layanan jika gambar baru ditambahkan
+                    const titleValue = titleInput.value.trim();
+                    imageAltInput.value = titleValue ? `Gambar ${titleValue}` : '';
+                    imageAltInput.dataset.auto = 'true';
+                    
                     // Prefill image name field with sanitized filename (without extension) if empty
-                    if (!imageNameInput.value || imageNameInput.dataset.auto === 'true') {
-                        const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
-                        imageNameInput.value = sanitizeFileName(fileName);
-                        imageNameInput.dataset.auto = 'true';
-                    }
+                    const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+                    imageNameInput.value = sanitizeFileName(fileName);
+                    imageNameInput.dataset.auto = 'true';
                 }
                 
                 reader.readAsDataURL(file);
@@ -370,35 +373,19 @@
         imageInput.addEventListener('change', updateImagePreview);
         
         removeButton.addEventListener('click', function() {
-            imageInput.value = '';
-            previewContainer.classList.remove('hidden');
-            uploadPrompt.classList.add('hidden');
-            previewImage.src = '{{ asset($service->image) }}';
-            
-            // Add a hidden input to track image deletion if needed
-            if (!document.getElementById('delete_image')) {
-                const deleteInput = document.createElement('input');
-                deleteInput.type = 'hidden';
-                deleteInput.name = 'delete_image';
-                deleteInput.id = 'delete_image';
-                deleteInput.value = '0';
-                document.querySelector('form').appendChild(deleteInput);
-            }
-            document.getElementById('delete_image').value = '0';
-        });
-        
-        // Complete image deletion 
-        const deleteImageBtn = document.getElementById('delete-image-completely');
-        if (deleteImageBtn) {
-            deleteImageBtn.addEventListener('click', function() {
+            if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
+                // Bersihkan input gambar
                 imageInput.value = '';
+                // Sembunyikan preview dan tampilkan form upload
                 previewContainer.classList.add('hidden');
                 uploadPrompt.classList.remove('hidden');
                 imageMetaFields.classList.add('hidden');
+                
+                // Reset nilai input gambar
                 imageNameInput.value = '';
                 imageAltInput.value = '';
                 
-                // Mark for deletion in backend
+                // Tambahkan input tersembunyi untuk menandai gambar untuk dihapus saat form disubmit
                 if (!document.getElementById('delete_image')) {
                     const deleteInput = document.createElement('input');
                     deleteInput.type = 'hidden';
@@ -409,8 +396,19 @@
                 } else {
                     document.getElementById('delete_image').value = '1';
                 }
-            });
-        }
+                
+                // Tampilkan notifikasi
+                const flashMessage = document.createElement('div');
+                flashMessage.classList.add('bg-blue-100', 'border', 'border-blue-400', 'text-blue-700', 'px-4', 'py-3', 'rounded', 'mb-4');
+                flashMessage.innerHTML = '<span class="font-bold">Info!</span> Gambar akan dihapus saat Anda menyimpan perubahan.';
+                document.querySelector('form').prepend(flashMessage);
+                
+                // Hapus notifikasi setelah 5 detik
+                setTimeout(() => {
+                    flashMessage.remove();
+                }, 5000);
+            }
+        });
         
         ['dragenter', 'dragover'].forEach(eventName => {
             dropzoneUpload.addEventListener(eventName, highlight, false);

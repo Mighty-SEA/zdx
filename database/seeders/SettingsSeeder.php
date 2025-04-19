@@ -23,6 +23,7 @@ class SettingsSeeder extends Seeder
         $this->createSetting('company_email', 'info@zdxcargo.com', 'company');
         $this->createSetting('company_tax_id', '01.234.567.8-901.000', 'company');
         $this->createSetting('company_description', 'ZDX Cargo adalah perusahaan jasa pengiriman terpercaya yang melayani kebutuhan logistik bisnis dan pribadi dengan jangkauan nasional dan internasional.', 'company');
+        $this->createSetting('company_slogan', 'Solusi Tepat Pengiriman Cepat', 'company');
         
         // Data API
         $this->createSetting('api_key', '', 'api');

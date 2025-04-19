@@ -31,6 +31,7 @@ class SettingsController extends Controller
         $companyDescription = Setting::getValue('company_description', 'ZDX Cargo adalah perusahaan jasa pengiriman terpercaya yang melayani kebutuhan logistik bisnis dan pribadi dengan jangkauan nasional dan internasional.');
         $companyLogo = Setting::getValue('company_logo', '');
         $companyWebsite = Setting::getValue('company_website', 'www.zdxcargo.co.id');
+        $companySlogan = Setting::getValue('company_slogan', 'Solusi Tepat Pengiriman Cepat');
         $companySocials = [
             'facebook' => Setting::getValue('company_facebook', 'https://facebook.com/zdxcargo'),
             'instagram' => Setting::getValue('company_instagram', 'https://instagram.com/zdxcargo'),
@@ -74,6 +75,7 @@ class SettingsController extends Controller
             'companyDescription',
             'companyLogo',
             'companyWebsite',
+            'companySlogan',
             'companySocials',
             'companyLocation',
             'aboutContents',
@@ -165,6 +167,7 @@ class SettingsController extends Controller
         Setting::setValue('company_tax_id', $request->company_tax_id, 'company');
         Setting::setValue('company_description', $request->company_description, 'company');
         Setting::setValue('company_website', $request->company_website, 'company');
+        Setting::setValue('company_slogan', $request->company_slogan ?? 'Solusi Tepat Pengiriman Cepat', 'company');
         
         // Simpan social media
         Setting::setValue('company_facebook', $request->company_facebook, 'company');
@@ -266,7 +269,8 @@ class SettingsController extends Controller
         }
         
         // Hapus cache
-        Cache::flush();
+        Cache::forget('company_info');
+        Cache::forget('profile_content');
         
         return redirect()->route('admin.settings', ['#company'])
             ->with('success', 'Informasi perusahaan berhasil disimpan.');

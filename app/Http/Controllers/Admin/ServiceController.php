@@ -117,7 +117,23 @@ class ServiceController extends Controller
         $service->image_alt = $request->image_alt;
         $service->image_name = $request->image_name;
 
-        if ($request->hasFile('image')) {
+        // Cek apakah penghapusan gambar diminta
+        if ($request->has('delete_image') && $request->delete_image == '1') {
+            // Hapus gambar lama jika ada
+            if ($service->image) {
+                // Ekstrak path relatif dari URL
+                $oldPath = str_replace('/storage/', '', $service->image);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+            
+            // Hapus referensi gambar dari database
+            $service->image = null;
+            $service->image_alt = null;
+            $service->image_name = null;
+        }
+        else if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
             if ($service->image) {
                 // Ekstrak path relatif dari URL
@@ -202,5 +218,37 @@ class ServiceController extends Controller
                 'og_image' => $service->image ?? null,
             ]
         );
+    }
+
+    /**
+     * Menghapus hanya gambar dari layanan
+     */
+    public function deleteImage($id)
+    {
+        $service = Service::findOrFail($id);
+        
+        // Hapus gambar jika ada
+        if ($service->image) {
+            // Ekstrak path relatif dari URL
+            $path = str_replace('/storage/', '', $service->image);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+            
+            // Hapus referensi gambar dari database
+            $service->image = null;
+            $service->image_alt = null;
+            $service->image_name = null;
+            $service->save();
+            
+            // Perbarui SEO jika perlu
+            if ($service->status == 'published') {
+                $this->updateServiceSeo($service);
+            }
+            
+            return response()->json(['success' => true, 'message' => 'Gambar berhasil dihapus']);
+        }
+        
+        return response()->json(['success' => false, 'message' => 'Tidak ada gambar untuk dihapus'], 404);
     }
 } 

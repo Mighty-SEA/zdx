@@ -96,6 +96,13 @@ class PageSeoController extends Controller
                 'page_name' => 'Customer',
             ],
             [
+                'page_identifier' => 'komoditas',
+                'page_name' => 'Komoditas',
+                'title' => 'Komoditas - ZDX Express',
+                'description' => 'Jenis komoditas yang dapat dikirim melalui layanan ZDX Express. Pengiriman aman dan terpercaya untuk berbagai jenis komoditas.',
+                'keywords' => 'komoditas, barang, pengiriman, cargo, zdx express',
+            ],
+            [
                 'page_identifier' => 'profile',
                 'page_name' => 'Profil',
             ],

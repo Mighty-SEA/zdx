@@ -1,4 +1,7 @@
 <!-- Footer -->
+@php
+    use Illuminate\Support\Str;
+@endphp
 <footer class="bg-accent text-white relative overflow-hidden">
     <!-- Wave Separator -->
     <div class="absolute top-0 left-0 w-full overflow-hidden">
@@ -43,6 +46,32 @@
                     <span class="bg-[#FF6000] w-2 h-6 rounded-sm mr-2"></span> Layanan Kami
                 </h4>
                 <ul class="space-y-3">
+                    @php
+                        $footerServices = \App\Models\Service::where('status', 'published')->take(3)->get();
+                    @endphp
+                    
+                    @forelse($footerServices as $service)
+                    <li>
+                        <a href="/layanan/{{ $service->slug }}" class="group flex items-center text-white hover:text-[#FF6000] transition-all duration-300 p-2 hover:bg-white hover:bg-opacity-5 rounded-md">
+                            <div class="w-8 h-8 rounded-md bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3 group-hover:bg-[#FF6000] group-hover:text-white transition-all duration-300">
+                                @php
+                                    $icon = 'fa-truck';
+                                    if(Str::contains(strtolower($service->title), ['laut', 'kapal', 'ship'])) {
+                                        $icon = 'fa-ship';
+                                    } elseif(Str::contains(strtolower($service->title), ['udara', 'pesawat', 'plane', 'air'])) {
+                                        $icon = 'fa-plane';
+                                    } elseif(Str::contains(strtolower($service->title), ['gudang', 'warehouse', 'storage'])) {
+                                        $icon = 'fa-warehouse';
+                                    } elseif(Str::contains(strtolower($service->title), ['motor', 'bike'])) {
+                                        $icon = 'fa-motorcycle';
+                                    }
+                                @endphp
+                                <i class="fas {{ $icon }}"></i>
+                            </div>
+                            <span>{{ $service->title }}</span>
+                        </a>
+                    </li>
+                    @empty
                     <li>
                         <a href="/layanan" class="group flex items-center text-white hover:text-[#FF6000] transition-all duration-300 p-2 hover:bg-white hover:bg-opacity-5 rounded-md">
                             <div class="w-8 h-8 rounded-md bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3 group-hover:bg-[#FF6000] group-hover:text-white transition-all duration-300">
@@ -67,6 +96,7 @@
                             <span>Pengiriman Udara</span>
                         </a>
                     </li>
+                    @endforelse
                 </ul>
                 
                 <h4 class="text-lg font-semibold mb-4 mt-8 text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-2 flex items-center">

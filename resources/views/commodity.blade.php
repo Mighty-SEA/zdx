@@ -1,27 +1,30 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-    <title>Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express</title>
+    <title>{{ $seoData['title'] ?? 'Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express' }}</title>
     <link rel="icon" href="{{ asset('asset/logo.png') }}">
-    <meta name="description" content="ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.">
-    <meta name="keywords" content="komoditas pengiriman, cargo zdx, jenis barang kiriman, layanan pengiriman khusus, jasa cargo, pengiriman barang berharga, pengiriman frozen food">
+    <meta name="description" content="{{ $seoData['description'] ?? 'ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.' }}">
+    <meta name="keywords" content="{{ $seoData['keywords'] ?? 'komoditas pengiriman, cargo zdx, jenis barang kiriman, layanan pengiriman khusus, jasa cargo, pengiriman barang berharga, pengiriman frozen food' }}">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url('/komoditas') }}">
+    <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/komoditas') }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('/komoditas') }}">
-    <meta property="og:title" content="Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express">
-    <meta property="og:description" content="ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.">
-    <meta property="og:image" content="{{ asset('asset/komoditas-banner.jpg') }}">
+    <meta property="og:url" content="{{ $seoData['canonical_url'] ?? url('/komoditas') }}">
+    <meta property="og:title" content="{{ $seoData['og_title'] ?? $seoData['title'] ?? 'Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express' }}">
+    <meta property="og:description" content="{{ $seoData['og_description'] ?? $seoData['description'] ?? 'ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.' }}">
+    <meta property="og:image" content="{{ $seoData['og_image'] ?? asset('asset/komoditas-banner.jpg') }}">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express">
-    <meta name="twitter:description" content="ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.">
+    <meta name="twitter:title" content="{{ $seoData['og_title'] ?? $seoData['title'] ?? 'Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express' }}">
+    <meta name="twitter:description" content="{{ $seoData['og_description'] ?? $seoData['description'] ?? 'ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.' }}">
     
     <!-- Structured Data -->
+    @if($seoData['custom_schema'])
+        {!! $seoData['custom_schema'] !!}
+    @else
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -40,6 +43,7 @@
         }
     }
     </script>
+    @endif
 @endsection
 
 @section('content')

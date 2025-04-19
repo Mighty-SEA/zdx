@@ -125,6 +125,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
     Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::delete('/services/{id}/image', [ServiceController::class, 'deleteImage'])->name('services.delete-image');
     
     // Admin Partners (Pelanggan / Partner)
     Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
