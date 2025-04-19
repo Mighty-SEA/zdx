@@ -15,15 +15,11 @@ class NotificationSeeder extends Seeder
     public function run(): void
     {
         // Pastikan data lama dibersihkan
-        Notification::truncate();
+
         
         // Cari user admin
-        $admin = User::where('role', 'admin')->first();
-        
-        if ($admin) {
             // Notifikasi 1 - Pengiriman Baru
             Notification::create([
-                'user_id' => $admin->id,
                 'title' => 'Pengiriman Baru',
                 'message' => 'Pesanan #12345 telah dibuat',
                 'icon' => 'fas fa-shipping-fast',
@@ -34,7 +30,6 @@ class NotificationSeeder extends Seeder
     
             // Notifikasi 2 - Pelanggan Baru
             Notification::create([
-                'user_id' => $admin->id,
                 'title' => 'Pelanggan Baru',
                 'message' => 'John Doe baru saja mendaftar',
                 'icon' => 'fas fa-user',
@@ -45,7 +40,6 @@ class NotificationSeeder extends Seeder
     
             // Notifikasi 3 - Pengingat Sistem
             Notification::create([
-                'user_id' => $admin->id,
                 'title' => 'Pengingat Sistem',
                 'message' => 'Perbarui tarif pengiriman',
                 'icon' => 'fas fa-exclamation-triangle',
@@ -54,6 +48,6 @@ class NotificationSeeder extends Seeder
                 'link' => '/admin/rates',
                 'created_at' => now()->subHours(2)
             ]);
-        }
+        
     }
 }

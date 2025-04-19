@@ -78,6 +78,11 @@
                         <i class="fas fa-bullhorn mr-2 text-gray-400"></i>Marketing
                     </h3>
                     <nav class="space-y-1">
+                        <a href="{{ route('admin.home-content.index') }}" class="sidebar-link {{ request()->routeIs('admin.home-content*') ? 'active' : '' }}">
+                            <i class="fas fa-home text-lg w-5 text-center"></i>
+                            <span>Konten Home</span>
+                        </a>
+                        
                         <a href="{{ route('admin.services') }}" class="sidebar-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
                             <i class="fas fa-cubes text-lg w-5 text-center"></i>
                             <span>Layanan</span>
@@ -117,6 +122,16 @@
                         </a>
                     </nav>
                 </div>
+                
+                <!-- Profile Content Management -->
+                <li class="relative px-6 py-3">
+                    <span class="{{ request()->routeIs('admin.profile-content*') ? 'absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg' : '' }}"></span>
+                    <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 {{ request()->routeIs('admin.profile-content*') ? 'text-gray-800' : '' }}" 
+                       href="{{ route('admin.profile-content.index') }}">
+                        <i class="fas fa-building w-5 h-5"></i>
+                        <span class="ml-4">Informasi Perusahaan</span>
+                    </a>
+                </li>
                 
                 <!-- Divider -->
                 <div class="px-5 mb-2 mt-auto">

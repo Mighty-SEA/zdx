@@ -11,8 +11,13 @@ use App\Http\Controllers\Admin\AnalyticsSettingsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\HomeContentController;
+use App\Http\Controllers\Admin\ProfileContentController;
 use App\Http\Controllers\Admin\CommodityController;
+
+
 use Illuminate\Http\Request;
+use App\Http\Controllers\Admin\StructureController;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -120,7 +125,23 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/partners/{id}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{id}', [PartnerController::class, 'update'])->name('partners.update');
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy'])->name('partners.destroy');
-    
     // Commodity Management
     Route::resource('commodity', CommodityController::class);
+
+    Route::get('/home-content', [HomeContentController::class, 'index'])->name('home-content.index');
+    Route::get('/home-content/{id}/edit', [HomeContentController::class, 'edit'])->name('home-content.edit');
+    Route::put('/home-content/{id}', [HomeContentController::class, 'update'])->name('home-content.update');
+    Route::post('/home-content/order', [HomeContentController::class, 'updateOrder'])->name('home-content.order');
+    
+    // Admin Profile Content
+    Route::get('/profile-content', [ProfileContentController::class, 'index'])->name('profile-content.index');
+    Route::get('/profile-content/{id}/edit', [ProfileContentController::class, 'edit'])->name('profile-content.edit');
+    Route::put('/profile-content/{id}', [ProfileContentController::class, 'update'])->name('profile-content.update');
+    Route::post('/profile-content/order', [ProfileContentController::class, 'updateOrder'])->name('profile-content.order');
+
+    // Rute untuk upload logo dan struktur organisasi
+    Route::post('/logo/upload', [StructureController::class, 'uploadLogo'])->name('logo.upload');
+    Route::post('/structure/upload', [StructureController::class, 'uploadStructure'])->name('structure.upload');
+    Route::post('/logistics/upload', [StructureController::class, 'uploadLogistics'])->name('logistics.upload');
+
 });

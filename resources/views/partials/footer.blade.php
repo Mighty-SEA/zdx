@@ -24,17 +24,16 @@
             <!-- Tentang Perusahaan -->
             <div class="transform transition-all duration-500 hover:translate-y-[-5px]">
                 <div class="flex items-center mb-5">
-                    <img src="{{ asset('asset/logo.png') }}" alt="ZINDAN DIANTAR EXPRESS" class="h-14 mr-3">
+                    <img src="{{ asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 mr-3">
                     <div>
-                        <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">ZINDAN</h3>
-                        <p class="text-gray-400 text-xs tracking-wider">DIANTAR EXPRESS</p>
+                        <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">{{ $companyInfo->company_name ?? 'ZINDAN' }}</h3>
+                        <p class="text-gray-400 text-xs tracking-wider">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>
                     </div>
                 </div>
-                <p class="text-white text-opacity-80 mb-6 leading-relaxed">PT. Zindan Diantar Express adalah perusahaan jasa pengiriman barang terpercaya dengan jaringan yang luas di seluruh Indonesia.</p>
+                <p class="text-white text-opacity-80 mb-6 leading-relaxed">{{ $companyInfo->company_description ?? 'PT. Zindan Diantar Express adalah perusahaan jasa pengiriman barang terpercaya dengan jaringan yang luas di seluruh Indonesia.' }}</p>
                 <div class="flex items-start space-x-3 bg-[#FF6000] bg-opacity-5 p-4 rounded-lg backdrop-blur-sm">
                     <i class="fas fa-map-marker-alt text-[#FF6000] mt-1 text-lg"></i>
-                    <p class="text-white text-opacity-90">Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa,<br>
-                    Kec. Jatiasih, Kota Bekasi - Jawa Barat 17424</p>
+                    <p class="text-white text-opacity-90">{{ $companyInfo->contact_address ?? 'Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa, Kec. Jatiasih, Kota Bekasi - Jawa Barat 17424' }}</p>
                 </div>
             </div>
 
@@ -101,7 +100,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Telepon</p>
-                            <p class="font-medium">0858 1471 8888</p>
+                            <p class="font-medium">{{ $companyInfo->contact_phone ?? '0858 1471 8888' }}</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
@@ -110,7 +109,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Customer Service</p>
-                            <p class="font-medium">0858 1471 8888</p>
+                            <p class="font-medium">{{ $companyInfo->contact_phone ?? '0858 1471 8888' }}</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
@@ -119,7 +118,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Email</p>
-                            <p class="font-medium">info@zdx.co.id</p>
+                            <p class="font-medium">{{ $companyInfo->contact_email ?? 'info@zdx.co.id' }}</p>
                         </div>
                     </li>
                 </ul>
@@ -128,31 +127,62 @@
                     <span class="bg-[#FF6000] w-2 h-6 rounded-sm mr-2"></span> Media Sosial
                 </h4>
                 <div class="flex space-x-3 mt-4">
+                    @if(!empty($companyInfo->contact_facebook))
+                    <a href="{{ $companyInfo->contact_facebook }}" target="_blank" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-facebook-f text-white"></i>
+                    </a>
+                    @else
                     <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
                         <i class="fab fa-facebook-f text-white"></i>
                     </a>
+                    @endif
+                    
+                    @if(!empty($companyInfo->contact_twitter))
+                    <a href="{{ $companyInfo->contact_twitter }}" target="_blank" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-twitter text-white"></i>
+                    </a>
+                    @else
                     <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
                         <i class="fab fa-twitter text-white"></i>
                     </a>
+                    @endif
+                    
+                    @if(!empty($companyInfo->contact_instagram))
+                    <a href="{{ $companyInfo->contact_instagram }}" target="_blank" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-instagram text-white"></i>
+                    </a>
+                    @else
                     <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
                         <i class="fab fa-instagram text-white"></i>
                     </a>
+                    @endif
+                    
+                    @if(!empty($companyInfo->contact_youtube))
+                    <a href="{{ $companyInfo->contact_youtube }}" target="_blank" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
+                        <i class="fab fa-youtube text-white"></i>
+                    </a>
+                    @else
                     <a href="#" class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center shadow-glow hover:scale-110 transition-all duration-300">
                         <i class="fab fa-linkedin-in text-white"></i>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
         
         <!-- Footer Bottom -->
         <div class="border-t border-gray-800 mt-12 pt-8 text-center text-white text-opacity-70">
-            <p>&copy; Copyright 2025. All Rights Reserved. PT. Zindan Diantar Express</p>
+            <p>&copy; Copyright {{ date('Y') }}. All Rights Reserved. {{ $companyInfo->company_name ?? 'PT. Zindan Diantar Express' }}</p>
         </div>
     </div>
 </footer>
 
 <!-- WhatsApp Button -->
+@if(!empty($companyInfo->contact_phone))
+<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone) }}" target="_blank" class="whatsapp-button fixed bottom-6 right-6 z-50">
+@else
 <a href="https://wa.me/6285814718888" target="_blank" class="whatsapp-button fixed bottom-6 right-6 z-50">
+@endif
     <div class="relative">
         <div class="ping-animation absolute inset-0 rounded-full"></div>
         <div class="flex items-center justify-center bg-[#25D366] rounded-full w-18 h-18 shadow-lg">

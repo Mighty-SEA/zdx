@@ -52,17 +52,37 @@ use Illuminate\Support\Facades\Storage;
         <div class="text-center">
             <!-- Main headline dengan efek melayang -->
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-white">
+                @if(isset($homeContent['hero']))
+                <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">{{ Str::beforeLast($homeContent['hero']->title, '&') }}</span>
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">{{ Str::afterLast($homeContent['hero']->title, '&') }}</span>
+                @else
                 <span class="block mb-2 animate-fade-in-up" style="animation-delay: 0.3s">Solusi Pengiriman</span>
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFF0E6] animate-fade-in-up" style="animation-delay: 0.6s">Cepat & Terpercaya</span>
+                @endif
             </h1>
 
             <!-- Subheading dengan efek fade-in -->
             <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white max-w-2xl mx-auto opacity-90 animate-fade-in-up" style="animation-delay: 0.9s">
+                @if(isset($homeContent['hero']))
+                {{ $homeContent['hero']->subtitle }}
+                @else
                 Kirim barang Anda ke seluruh Indonesia dengan layanan ekspres yang aman dan tepat waktu
+                @endif
             </p>
 
             <!-- CTA Buttons dengan desain yang lebih menarik -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10 sm:mb-12 animate-fade-in-up" style="animation-delay: 1.2s">
+                @if(isset($homeContent['hero']) && $homeContent['hero']->button_text && $homeContent['hero']->button_url)
+                <a href="{{ $homeContent['hero']->button_url }}" class="group relative px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-white text-[#FF6000] font-semibold overflow-hidden transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+                    <span class="relative z-10 text-sm sm:text-base flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        {{ $homeContent['hero']->button_text }}
+                    </span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#FFF0E6] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </a>
+                @else
                 <a href="/tracking" class="group relative px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-white text-[#FF6000] font-semibold overflow-hidden transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                     <span class="relative z-10 text-sm sm:text-base flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,6 +92,7 @@ use Illuminate\Support\Facades\Storage;
                     </span>
                     <div class="absolute inset-0 bg-gradient-to-r from-[#FFF0E6] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </a>
+                @endif
                 <a href="/tarif" class="group relative px-6 py-3 sm:px-8 sm:py-4 rounded-full border-2 border-white text-white font-semibold overflow-hidden transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                     <span class="relative z-10 text-sm sm:text-base flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,30 +106,73 @@ use Illuminate\Support\Facades\Storage;
 
             <!-- Stats Section dengan animasi -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 bg-white/10 backdrop-blur-md p-6 rounded-xl animate-fade-in-up" style="animation-delay: 1.5s">
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="10000">0</span>+
+                @if(isset($homeContent) && isset($homeContent['stats']) && !empty($homeContent['stats']->metadata))
+                    @php 
+                        $statsData = json_decode($homeContent['stats']->metadata, true); 
+                    @endphp
+                    @if(isset($statsData['items']) && is_array($statsData['items']))
+                        @foreach($statsData['items'] as $stat)
+                        <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                            <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                                <span class="counter" data-target="{{ $stat['number'] }}">0</span>{{ $stat['symbol'] ?? '' }}
+                            </div>
+                            <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">{{ $stat['label'] }}</div>
+                        </div>
+                        @endforeach
+                    @else
+                        <!-- Fallback jika struktur items tidak ada -->
+                        <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                            <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                                <span class="counter" data-target="10000">0</span>+
+                            </div>
+                            <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Partner</div>
+                        </div>
+                        <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                            <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                                <span class="counter" data-target="100">0</span>+
+                            </div>
+                            <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Project</div>
+                        </div>
+                        <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                            <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                                <span class="counter" data-target="24">0</span>/7
+                            </div>
+                            <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Success</div>
+                        </div>
+                        <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                            <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                                <span class="counter" data-target="99">0</span>%
+                            </div>
+                            <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Country</div>
+                        </div>
+                    @endif
+                @else
+                    <!-- Fallback jika section stats tidak ada atau metadata kosong -->
+                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                            <span class="counter" data-target="10000">0</span>+
+                        </div>
+                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Partner</div>
                     </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Partner</div>
-                </div>
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="100">0</span>+
+                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                            <span class="counter" data-target="100">0</span>+
+                        </div>
+                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Project</div>
                     </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Project</div>
-                </div>
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="24">0</span>/7
+                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                            <span class="counter" data-target="24">0</span>/7
+                        </div>
+                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Success</div>
                     </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Success</div>
-                </div>
-                <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
-                        <span class="counter" data-target="99">0</span>%
+                    <div class="text-center bg-white/10 rounded-lg p-3 backdrop-blur-sm shadow-inner">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">
+                            <span class="counter" data-target="99">0</span>%
+                        </div>
+                        <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Country</div>
                     </div>
-                    <div class="text-xs sm:text-sm text-white text-opacity-90 font-medium">Country</div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -131,20 +195,30 @@ use Illuminate\Support\Facades\Storage;
             <!-- Section Header dengan animasi -->
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="inline-block text-3xl sm:text-4xl font-bold relative">
-                    Layanan Kami
+                    @if(isset($homeContent) && isset($homeContent['services']) && !empty($homeContent['services']->title))
+                        {{ $homeContent['services']->title }}
+                    @else
+                        Layanan Kami
+                    @endif
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] transform scale-x-0 transition-transform duration-500 group-hover:scale-x-100"></div>
                 </h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda</p>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">
+                    @if(isset($homeContent) && isset($homeContent['services']) && !empty($homeContent['services']->subtitle))
+                        {{ $homeContent['services']->subtitle }}
+                    @else
+                        Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda
+                    @endif
+                </p>
             </div>
 
             <!-- Services Cards dengan animasi hover -->
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-10">
-                @if(isset($services) && $services->count() > 0)
+                @if(isset($services) && is_object($services) && $services->count() > 0)
                     @php $displayedServices = $services->take(3); @endphp
                     @foreach($displayedServices as $service)
                     <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 + 100 }}">
                         <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
-                            @if($service->image)
+                            @if(isset($service->image) && !empty($service->image))
                             <img src="{{ asset($service->image) }}" alt="{{ $service->title }}" class="h-full w-full object-cover">
                             @else
                             <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] to-[#FF8C00]"></div>
@@ -178,6 +252,7 @@ use Illuminate\Support\Facades\Storage;
                     </div>
                     @endif
                 @else
+                    <!-- Fallback layanan jika tidak ada data -->
                     <!-- Service Card 1 -->
                     <div class="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
                         <div class="relative h-32 sm:h-40 md:h-48 overflow-hidden">
@@ -287,15 +362,25 @@ use Illuminate\Support\Facades\Storage;
                 <!-- Image Column with floating effect -->
                 <div class="relative order-2 md:order-1" data-aos="fade-right">
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" 
-                             alt="Cargo Features" 
-                             class="w-full h-auto rounded-2xl transform transition duration-700 hover:scale-105">
+                        @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->image_path))
+                            <img src="{{ asset(Storage::url($homeContent['features']->image_path)) }}" 
+                                 alt="Features Image" 
+                                 class="w-full h-auto rounded-2xl transform transition duration-700 hover:scale-105">
+                        @else
+                            <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" 
+                                 alt="Cargo Features" 
+                                 class="w-full h-auto rounded-2xl transform transition duration-700 hover:scale-105">
+                        @endif
                         <!-- Overlay gradient -->
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
                         
                         <!-- Badge positioning -->
                         <div class="absolute top-4 left-4 bg-[#FF6000] text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
-                            Terpercaya
+                            @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->button_text))
+                                {{ $homeContent['features']->button_text }}
+                            @else
+                                Terpercaya
+                            @endif
                         </div>
                     </div>
                     
@@ -308,7 +393,13 @@ use Illuminate\Support\Facades\Storage;
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-[#FF6000] font-semibold">Pengiriman Tepat Waktu</p>
+                                <p class="text-[#FF6000] font-semibold">
+                                    @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->button_url))
+                                        {{ $homeContent['features']->button_url }}
+                                    @else
+                                        Pengiriman Tepat Waktu
+                                    @endif
+                                </p>
                                 <p class="text-gray-600 text-sm">98% pengiriman tepat waktu</p>
                             </div>
                         </div>
@@ -317,61 +408,21 @@ use Illuminate\Support\Facades\Storage;
                 
                 <!-- Content Column -->
                 <div class="order-1 md:order-2" data-aos="fade-left">
-                    <div class="bg-white bg-opacity-70 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-white/20">
-                        <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-gray-800 relative inline-block">
-                            Mengapa Memilih Kami?
-                            <div class="h-1 w-1/2 bg-[#FF6000] absolute bottom-0 left-0 rounded-full"></div>
-                        </h2>
-                        
-                        <p class="text-gray-600 mb-8">
-                            ZDX menyediakan solusi logistik terbaik dengan komitmen untuk kualitas, keandalan, dan kepuasan pelanggan. Kami hadir untuk menjawab kebutuhan pengiriman Anda.
-                        </p>
-                        
+                    <div class="bg-white bg-opacity-70 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-white/20">                     
                         <div class="space-y-6">
-                            <!-- Feature 1 -->
-                            <div class="flex items-start transition-all duration-300 hover:translate-x-2" data-aos="fade-up" data-aos-delay="100">
-                                <div class="bg-[#FFF0E6] rounded-lg p-3 mr-5 shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF6000]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                            </div>
-                            <div>
-                                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Layanan 24/7</h3>
-                                    <p class="text-gray-600">Tim dukungan pelanggan kami siap membantu Anda sepanjang waktu, memberikan bantuan kapanpun Anda membutuhkannya.</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Feature 2 -->
-                            <div class="flex items-start transition-all duration-300 hover:translate-x-2" data-aos="fade-up" data-aos-delay="200">
-                                <div class="bg-[#FFF0E6] rounded-lg p-3 mr-5 shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF6000]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Keamanan Terjamin</h3>
-                                    <p class="text-gray-600">Kami memprioritaskan keamanan dengan sistem pelacakan real-time dan kemasan yang aman untuk barang Anda.</p>
-                        </div>
-                            </div>
-                            
-                            <!-- Feature 3 -->
-                            <div class="flex items-start transition-all duration-300 hover:translate-x-2" data-aos="fade-up" data-aos-delay="300">
-                                <div class="bg-[#FFF0E6] rounded-lg p-3 mr-5 shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF6000]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                            </div>
-                            <div>
-                                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Harga Kompetitif</h3>
-                                    <p class="text-gray-600">Kami menawarkan tarif yang bersaing dengan komitmen tanpa biaya tersembunyi untuk semua layanan kami.</p>
-                                </div>
-                            </div>
+                            @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->content))
+                                {!! $homeContent['features']->content !!}
+                            @else
+                                <!-- Default Features -->
+                                @include('partials.default-features')
+                            @endif
                         </div>
                         
                         <!-- CTA Button -->
                         <div class="mt-8" data-aos="fade-up" data-aos-delay="400">
-                            <a href="/profile" class="inline-flex items-center px-6 py-3 bg-[#FF6000] text-white font-medium rounded-lg shadow-lg hover:bg-[#E65100] transition-colors duration-300">
-                                Pelajari Lebih Lanjut
+                            <a href="{{ isset($homeContent['features']) && !empty($homeContent['features']->button_url) ? $homeContent['features']->button_url : '/profile' }}" 
+                               class="inline-flex items-center px-6 py-3 bg-[#FF6000] text-white font-medium rounded-lg shadow-lg hover:bg-[#E65100] transition-colors duration-300">
+                                {{ isset($homeContent['features']) && !empty($homeContent['features']->button_text) ? $homeContent['features']->button_text : 'Pelajari Lebih Lanjut' }}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
@@ -485,11 +536,11 @@ use Illuminate\Support\Facades\Storage;
             <div class="mt-20 mb-0 text-center" data-aos="fade-up">
                 <h3 class="text-xl text-white font-medium mb-8">Dipercaya oleh Perusahaan Terkemuka</h3>
                 <div class="flex flex-wrap justify-center gap-8 items-center">
-                    @if(isset($partners) && $partners->count() > 0)
+                    @if(isset($partners) && is_object($partners) && $partners->count() > 0)
                         @foreach($partners as $partner)
-                            @if($partner->logo_path)
+                            @if(isset($partner->logo_path) && !empty($partner->logo_path))
                                 <div class="client-logo">
-                                    <img src="{{ Storage::url($partner->logo_path) }}" alt="{{ $partner->company ?: $partner->name }}" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                                    <img src="{{ asset(Storage::url($partner->logo_path)) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
                                 </div>
                             @endif
                         @endforeach

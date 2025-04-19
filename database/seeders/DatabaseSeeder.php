@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CreateAdminUserSeeder::class,
             NotificationSeeder::class,
             SettingsSeeder::class,
+            HomeContentSeeder::class,
         ]);
 
         User::factory()->create([
