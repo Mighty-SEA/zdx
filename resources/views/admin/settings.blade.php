@@ -856,6 +856,19 @@
         // Cek apakah ada hash di URL atau tab tersimpan di sessionStorage
         let activeTab = window.location.hash.substring(1) || sessionStorage.getItem('activeSettingsTab') || 'analytics';
         
+        // Ambil parameter tab dari URL jika ada
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        
+        // Jika ada parameter tab di URL, gunakan itu untuk mengaktifkan tab perusahaan
+        if (tabParam === 'logos') {
+            activeTab = 'company';
+            setTimeout(() => {
+                // Aktifkan tab Logo & Media
+                activateCompanyTab('tab-logos');
+            }, 100);
+        }
+        
         // Fungsi untuk mengaktifkan tab
         function activateTab(tabName) {
             // Simpan tab aktif ke sessionStorage
@@ -1100,4 +1113,117 @@
         }
     });
 </script>
-@endpush 
+
+<script>
+    // Fungsi untuk memperbarui gambar logo setelah upload berhasil
+    function refreshLogos() {
+        // Dapatkan semua elemen gambar logo
+        const logoImages = document.querySelectorAll('img[src*="asset/logo"]');
+        
+        // Tambahkan parameter random ke URL gambar untuk memaksa browser mengambil gambar baru
+        logoImages.forEach(img => {
+            const currentSrc = img.src.split('?')[0];
+            img.src = currentSrc + '?v=' + new Date().getTime();
+        });
+    }
+    
+    // Tambahkan event untuk memperbarui gambar setelah modal ditutup
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cek apakah ada pesan sukses untuk upload logo
+        const successMessage = "{{ session('success') }}";
+        if (successMessage && successMessage.includes('Logo berhasil')) {
+            refreshLogos();
+        }
+        
+        // Tambahkan event listener untuk tombol "Refresh Gambar"
+        const refreshBtn = document.createElement('button');
+        refreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Refresh Gambar';
+        refreshBtn.className = 'px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-md hover:bg-gray-700 focus:outline-none focus:ring mt-2';
+        refreshBtn.onclick = function() {
+            refreshLogos();
+            alert('Gambar logo diperbarui!');
+        }
+        
+        // Tambahkan tombol ke panel logo
+        const logoPanel = document.getElementById('panel-logos');
+        if (logoPanel) {
+            logoPanel.querySelector('.bg-indigo-50').appendChild(refreshBtn);
+        }
+    });
+</script>
+@endpush
+
+<!-- Modal Upload Logo -->
+<div id="logoUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Upload Logo Perusahaan</h3>
+            <button type="button" class="close-modal text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form action="{{ route('admin.logo.upload') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="logo_number" id="logoNumber" value="1">
+            
+            <div class="mb-4">
+                <label for="logoFile" class="block text-sm font-medium text-gray-700 mb-1">
+                    File Logo
+                </label>
+                <input type="file" name="logo_file" id="logoFile" accept="image/*" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, GIF. Ukuran maksimal 2MB.</p>
+            </div>
+            
+            <div id="previewContainer" class="mb-4 hidden">
+                <p class="text-sm font-medium text-gray-700 mb-1">Preview</p>
+                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
+                    <img id="logoPreview" src="#" alt="Logo Preview" class="max-h-40 mx-auto">
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" class="close-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">
+                    Upload Logo
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Upload Gambar Logistik -->
+<div id="logisticsUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Upload Gambar Logistik</h3>
+            <button type="button" class="close-logistics-modal text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form action="{{ route('admin.logistics.upload') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-4">
+                <label for="logisticsFile" class="block text-sm font-medium text-gray-700 mb-1">
+                    File Gambar
+                </label>
+                <input type="file" name="logistics_file" id="logisticsFile" accept="image/*" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, JPG. Ukuran maksimal 2MB.</p>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" class="close-logistics-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
+                    Upload Gambar
+                </button>
+            </div>
+        </form>
+    </div>
+</div> 

@@ -78,11 +78,7 @@
                         <div class="relative">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] rounded-lg blur"></div>
                             <div class="relative bg-white p-2 rounded-lg">
-                                <img src="{{ asset('asset/logistics.jpg') }}?v={{ time() }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-cover">
-                            </div>
-                            <div class="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
-                                <div class="text-lg font-bold text-[#FF6000]">100+</div>
-                                <div class="text-sm text-gray-600">Pengiriman per hari</div>
+                                <img src="{{ asset('asset/logo2.png') }}?v={{ time() }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-contain">
                             </div>
                         </div>
                     </div>

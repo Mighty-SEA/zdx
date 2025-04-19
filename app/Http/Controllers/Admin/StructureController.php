@@ -41,8 +41,11 @@ class StructureController extends Controller
             
             // Clear cache untuk memperbarui tampilan
             $this->clearCache();
-
-            return redirect()->back()->with('success', 'Logo berhasil diupload. Refresh halaman profil untuk melihat perubahan.');
+            
+            // Tambahkan timestamp ke URL redirect untuk mengatasi cache browser
+            $redirectUrl = route('admin.settings', ['#company', 'tab' => 'logos', 't' => time()]);
+            
+            return redirect($redirectUrl)->with('success', 'Logo berhasil diupload. Refresh halaman jika tampilan belum berubah.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengupload logo: ' . $e->getMessage());
         }
@@ -69,7 +72,7 @@ class StructureController extends Controller
             // Clear cache untuk memperbarui tampilan
             $this->clearCache();
 
-            return redirect()->back()->with('success', 'Struktur organisasi berhasil diupload. Refresh halaman profil untuk melihat perubahan.');
+            return redirect()->back()->with('success', 'Struktur organisasi berhasil diupload. Refresh halaman jika tampilan belum berubah.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengupload struktur organisasi: ' . $e->getMessage());
         }
@@ -96,7 +99,7 @@ class StructureController extends Controller
             // Clear cache untuk memperbarui tampilan
             $this->clearCache();
 
-            return redirect()->back()->with('success', 'Gambar logistik berhasil diupload. Refresh halaman profil untuk melihat perubahan.');
+            return redirect()->back()->with('success', 'Gambar logistik berhasil diupload. Refresh halaman jika tampilan belum berubah.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengupload gambar logistik: ' . $e->getMessage());
         }
@@ -116,6 +119,27 @@ class StructureController extends Controller
             // Clear cache browser dengan timestamp baru
             $timestamp = time();
             Cache::put('asset_version', $timestamp, now()->addYear());
+            
+            // Force browser untuk memperbarui gambar dengan menyentuh file
+            if (file_exists(public_path('asset/logo1.png'))) {
+                touch(public_path('asset/logo1.png'));
+            }
+            
+            if (file_exists(public_path('asset/logo2.png'))) {
+                touch(public_path('asset/logo2.png'));
+            }
+            
+            if (file_exists(public_path('asset/logo3.png'))) {
+                touch(public_path('asset/logo3.png'));
+            }
+            
+            if (file_exists(public_path('asset/logo.png'))) {
+                touch(public_path('asset/logo.png'));
+            }
+            
+            if (file_exists(public_path('asset/logistics.jpg'))) {
+                touch(public_path('asset/logistics.jpg'));
+            }
         } catch (\Exception $e) {
             // Log error jika terjadi masalah saat membersihkan cache
             Log::error('Error clearing cache: ' . $e->getMessage());
