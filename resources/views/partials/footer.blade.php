@@ -29,7 +29,7 @@
                 <div class="flex items-center mb-5">
                     <img id="footer-logo" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 mr-3">
                     <div>
-                        <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">{{ $companyInfo->company_name ?? 'ZINDAN' }}</h3>
+                        <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">{{ $companyInfo->company_name ?? 'PT ZDX CARGO' }}</h3>
                         <p class="text-gray-400 text-xs tracking-wider">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>
                     </div>
                 </div>
@@ -208,17 +208,11 @@
 </footer>
 
 <!-- WhatsApp Button -->
-@if(!empty($companyInfo->contact_phone))
-<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone) }}" target="_blank" class="whatsapp-button fixed bottom-6 right-6 z-50">
-@else
-<a href="https://wa.me/6285814718888" target="_blank" class="whatsapp-button fixed bottom-6 right-6 z-50">
-@endif
-    <div class="relative">
-        <div class="ping-animation absolute inset-0 rounded-full"></div>
-        <div class="flex items-center justify-center bg-[#25D366] rounded-full w-18 h-18 shadow-lg">
-            <i class="fab fa-whatsapp text-white text-4xl"></i>
-        </div>
-    </div>
+<a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->contact_phone ?? '6285814718888') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+   class="fixed bottom-6 right-6 z-50 bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 flex items-center justify-center" 
+   target="_blank" 
+   aria-label="Chat via WhatsApp">
+    <i class="fab fa-whatsapp text-4xl"></i>
 </a>
 
 <style>

@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- SEO Metadata -->
@@ -34,9 +34,49 @@
             margin-top: -80px; /* Mengompensasi padding-top dari main */
             padding-top: 0;
         }
+        
+        /* Penyesuaian responsif untuk tampilan mobile */
+        @media (max-width: 640px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            h1, .h1 {
+                font-size: 1.875rem !important; /* 30px */
+                line-height: 2.25rem !important; /* 36px */
+            }
+            
+            h2, .h2 {
+                font-size: 1.5rem !important; /* 24px */
+                line-height: 2rem !important; /* 32px */
+            }
+            
+            .p-mobile-smaller {
+                padding: 0.75rem !important;
+            }
+            
+            .text-mobile-smaller {
+                font-size: 0.875rem !important;
+            }
+            
+            .gap-mobile-smaller {
+                gap: 0.5rem !important;
+            }
+        }
+        
+        /* Fix untuk iOS safari 100vh bug */
+        .min-h-screen {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
+        
+        html {
+            height: -webkit-fill-available;
+        }
     </style>
 </head>
-<body class="bg-white text-gray-800 antialiased">
+<body class="bg-white text-gray-800 antialiased overflow-x-hidden">
     @include('partials.header')
     
     <main>
@@ -55,8 +95,16 @@
                 duration: 800,
                 easing: 'ease-in-out',
                 once: true,
-                mirror: false
+                mirror: false,
+                disable: window.innerWidth < 768 // Menonaktifkan di mobile untuk performa lebih baik
             });
+            
+            // Deteksi perangkat
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (isMobile) {
+                // Tambahkan class khusus untuk mobile
+                document.body.classList.add('is-mobile-device');
+            }
         });
     </script>
 </body>

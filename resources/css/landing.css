@@ -23,31 +23,22 @@
 .menu-item::after {
     content: '';
     position: absolute;
-    width: 0;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%) scaleX(0);
+    width: 60%;
     height: 2px;
-    bottom: -2px;
-    left: 0;
-    background: linear-gradient(to right, #FF6000, #FF8C00);
-    transition: width 0.3s ease;
+    background: #FF6000;
+    transition: transform 0.3s ease;
 }
 
-.menu-item:hover::after {
-    width: 100%;
+.menu-item:hover::after,
+.active-menu-item::after {
+    transform: translateX(-50%) scaleX(1);
 }
 
 .active-menu-item {
     color: #FF6000;
-    font-weight: 600;
-}
-
-.active-menu-item::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background: linear-gradient(to right, #FF6000, #FF8C00);
 }
 
 /* Gradient Buttons */
@@ -189,4 +180,231 @@
 .btn-secondary:hover {
     background-color: #FF6000;
     color: #FFFFFF;
+}
+
+/* Home Page Animations */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out forwards;
+}
+
+@keyframes blob {
+    0% {
+        transform: scale(1);
+    }
+    33% {
+        transform: scale(1.1);
+    }
+    66% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-blob {
+    animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+    animation-delay: 4s;
+}
+
+/* Custom Scroll Bar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #FF6000;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #E65100;
+}
+
+/* Custom Selections */
+::selection {
+    background-color: #FF6000;
+    color: white;
+}
+
+/* Tracking Page Styles */
+.tracking-dot {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tracking-line {
+    height: 100%;
+    width: 2px;
+    background-color: #FF6000;
+    flex-grow: 1;
+}
+
+.tracking-item {
+    padding-left: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tracking-item:hover {
+    transform: translateX(5px);
+}
+
+/* Rates Page */
+.rate-input:focus ~ .rate-input-icon {
+    color: #FF6000;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+    /* Mobile table styling */
+    .mobile-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Mobile spacing adjustments */
+    .section-mobile-py {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    .card-mobile {
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Mobile Hero adjustments */
+    .hero-content-mobile {
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    /* Mobile navigation improvements */
+    .mobile-nav-active {
+        background-color: #FFF0E6;
+        color: #FF6000;
+        font-weight: 600;
+    }
+    
+    /* Mobile text adjustments */
+    .heading-mobile {
+        font-size: 1.5rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .subheading-mobile {
+        font-size: 1rem !important;
+    }
+    
+    /* Mobile grid improvements */
+    .grid-cols-mobile-1 {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+    
+    .grid-cols-mobile-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    /* Mobile form improvements */
+    .form-mobile input,
+    .form-mobile select,
+    .form-mobile textarea {
+        font-size: 16px !important; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Mobile buttons improvements */
+    .btn-mobile {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Reduced animation for better performance */
+    .reduce-animation-mobile {
+        transition-duration: 0.1s !important;
+        animation-duration: 0.1s !important;
+    }
+    
+    /* Fix for sticky header on iOS */
+    .ios-sticky-fix {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* Landscape mode fixes */
+@media (max-height: 450px) and (orientation: landscape) {
+    .mobile-menu-landscape {
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    
+    .hero-content-landscape {
+        padding-top: 1rem !important;
+        min-height: auto !important;
+    }
+}
+
+/* Print styles - untuk halaman tracking dan rates */
+@media print {
+    header, footer, .no-print {
+        display: none !important;
+    }
+    
+    main {
+        padding-top: 0 !important;
+    }
+    
+    body {
+        font-size: 12pt;
+        color: #000;
+        background-color: #fff;
+    }
+    
+    .print-visible {
+        display: block !important;
+    }
+    
+    .print-break-inside-avoid {
+        break-inside: avoid;
+    }
+    
+    .print-break-before {
+        break-before: page;
+    }
+}
+
+/* Fix Safari overflow issues */
+.overflow-x-scroll {
+    -webkit-overflow-scrolling: touch;
 } 
