@@ -207,13 +207,54 @@
     </div>
 </footer>
 
-<!-- WhatsApp Button -->
-<a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->contact_phone ?? '6285814718888') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
-   class="fixed bottom-6 right-6 z-50 bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 flex items-center justify-center" 
-   target="_blank" 
-   aria-label="Chat via WhatsApp">
-    <i class="fab fa-whatsapp text-4xl"></i>
-</a>
+<!-- WhatsApp Button dan Popup -->
+<div id="whatsapp-container">
+    <!-- WhatsApp Button -->
+    <button id="whatsapp-button" 
+        class="fixed bottom-6 right-6 z-50 bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 flex items-center justify-center whatsapp-pulse">
+        <span class="ping-effect absolute w-full h-full rounded-full"></span>
+        <i class="fab fa-whatsapp text-5xl whatsapp-icon-rotate"></i>
+    </button>
+
+    <!-- WhatsApp Popup -->
+    <div id="whatsapp-popup" class="fixed bottom-20 right-6 bg-white rounded-lg shadow-xl p-4 w-72 z-50 hidden">
+        <div class="flex justify-between items-center mb-3 border-b pb-2">
+            <h3 class="font-bold text-gray-800">Hubungi Kami via WhatsApp</h3>
+            <button id="close-whatsapp-popup" class="text-gray-500 hover:text-gray-800">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-3">Silakan pilih nomor yang ingin Anda hubungi:</p>
+        
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->contact_phone ?? '6285814718888') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+           class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
+           target="_blank">
+            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
+                <i class="fab fa-whatsapp text-white text-xl"></i>
+            </div>
+            <div>
+                <p class="font-medium text-gray-800">Customer Service 1</p>
+                <p class="text-sm text-gray-600">{{ $companyInfo->contact_phone ?? '0858 1471 8888' }}</p>
+            </div>
+        </a>
+        
+        @if(isset($companyInfo->contact_phone2))
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->contact_phone2 ?: '6285814718889') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+           class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
+           target="_blank">
+            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
+                <i class="fab fa-whatsapp text-white text-xl"></i>
+            </div>
+            <div>
+                <p class="font-medium text-gray-800">Customer Service 2</p>
+                <p class="text-sm text-gray-600">{{ $companyInfo->contact_phone2 ?: '0858 1471 8889' }}</p>
+            </div>
+        </a>
+        @endif
+        
+    </div>
+</div>
 
 <style>
 .shadow-glow {
@@ -226,6 +267,60 @@
 
 .whatsapp-button:hover {
     transform: scale(1.05);
+}
+
+/* Animasi pulsasi untuk tombol WhatsApp */
+.whatsapp-pulse {
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+    }
+    
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+    }
+    
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    }
+}
+
+/* Animasi rotasi untuk ikon WhatsApp */
+.whatsapp-icon-rotate {
+    animation: rotate 15s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(10deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    75% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* Efek ping untuk notifikasi */
+.ping-effect {
+    background-color: transparent;
+    border: 2px solid #25D366;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 .ping-animation {
@@ -243,4 +338,51 @@
         opacity: 0;
     }
 }
-</style> 
+
+/* Animasi untuk popup */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInUp {
+    animation: fadeInUp 0.3s ease forwards;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const whatsappButton = document.getElementById('whatsapp-button');
+    const whatsappPopup = document.getElementById('whatsapp-popup');
+    const closePopupButton = document.getElementById('close-whatsapp-popup');
+    
+    whatsappButton.addEventListener('click', function() {
+        whatsappPopup.classList.toggle('hidden');
+        if (!whatsappPopup.classList.contains('hidden')) {
+            whatsappPopup.classList.add('fadeInUp');
+        }
+    });
+    
+    closePopupButton.addEventListener('click', function() {
+        whatsappPopup.classList.add('hidden');
+        whatsappPopup.classList.remove('fadeInUp');
+    });
+    
+    // Menutup popup jika user mengklik di luar popup
+    document.addEventListener('click', function(event) {
+        const isClickInsidePopup = whatsappPopup.contains(event.target);
+        const isClickOnButton = whatsappButton.contains(event.target);
+        
+        if (!isClickInsidePopup && !isClickOnButton && !whatsappPopup.classList.contains('hidden')) {
+            whatsappPopup.classList.add('hidden');
+            whatsappPopup.classList.remove('fadeInUp');
+        }
+    });
+});
+</script> 

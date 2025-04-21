@@ -105,7 +105,7 @@
                     <i class="fas fa-chevron-down text-xs ml-1 transition-transform duration-300" id="aboutChevron"></i>
                 </div>
                 
-                <div id="aboutDropdown" class="hidden">
+                <div id="aboutDropdown">
                     <a href="/profile" class="px-4 py-3 pl-8 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('profile') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                         <i class="fas fa-building w-5 text-center"></i><span>Profile</span>
                     </a>

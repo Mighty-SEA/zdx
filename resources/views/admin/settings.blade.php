@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Pengaturan')
+<link rel="icon" type="image/png" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" sizes="32x32">
 
 @section('meta')
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -13,7 +14,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-800">Pengaturan Sistem</h2>
-            <p class="text-gray-600 mt-1">Kelola pengaturan umum aplikasi ZDX Cargo.</p>
+            <p class="text-gray-600 mt-1">Kelola pengaturan umum aplikasi {{ $companyInfo->company_name ?? 'ZDX Cargo' }}.</p>
         </div>
     </div>
 
@@ -265,6 +266,32 @@
                                         <input type="email" id="company_email" name="company_email" value="{{ $companyEmail }}" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
                                         @error('company_email')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="company_phone2" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Telepon 2
+                                        </label>
+                                        <input type="text" id="company_phone2" name="company_phone2" value="{{ $companyPhone2 ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <p class="text-gray-500 text-xs mt-1">Nomor telepon alternatif untuk customer service</p>
+                                        @error('company_phone2')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="company_phone3" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Telepon 3
+                                        </label>
+                                        <input type="text" id="company_phone3" name="company_phone3" value="{{ $companyPhone3 ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <p class="text-gray-500 text-xs mt-1">Nomor telepon alternatif tambahan</p>
+                                        @error('company_phone3')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -1215,10 +1242,10 @@
                 logoPanel.querySelector('.bg-indigo-50').appendChild(refreshBtn);
             }
             
-            // Tambahkan tombol di atas semua panel logo
+            // Tambahkan tombol Hard Refresh di bagian atas panel Logo & Media
             const hardRefreshBtn = document.createElement('button');
             hardRefreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Hard Refresh Gambar';
-            hardRefreshBtn.className = 'px-3 py-1 ml-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring';
+            hardRefreshBtn.className = 'px-3 py-1 mt-2 mb-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring';
             hardRefreshBtn.onclick = function() {
                 // Paksa gambar mereload dari server tanpa cache
                 refreshLogos(true);
@@ -1229,10 +1256,19 @@
                 window.location.href = newUrl;
             }
             
-            const companyTabsContainer = document.querySelector('.mb-6.border-b.border-gray-200 ul');
-            if (companyTabsContainer && !document.getElementById('hardRefreshBtn')) {
-                companyTabsContainer.insertAdjacentElement('afterend', hardRefreshBtn);
-                hardRefreshBtn.id = 'hardRefreshBtn';
+            // Tambahkan tombol ke bagian atas panel logo
+            if (!document.getElementById('hardRefreshBtn')) {
+                const logosPanelTopArea = logoPanel.querySelector('.bg-indigo-50');
+                if (logosPanelTopArea) {
+                    // Tambahkan tombol di awal panel
+                    const hardRefreshContainer = document.createElement('div');
+                    hardRefreshContainer.className = 'flex justify-end mb-2';
+                    hardRefreshContainer.appendChild(hardRefreshBtn);
+                    
+                    // Tempatkan container di awal panel
+                    logosPanelTopArea.insertBefore(hardRefreshContainer, logosPanelTopArea.firstChild);
+                    hardRefreshBtn.id = 'hardRefreshBtn';
+                }
             }
         }
         
