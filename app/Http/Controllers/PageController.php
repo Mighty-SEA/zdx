@@ -7,6 +7,7 @@ use App\Services\TrackingService;
 use Illuminate\Http\Request;
 use App\Models\HomeContent;
 use App\Models\ProfileContent;
+use App\Models\Blog;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -448,5 +449,105 @@ class PageController extends Controller
         $seoData = $this->getSeoData('komoditas');
         $commodities = \App\Models\Commodity::all();
         return view('commodity', compact('seoData', 'commodities'));
+    }
+    
+    /**
+     * Halaman Blog
+     */
+    public function blogs()
+    {
+        $seoData = $this->getSeoData('blogs');
+        
+        // Mengambil semua blog yang dipublikasikan dari database
+        $blogs = Blog::where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->paginate(9);
+        
+        return view('blogs', compact('seoData', 'blogs'));
+    }
+    
+    /**
+     * Halaman Detail Blog
+     */
+    public function blogDetail($slug)
+    {
+        // Mencari blog berdasarkan slug
+        $blog = Blog::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+            
+        // Cek apakah ada pengaturan SEO khusus untuk blog ini
+        $blogIdentifier = 'blog-' . $slug;
+        $seoData = $this->getSeoData($blogIdentifier);
+        
+        // Jika blog memiliki gambar, gunakan sebagai og:image
+        if ($blog->image) {
+            $seoData['og_image'] = asset($blog->image);
+        }
+        
+        // Canonical URL langsung ke slug, bukan /blog/slug
+        $seoData['canonical_url'] = url($blog->slug);
+        
+        // Mengambil blog terkait berdasarkan kategori (jika ada)
+        $relatedBlogs = collect();
+        if ($blog->category) {
+            $relatedBlogs = Blog::where('status', 'published')
+                ->where('id', '!=', $blog->id)
+                ->where('category', $blog->category)
+                ->orderBy('published_at', 'desc')
+                ->limit(3)
+                ->get();
+        }
+        
+        // Jika tidak ada blog terkait berdasarkan kategori, ambil blog terbaru
+        if ($relatedBlogs->isEmpty()) {
+            $relatedBlogs = Blog::where('status', 'published')
+                ->where('id', '!=', $blog->id)
+                ->orderBy('published_at', 'desc')
+                ->limit(3)
+                ->get();
+        }
+        
+        return view('blog-detail', compact('blog', 'seoData', 'relatedBlogs'));
+    }
+    
+    /**
+     * Halaman Blog berdasarkan Kategori
+     */
+    public function blogByCategory($category)
+    {
+        $seoData = $this->getSeoData('blogs');
+        $seoData['title'] = 'Kategori: ' . ucfirst($category) . ' - ZDX Cargo';
+        $seoData['description'] = 'Artikel dan informasi dalam kategori ' . $category . ' dari ZDX Cargo.';
+        $seoData['og_title'] = 'Kategori: ' . ucfirst($category) . ' - ZDX Cargo';
+        $seoData['canonical_url'] = url('/blog/category/' . $category);
+        
+        // Mengambil semua blog berdasarkan kategori
+        $blogs = Blog::where('status', 'published')
+            ->where('category', $category)
+            ->orderBy('published_at', 'desc')
+            ->paginate(9);
+        
+        return view('blogs', compact('seoData', 'blogs', 'category'));
+    }
+    
+    /**
+     * Halaman Blog berdasarkan Tag
+     */
+    public function blogByTag($tag)
+    {
+        $seoData = $this->getSeoData('blogs');
+        $seoData['title'] = 'Tag: ' . ucfirst($tag) . ' - ZDX Cargo';
+        $seoData['description'] = 'Artikel dan informasi dengan tag ' . $tag . ' dari ZDX Cargo.';
+        $seoData['og_title'] = 'Tag: ' . ucfirst($tag) . ' - ZDX Cargo';
+        $seoData['canonical_url'] = url('/blog/tag/' . $tag);
+        
+        // Mengambil semua blog berdasarkan tag
+        $blogs = Blog::where('status', 'published')
+            ->whereJsonContains('tags', $tag)
+            ->orderBy('published_at', 'desc')
+            ->paginate(9);
+        
+        return view('blogs', compact('seoData', 'blogs', 'tag'));
     }
 } 

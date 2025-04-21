@@ -14,10 +14,11 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\HomeContentController;
 use App\Http\Controllers\Admin\ProfileContentController;
 use App\Http\Controllers\Admin\CommodityController;
-
+use App\Http\Controllers\Admin\BlogController;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\StructureController;
+use App\Models\Blog;
 
 // Frontend Routes
 Route::get('/', [PageController::class, 'home']);
@@ -38,6 +39,11 @@ Route::post('/search-rates', [PageController::class, 'searchRates'])->name('sear
 Route::post('/get-cities', [PageController::class, 'getCities'])->name('get.cities');
 Route::post('/get-kelurahans', [PageController::class, 'getKelurahans'])->name('get.kelurahans');
 Route::post('/calculate-rates', [PageController::class, 'calculateRates'])->name('calculate.rates');
+
+// Blog Routes
+Route::get('/blog', [PageController::class, 'blogs']);
+Route::get('/blog/category/{category}', [PageController::class, 'blogByCategory']);
+Route::get('/blog/tag/{tag}', [PageController::class, 'blogByTag']);
 
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {
@@ -153,4 +159,40 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/structure/upload', [StructureController::class, 'uploadStructure'])->name('structure.upload');
     Route::post('/logistics/upload', [StructureController::class, 'uploadLogistics'])->name('logistics.upload');
 
+    // Admin Blog
+    Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
+    Route::get('/blogs/create', [BlogController::class, 'create'])->name('blogs.create');
+    Route::post('/blogs', [BlogController::class, 'store'])->name('blogs.store');
+    Route::get('/blogs/{id}/edit', [BlogController::class, 'edit'])->name('blogs.edit');
+    Route::put('/blogs/{id}', [BlogController::class, 'update'])->name('blogs.update');
+    Route::delete('/blogs/{id}', [BlogController::class, 'destroy'])->name('blogs.destroy');
+    Route::delete('/blogs/{id}/image', [BlogController::class, 'deleteImage'])->name('blogs.delete-image');
 });
+
+// Daftar rute yang harus dikecualikan dari penanganan blog
+$excludedRoutes = [
+    'login', 'admin', 'layanan', 'services', 'tarif', 'rates', 'tracking', 
+    'customer', 'commodity', 'komoditas', 'profile', 'kontak', 
+    'contact', 'blog'
+];
+
+// Fungsi untuk memeriksa apakah slug ada di dalam database blog
+Route::get('/{slug}', function($slug) use ($excludedRoutes) {
+    // Jika slug adalah salah satu dari rute yang dikecualikan, lewati
+    if (in_array($slug, $excludedRoutes)) {
+        return abort(404);
+    }
+    
+    // Cari blog dengan slug tersebut
+    $blog = Blog::where('slug', $slug)
+        ->where('status', 'published')
+        ->first();
+    
+    // Jika blog ditemukan, tampilkan dengan controller yang sama
+    if ($blog) {
+        return app(PageController::class)->blogDetail($slug);
+    }
+    
+    // Jika tidak ditemukan, tampilkan 404
+    return abort(404);
+})->where('slug', '[a-z0-9-]+'); // Pastikan format slug sesuai

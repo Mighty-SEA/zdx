@@ -176,8 +176,55 @@ class PageSeoController extends Controller
     public function syncServices()
     {
         $this->syncServicePages();
+        $this->syncBlogPages();
         $this->syncAllPages();
-        return redirect()->route('admin.seo')->with('success', 'Halaman layanan dan halaman umum berhasil disinkronkan dengan pengaturan SEO');
+        return redirect()->route('admin.seo')->with('success', 'Halaman layanan, blog, dan halaman umum berhasil disinkronkan dengan pengaturan SEO');
+    }
+
+    /**
+     * Sync blog pages with SEO settings
+     */
+    public function syncBlogPages()
+    {
+        // Dapatkan semua blog yang dipublikasikan
+        $blogs = \App\Models\Blog::where('status', 'published')->get();
+        
+        // Kumpulkan semua identifier blog yang valid
+        $validBlogIdentifiers = [];
+        
+        foreach ($blogs as $blog) {
+            // Bentuk identifier dari blog dengan prefix 'blog-'
+            $identifier = 'blog-' . $blog->slug;
+            $validBlogIdentifiers[] = $identifier;
+            
+            // Cek apakah setting SEO untuk blog ini sudah ada
+            $existingSetting = PageSeoSetting::where('page_identifier', $identifier)->first();
+            
+            if ($existingSetting) {
+                // Jika sudah ada, hanya perbarui page_name saja untuk memastikan konsistensi
+                $existingSetting->update([
+                    'page_name' => 'Blog: ' . $blog->title
+                ]);
+            } else {
+                // Jika belum ada, buat pengaturan SEO baru
+                PageSeoSetting::create([
+                    'page_identifier' => $identifier,
+                    'page_name' => 'Blog: ' . $blog->title,
+                    'title' => $blog->title . ' - ZDX Cargo',
+                    'description' => $blog->description,
+                    'keywords' => 'blog ' . $blog->title . ', artikel, zdx cargo' . ($blog->category ? ', ' . $blog->category : ''),
+                    'og_title' => $blog->title,
+                    'og_description' => $blog->description,
+                    'og_image' => $blog->image ?? null,
+                    'canonical_url' => url($blog->slug),
+                ]);
+            }
+        }
+        
+        // Hapus pengaturan SEO untuk blog yang tidak ada lagi
+        PageSeoSetting::where('page_identifier', 'like', 'blog-%')
+            ->whereNotIn('page_identifier', $validBlogIdentifiers)
+            ->delete();
     }
 
     /**
@@ -188,13 +235,19 @@ class PageSeoController extends Controller
         // Definisikan halaman-halaman default yang valid
         $validPages = [
             'home', 'services', 'rates', 'tracking', 'customer', 
-            'komoditas', 'profile', 'contact'
+            'komoditas', 'profile', 'contact', 'blogs'
         ];
         
         // Tambahkan semua identifier layanan yang valid
         $services = \App\Models\Service::where('status', 'published')->pluck('slug')->toArray();
         foreach ($services as $slug) {
             $validPages[] = 'service-' . $slug;
+        }
+
+        // Tambahkan semua identifier blog yang valid
+        $blogs = \App\Models\Blog::where('status', 'published')->pluck('slug')->toArray();
+        foreach ($blogs as $slug) {
+            $validPages[] = 'blog-' . $slug;
         }
         
         // Hapus halaman yang tidak valid (tidak dalam daftar dan bukan halaman khusus)
