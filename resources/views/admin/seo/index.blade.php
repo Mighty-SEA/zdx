@@ -19,9 +19,9 @@
             <a href="{{ route('admin.seo.sync-services') }}" class="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
                 <i class="fas fa-sync-alt mr-2"></i> Sinkronkan Layanan
             </a>
-            <a href="{{ route('admin.seo.initialize') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
+            <button id="initializeDefaultBtn" type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
                 <i class="fas fa-sync-alt mr-2"></i> Inisialisasi Default
-            </a>
+            </button>
         </div>
     </div>
 
@@ -146,6 +146,34 @@
     </div>
 </div>
 
+<!-- Modal Konfirmasi (Fixed) -->
+<div id="confirmModalBackdrop" class="fixed inset-0 bg-gray-500 bg-opacity-75 z-40 hidden"></div>
+<div id="confirmModalContent" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="p-6">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 bg-red-100 rounded-full p-2">
+                    <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Konfirmasi Inisialisasi</h3>
+                    <p class="mt-2 text-sm text-gray-500">Perhatian! Tindakan ini akan menginisialisasi ulang pengaturan SEO default. Data yang sudah ada mungkin akan diubah. Apakah Anda yakin ingin melanjutkan?</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-3 rounded-b-lg">
+            <button type="button" id="confirmNoBtn" class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Batal
+            </button>
+            <button type="button" id="confirmYesBtn" class="inline-flex justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Ya, Lanjutkan
+            </button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -176,9 +204,65 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Event listeners
+    // Event listeners for search and filter
     searchInput.addEventListener('input', filterPages);
     filterStatus.addEventListener('change', filterPages);
+
+    // Modal elements
+    const modalBackdrop = document.getElementById('confirmModalBackdrop');
+    const modalContent = document.getElementById('confirmModalContent');
+    const confirmYesBtn = document.getElementById('confirmYesBtn');
+    const confirmNoBtn = document.getElementById('confirmNoBtn');
+    const initializeDefaultBtn = document.getElementById('initializeDefaultBtn');
+
+    // Show modal function
+    function showModal() {
+        modalBackdrop.classList.remove('hidden');
+        modalContent.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    // Hide modal function
+    function hideModal() {
+        modalBackdrop.classList.add('hidden');
+        modalContent.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    // Initialize button click handler
+    if (initializeDefaultBtn) {
+        initializeDefaultBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showModal();
+        });
+    }
+
+    // Yes button handler
+    if (confirmYesBtn) {
+        confirmYesBtn.addEventListener('click', function() {
+            hideModal();
+            window.location.href = "{{ route('admin.seo.initialize') }}";
+        });
+    }
+
+    // No button handler
+    if (confirmNoBtn) {
+        confirmNoBtn.addEventListener('click', function() {
+            hideModal();
+        });
+    }
+
+    // Click outside to close
+    modalBackdrop.addEventListener('click', function() {
+        hideModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modalContent.classList.contains('hidden')) {
+            hideModal();
+        }
+    });
 });
 </script>
 @endpush 

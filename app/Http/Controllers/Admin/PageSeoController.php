@@ -133,13 +133,26 @@ class PageSeoController extends Controller
         // Dapatkan semua layanan yang dipublikasikan
         $services = \App\Models\Service::where('status', 'published')->get();
         
+        // Kumpulkan semua identifier layanan yang valid
+        $validServiceIdentifiers = [];
+        
         foreach ($services as $service) {
             // Bentuk identifier dari layanan dengan prefix 'service-'
             $identifier = 'service-' . $service->slug;
+            $validServiceIdentifiers[] = $identifier;
             
-            PageSeoSetting::updateOrCreate(
-                ['page_identifier' => $identifier],
-                [
+            // Cek apakah setting SEO untuk layanan ini sudah ada
+            $existingSetting = PageSeoSetting::where('page_identifier', $identifier)->first();
+            
+            if ($existingSetting) {
+                // Jika sudah ada, hanya perbarui page_name saja untuk memastikan konsistensi
+                $existingSetting->update([
+                    'page_name' => 'Layanan: ' . $service->title
+                ]);
+            } else {
+                // Jika belum ada, buat pengaturan SEO baru
+                PageSeoSetting::create([
+                    'page_identifier' => $identifier,
                     'page_name' => 'Layanan: ' . $service->title,
                     'title' => $service->title . ' - ZDX Cargo',
                     'description' => $service->description,
@@ -147,9 +160,14 @@ class PageSeoController extends Controller
                     'og_title' => $service->title,
                     'og_description' => $service->description,
                     'og_image' => $service->image ? 'storage/' . $service->image : null,
-                ]
-            );
+                ]);
+            }
         }
+        
+        // Hapus pengaturan SEO untuk layanan yang tidak ada lagi
+        PageSeoSetting::where('page_identifier', 'like', 'service-%')
+            ->whereNotIn('page_identifier', $validServiceIdentifiers)
+            ->delete();
     }
     
     /**
@@ -158,7 +176,36 @@ class PageSeoController extends Controller
     public function syncServices()
     {
         $this->syncServicePages();
-        return redirect()->route('admin.seo')->with('success', 'Halaman layanan berhasil disinkronkan dengan pengaturan SEO');
+        $this->syncAllPages();
+        return redirect()->route('admin.seo')->with('success', 'Halaman layanan dan halaman umum berhasil disinkronkan dengan pengaturan SEO');
+    }
+
+    /**
+     * Sync all valid pages and remove invalid ones
+     */
+    public function syncAllPages()
+    {
+        // Definisikan halaman-halaman default yang valid
+        $validPages = [
+            'home', 'services', 'rates', 'tracking', 'customer', 
+            'komoditas', 'profile', 'contact'
+        ];
+        
+        // Tambahkan semua identifier layanan yang valid
+        $services = \App\Models\Service::where('status', 'published')->pluck('slug')->toArray();
+        foreach ($services as $slug) {
+            $validPages[] = 'service-' . $slug;
+        }
+        
+        // Hapus halaman yang tidak valid (tidak dalam daftar dan bukan halaman khusus)
+        PageSeoSetting::whereNotIn('page_identifier', $validPages)
+            ->where(function($query) {
+                // Pastikan tidak menghapus halaman khusus yang mungkin ditambahkan secara manual
+                $query->where('page_identifier', 'not like', 'custom-%')
+                      ->where('page_identifier', 'not like', 'article-%')
+                      ->where('page_identifier', 'not like', 'product-%');
+            })
+            ->delete();
     }
 
     /**
