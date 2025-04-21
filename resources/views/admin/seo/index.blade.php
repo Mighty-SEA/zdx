@@ -17,7 +17,7 @@
                 <i class="fas fa-sitemap mr-2"></i> Kelola Sitemap
             </a>
             <a href="{{ route('admin.seo.sync-services') }}" class="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
-                <i class="fas fa-sync-alt mr-2"></i> Sinkronkan Layanan
+                <i class="fas fa-sync-alt mr-2"></i> Sinkronkan
             </a>
             <button id="initializeDefaultBtn" type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
                 <i class="fas fa-sync-alt mr-2"></i> Inisialisasi Default
