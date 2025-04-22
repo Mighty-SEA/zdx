@@ -22,8 +22,8 @@
                 </a>
             </div>
             
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center space-x-1 lg:space-x-4">
+            <!-- Desktop Menu - hanya tampil pada layar large (lg) ke atas -->
+            <div class="hidden lg:flex items-center space-x-1 lg:space-x-4">
                 <a href="/" class="menu-item px-3 py-2 rounded-md text-gray-800 hover:text-[#FF6000] transition-all duration-300 {{ request()->is('/') ? 'active-menu-item' : '' }} flex items-center gap-1 font-medium">
                     <i class="fas fa-home text-sm"></i>
                     <span>Home</span>
@@ -71,22 +71,16 @@
                 </a>
             </div>
             
-            <!-- Mobile Menu Button -->
-            <div class="md:hidden">
+            <!-- Mobile & Tablet Menu Button - tampil pada layar di bawah large (lg) -->
+            <div class="lg:hidden">
                 <button id="menuToggle" class="text-gray-800 hover:text-[#FF6000] focus:outline-none p-2 rounded-md transition-colors border border-gray-200 hover:border-[#FF6000]/30">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
         
-        <!-- Mobile Menu - Dengan tampilan yang lebih baik -->
-        <div id="mobileMenu" class="md:hidden hidden bg-white pb-4 border-t border-gray-100 rounded-b-xl shadow-inner">
-            <!-- Company Info untuk Mobile -->
-            <div class="bg-gradient-to-r from-[#FFF0E6] to-white p-4 rounded-md mb-3 mt-2">
-                <p class="text-[#FF6000] font-bold text-lg">{{ $companyInfo->company_name ?? 'PT ZDX CARGO' }}</p>
-                <p class="text-gray-600 text-xs">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>
-            </div>
-            
+        <!-- Mobile & Tablet Menu - Dengan tampilan yang lebih baik -->
+        <div id="mobileMenu" class="lg:hidden hidden bg-white pb-4 border-t border-gray-100 rounded-b-xl shadow-inner">
             <div class="flex flex-col space-y-1 mt-3">
                 <!-- Menu item yang ditingkatkan tampilan mobilnya -->
                 <a href="/" class="px-4 py-3 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('/') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
@@ -108,7 +102,7 @@
                     <i class="fas fa-chevron-down text-xs ml-1 transition-transform duration-300" id="aboutChevron"></i>
                 </div>
                 
-                <div id="aboutDropdown">
+                <div id="aboutDropdown" class="hidden">
                     <a href="/profile" class="px-4 py-3 pl-8 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('profile') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                         <i class="fas fa-building w-5 text-center"></i><span>Profile</span>
                     </a>
@@ -123,7 +117,7 @@
                     </a>
                 </div>
                 
-                <!-- Button yang lebih menarik untuk mobile -->
+                <!-- Button yang lebih menarik untuk mobile & tablet -->
                 <div class="grid grid-cols-1 gap-3 mt-4 px-4">
                     <a href="/contact" class="px-4 py-3 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:shadow-md transition-all duration-300">
                         <i class="fas fa-headset"></i><span>Hubungi Kami</span>
