@@ -109,48 +109,49 @@
             </div>
             
             <!-- Key Benefits -->
-            <div class="bg-[#FFF0E6] rounded-xl p-8 mb-10">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                    <i class="fas fa-star text-[#FF6000] mr-3"></i> Keunggulan Layanan
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex items-start">
-                        <div class="bg-white p-3 rounded-full mr-4 shadow-sm">
-                            <i class="fas fa-shipping-fast text-[#FF6000] text-xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-lg mb-1">Pengiriman Cepat</h4>
-                            <p class="text-gray-600 text-base">Jaminan ketepatan waktu pengiriman</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="bg-white p-3 rounded-full mr-4 shadow-sm">
-                            <i class="fas fa-shield-alt text-[#FF6000] text-xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-lg mb-1">Keamanan Terjamin</h4>
-                            <p class="text-gray-600 text-base">Paket Anda diasuransikan</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="bg-white p-3 rounded-full mr-4 shadow-sm">
-                            <i class="fas fa-headset text-[#FF6000] text-xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-lg mb-1">Dukungan 24/7</h4>
-                            <p class="text-gray-600 text-base">Tim kami siap membantu kapanpun</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="bg-white p-3 rounded-full mr-4 shadow-sm">
-                            <i class="fas fa-money-bill-wave text-[#FF6000] text-xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-lg mb-1">Harga Bersaing</h4>
-                            <p class="text-gray-600 text-base">Tarif transparan tanpa biaya tersembunyi</p>
-                        </div>
-                    </div>
+            
+            <!-- Share -->
+            <div class="mb-20">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Bagikan</h3>
+                <div class="flex gap-3">
+                    <a href="#" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                    </a>
+                    <a href="#" class="bg-[#1877F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="#" class="bg-[#1DA1F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="bg-[#0A66C2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="w-full md:w-1/3">
+            <!-- Quick Contact -->
+            <div class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Hubungi Kami</h3>
+                <div class="space-y-4 mb-8">
+                    <a href="tel:+{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                        <i class="fas fa-phone-alt w-6 text-[#FF6000]"></i>
+                        <span>{{ $companyInfo->contact_phone ?? '0812-3456-789' }}</span>
+                    </a>
+                    <a href="mailto:{{ $companyInfo->contact_email ?? 'info@example.com' }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                        <i class="fas fa-envelope w-6 text-[#FF6000]"></i>
+                        <span>{{ $companyInfo->contact_email ?? 'info@example.com' }}</span>
+                    </a>
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                        <i class="fab fa-whatsapp w-6 text-[#FF6000]"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+                <a href="/kontak" class="block w-full bg-[#FF6000] text-center text-white px-4 py-4 rounded-lg hover:bg-[#E65100] transition-colors font-medium text-lg">
+                    Konsultasi Gratis
+                </a>
             </div>
             
             <!-- Layanan Lainnya -->
@@ -186,51 +187,6 @@
                     </a>
                 </div>
             </div>
-            
-            <!-- Share -->
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-6">Bagikan</h3>
-                <div class="flex gap-3">
-                    <a href="#" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
-                        <i class="fab fa-whatsapp text-xl"></i>
-                    </a>
-                    <a href="#" class="bg-[#1877F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
-                        <i class="fab fa-facebook-f text-xl"></i>
-                    </a>
-                    <a href="#" class="bg-[#1DA1F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                    <a href="#" class="bg-[#0A66C2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
-                        <i class="fab fa-linkedin-in text-xl"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Right Sidebar -->
-        <div class="w-full md:w-1/3">
-            <!-- Quick Contact -->
-            <div class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
-                <h3 class="text-xl font-bold text-gray-900 mb-6">Hubungi Kami</h3>
-                <div class="space-y-4 mb-8">
-                    <a href="tel:+628123456789" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
-                        <i class="fas fa-phone-alt w-6 text-[#FF6000]"></i>
-                        <span>0812-3456-789</span>
-                    </a>
-                    <a href="mailto:info@example.com" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
-                        <i class="fas fa-envelope w-6 text-[#FF6000]"></i>
-                        <span>info@example.com</span>
-                    </a>
-                    <a href="https://wa.me/628123456789" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
-                        <i class="fab fa-whatsapp w-6 text-[#FF6000]"></i>
-                        <span>WhatsApp</span>
-                    </a>
-                </div>
-                <a href="/kontak" class="block w-full bg-[#FF6000] text-center text-white px-4 py-4 rounded-lg hover:bg-[#E65100] transition-colors font-medium text-lg">
-                    Konsultasi Gratis
-                </a>
-            </div>
-            
 
         </div>
     </div>

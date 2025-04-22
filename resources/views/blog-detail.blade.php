@@ -131,7 +131,7 @@
             @endif
             
              <!-- Share -->
-             <div>
+             <div class="mb-20">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Bagikan</h3>
                 <div class="flex gap-3">
                     <a href="#" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
@@ -187,15 +187,15 @@
             <div class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Hubungi Kami</h3>
                 <div class="space-y-4 mb-8">
-                    <a href="tel:+628123456789" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                    <a href="tel:+{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
                         <i class="fas fa-phone-alt w-6 text-[#FF6000]"></i>
-                        <span>0812-3456-789</span>
+                        <span>{{ $companyInfo->contact_phone ?? '0812-3456-789' }}</span>
                     </a>
-                    <a href="mailto:info@example.com" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                    <a href="mailto:{{ $companyInfo->contact_email ?? 'info@example.com' }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
                         <i class="fas fa-envelope w-6 text-[#FF6000]"></i>
-                        <span>info@example.com</span>
+                        <span>{{ $companyInfo->contact_email ?? 'info@example.com' }}</span>
                     </a>
-                    <a href="https://wa.me/628123456789" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
                         <i class="fab fa-whatsapp w-6 text-[#FF6000]"></i>
                         <span>WhatsApp</span>
                     </a>
