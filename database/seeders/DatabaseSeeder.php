@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             NotificationSeeder::class,
             SettingsSeeder::class,
             HomeContentSeeder::class,
+            CompanySettingsSeeder::class,
+            ServicesSeeder::class,
         ]);
 
         User::factory()->create([
