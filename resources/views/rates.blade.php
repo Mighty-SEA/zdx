@@ -192,7 +192,7 @@
                                 <!-- Tampilan pesan khusus untuk tarif 0 -->
                                 <div id="zero-rate-message" class="hidden text-center py-3">
                                     <p class="text-[#FF6000] font-semibold mb-3">Untuk rute ini silahkan hubungi kami</p>
-                                    <a href="/contact" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white py-2 px-5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                                    <a id="whatsapp-link" href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white py-2 px-5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
                                         Hubungi Kami
                                     </a>
                                 </div>
@@ -219,7 +219,7 @@
                                     </div>
                                     
                                     <div class="mt-4 pt-3 border-t border-gray-200 flex justify-center">
-                                        <a href="/order" class="elegant-button w-full bg-gradient-to-r from-[#0066CC] to-[#2D9CDB] text-white py-3 rounded-lg font-semibold transition-all duration-500 text-center text-lg shadow-md">
+                                        <a id="order-button" href="javascript:void(0);" class="elegant-button w-full bg-gradient-to-r from-[#0066CC] to-[#2D9CDB] text-white py-3 rounded-lg font-semibold transition-all duration-500 text-center text-lg shadow-md">
                                             <span class="btn-shine"></span>
                                             Pesan Sekarang
                                         </a>
@@ -589,6 +589,12 @@
                         const zeroRateMessage = document.getElementById('zero-rate-message');
                         const normalRateResult = document.getElementById('normal-rate-result');
                         
+                        // Update WhatsApp link dengan teks tujuan yang dipilih
+                        const whatsappLink = document.getElementById('whatsapp-link');
+                        let whatsappText = encodeURIComponent(`Halo Admin ZDX Express,\n\nSaya ingin menanyakan informasi pengiriman barang dengan detail:\n- Tujuan: ${destinationText}\n- Berat: ${weightValue} kg\n\nMohon informasi tarif pengiriman untuk rute tersebut.\nTerima kasih.`);
+                        let baseWhatsappUrl = "https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '') }}";
+                        whatsappLink.href = `${baseWhatsappUrl}?text=${whatsappText}`;
+                        
                         // Cek apakah tarif adalah 0
                         if (data.rate === 0 || data.rate_formatted === "0") {
                             // Tampilkan pesan untuk tarif 0
@@ -604,6 +610,12 @@
                             resultWeight.textContent = weightValue + ' kg';
                             resultRate.textContent = 'Rp' + data.rate_formatted;
                             resultTotal.textContent = 'Rp' + data.total_formatted;
+                            
+                            // Update tombol Pesan Sekarang dengan link WhatsApp
+                            const orderButton = document.getElementById('order-button');
+                            let orderText = encodeURIComponent(`Halo Admin ZDX Express,\n\nSaya ingin melakukan pemesanan pengiriman dengan detail:\n- Tujuan: ${destinationText}\n- Berat: ${weightValue} kg\n- Tarif per kg: Rp${data.rate_formatted}\n- Total Biaya: Rp${data.total_formatted}\n\nMohon bantuan untuk proses pemesanan selanjutnya.\nTerima kasih.`);
+                            orderButton.href = `https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '') }}?text=${orderText}`;
+                            orderButton.target = "_blank";
                         }
                         
                         resultDiv.classList.remove('hidden');
