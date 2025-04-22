@@ -62,6 +62,20 @@ use Illuminate\Support\Facades\Storage;
         </div>
     @endif
 
+    <!-- Pesan Error -->
+    @if (session('error'))
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-500"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Data Table -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">

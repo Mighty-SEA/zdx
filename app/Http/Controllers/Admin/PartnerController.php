@@ -77,7 +77,15 @@ class PartnerController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            $partner = Partner::findOrFail($id);
+            return view('admin.partners.edit', compact('partner'));
+        } catch (\Exception $e) {
+            // Log error
+            \Illuminate\Support\Facades\Log::error('Error editing partner: ' . $e->getMessage());
+            // Return with error message
+            return redirect()->route('admin.partners')->with('error', 'Terjadi kesalahan saat membuka data partner: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -85,7 +93,46 @@ class PartnerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Ambil data partner yang akan diupdate
+        $partner = Partner::findOrFail($id);
+        
+        // Validasi input
+        $validated = $request->validate([
+            'type' => 'required|in:customer,partner',
+            'name' => 'required|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|in:active,inactive',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'website' => 'nullable|url|max:255',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+        ]);
+        
+        // Menyiapkan data untuk diupdate
+        $partnerData = $validated;
+        unset($partnerData['logo']); // Hapus logo dari array karena akan diupdate terpisah
+        
+        // Upload logo baru jika ada
+        if ($request->hasFile('logo')) {
+            // Hapus logo lama jika ada
+            if ($partner->logo_path) {
+                Storage::disk('public')->delete($partner->logo_path);
+            }
+            
+            // Upload logo baru
+            $logoPath = $request->file('logo')->store('partners/logos', 'public');
+            $partnerData['logo_path'] = $logoPath;
+        }
+        
+        // Update data partner
+        $partner->update($partnerData);
+        
+        return redirect()->route('admin.partners')->with('success', 'Pelanggan / Partner berhasil diperbarui!');
     }
 
     /**
