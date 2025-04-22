@@ -2,7 +2,7 @@
 
 @section('meta_tags')
 <title>{{ $seo->title ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}</title>
-<link rel="icon" href="{{ asset('asset/logo.png') }}">
+<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
 <meta name="description" content="{{ $seo->description ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
 <meta name="keywords" content="{{ $seo->keywords ?? 'tarif pengiriman, harga cargo, biaya logistik, ongkos kirim, ekspedisi' }}">
 

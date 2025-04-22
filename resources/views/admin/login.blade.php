@@ -9,6 +9,9 @@
     <meta name="description" content="ZDX Cargo - Login Panel Admin">
     <meta name="robots" content="noindex, nofollow">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
+    
     <!-- Security Meta Tags -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -129,7 +132,7 @@
             <div class="h-full flex flex-col">
                 <div class="flex items-center space-x-3">
                     <div class=" text-[#FF6000] p-2 rounded-lg">
-                        <img id="header-logo" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                        <img id="header-logo" src="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
                     </div>
                 </div>
                 

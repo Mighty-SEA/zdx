@@ -7,7 +7,7 @@
     <title>@yield('title', 'Dashboard') - ZDX  Admin</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
     
     <!-- Meta Tags Dasar -->
     <meta name="description" content="ZDX  - Admin Panel">
@@ -45,7 +45,7 @@
             <div class="px-6 py-4 flex items-center h-16">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center">
                     <div class="flex-shrink-0 mr-2">
-                        <img id="admin-sidebar-logo" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="ZDX" class="logo-image" onerror="this.src='{{ asset('asset/logo.png') }}';">
+                        <img id="admin-sidebar-logo" src="{{ !empty($companyInfo->company_logo) ? asset('storage/'.$companyInfo->company_logo) : asset('asset/logo.png') }}" alt="ZDX" class="logo-image" onerror="this.src='{{ asset('asset/logo.png') }}';">
                     </div>
                     <span class="text-xl font-bold text-gray-800 ml-1">Admin</span>
                 </a>

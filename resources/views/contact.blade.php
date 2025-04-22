@@ -2,7 +2,7 @@
 
 @section('meta_tags')
     <title>Kontak Kami - PT. Zindan Diantar Express</title>
-    <link rel="icon" href="{{ asset('asset/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
     <meta name="description" content="Hubungi ZDX Cargo untuk informasi layanan pengiriman dan pertanyaan lainnya.">
     <meta name="keywords" content="kontak zdx, hubungi zdx, alamat zdx, telepon zdx, email zdx">
 

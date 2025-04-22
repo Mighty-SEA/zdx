@@ -22,7 +22,7 @@ class StructureController extends Controller
     {
         $request->validate([
             'logo_file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'logo_number' => 'required|in:1,2,3',
+            'logo_number' => 'required|in:1,2,3,title',
         ]);
 
         try {
@@ -30,8 +30,18 @@ class StructureController extends Controller
             $image = $request->file('logo_file');
             $extension = $image->getClientOriginalExtension();
             $timestamp = time();
-            $filename = 'logo' . $logoNumber . '_' . $timestamp . '.' . $extension;
-            $outputFilename = 'logo' . $logoNumber . '.' . $extension;
+            
+            // Tentukan nama file berdasarkan logo_number
+            $filename = '';
+            $outputFilename = '';
+            
+            if ($logoNumber === 'title') {
+                $filename = 'title-logo_' . $timestamp . '.' . $extension;
+                $outputFilename = 'title-logo.' . $extension;
+            } else {
+                $filename = 'logo' . $logoNumber . '_' . $timestamp . '.' . $extension;
+                $outputFilename = 'logo' . $logoNumber . '.' . $extension;
+            }
             
             // Hapus logo lama jika ada
             if (Storage::disk('public')->exists('logos/' . $outputFilename)) {
@@ -41,8 +51,14 @@ class StructureController extends Controller
             // Hapus semua file yang mungkin memiliki pola nama yang sama
             $existingFiles = Storage::disk('public')->files('logos');
             foreach ($existingFiles as $file) {
-                if (strpos($file, 'logo' . $logoNumber . '_') !== false) {
-                    Storage::disk('public')->delete($file);
+                if ($logoNumber === 'title') {
+                    if (strpos($file, 'title-logo_') !== false) {
+                        Storage::disk('public')->delete($file);
+                    }
+                } else {
+                    if (strpos($file, 'logo' . $logoNumber . '_') !== false) {
+                        Storage::disk('public')->delete($file);
+                    }
                 }
             }
             

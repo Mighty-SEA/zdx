@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Pengaturan')
-<link rel="icon" type="image/png" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" sizes="32x32">
+<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
 
 @section('meta')
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -367,7 +367,7 @@
                                 <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200 mb-4">
                                     <h4 class="font-medium text-indigo-800 mb-3">Logo Perusahaan</h4>
                                     
-                                    <div class="grid grid-cols-3 gap-4">
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         <!-- Logo 1 -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
@@ -406,9 +406,22 @@
                                                 </button>
                                             </div>
                                         </div>
+                                        
+                                        <!-- Title Logo -->
+                                        <div class="border rounded-lg p-2 bg-white">
+                                            <div class="aspect-w-1 aspect-h-1">
+                                                <img id="title-logo-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/title-logo.png') ? \Illuminate\Support\Facades\Storage::url('logos/title-logo.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Title Logo" class="w-full h-32 object-contain">
+                                            </div>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="text-sm font-medium text-gray-700">Title Logo <span class="text-xs text-green-600">(Kompress)</span></span>
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="title">
+                                                    <i class="fas fa-edit mr-1"></i> Ubah
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="text-xs text-gray-500 mt-2">
-                                        <i class="fas fa-info-circle mr-1"></i> Logo 1 akan digunakan sebagai logo utama di halaman profil dan favicon.
+                                        <i class="fas fa-info-circle mr-1"></i> Logo 1 akan digunakan sebagai logo utama di halaman profil dan favicon. Title Logo digunakan untuk versi kompress pada judul halaman.
                                     </div>
                                 </div>
                                 
@@ -1159,6 +1172,7 @@
         const logo1Image = document.getElementById('logo1-preview');
         const logo2Image = document.getElementById('logo2-preview');
         const logo3Image = document.getElementById('logo3-preview');
+        const titleLogoImage = document.getElementById('title-logo-preview');
         const logisticsImage = document.getElementById('logistics-preview');
         
         // Tambahkan parameter random ke URL gambar untuk memaksa browser mengambil gambar baru
@@ -1197,6 +1211,18 @@
                 logo3Image.style.opacity = '0.5';
                 setTimeout(() => {
                     logo3Image.style.opacity = '1';
+                }, 300);
+            }
+        }
+        
+        if (titleLogoImage) {
+            const baseUrl = titleLogoImage.src.split('?')[0];
+            titleLogoImage.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
+            
+            if (forceRefresh) {
+                titleLogoImage.style.opacity = '0.5';
+                setTimeout(() => {
+                    titleLogoImage.style.opacity = '1';
                 }, 300);
             }
         }

@@ -2,7 +2,7 @@
 
 @section('meta_tags')
     <title>Profile - PT. Zindan Diantar Express</title>
-    <link rel="icon" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
     <meta name="description" content="Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.">
     <meta name="keywords" content="profil zdx, sejarah zdx, visi misi zdx, pengiriman barang, cargo indonesia">
 

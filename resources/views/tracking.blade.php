@@ -2,7 +2,7 @@
 
 @section('meta_tags')
     <title>Tracking - PT. Zindan Diantar Express</title>
-    <link rel="icon" href="{{ asset('asset/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
     <meta name="description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.">
     <meta name="keywords" content="lacak pengiriman, tracking zdx, cek resi, status kiriman, cargo tracking">
 
