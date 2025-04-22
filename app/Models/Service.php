@@ -16,5 +16,8 @@ class Service extends Model
         'content',
         'image',
         'status',
+        'icon',
+        'featured',
+        'sort_order',
     ];
 } 

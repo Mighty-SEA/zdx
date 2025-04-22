@@ -238,11 +238,33 @@
                                 
                                 <div>
                                     <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Alamat <span class="text-red-500">*</span>
+                                        Alamat Utama <span class="text-red-500">*</span>
                                     </label>
-                                    <textarea id="company_address" name="company_address" rows="3" required
+                                    <textarea id="company_address" name="company_address" rows="2" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress }}</textarea>
                                     @error('company_address')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <label for="company_address2" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Alamat Tambahan 1
+                                    </label>
+                                    <textarea id="company_address2" name="company_address2" rows="2"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress2 ?? '' }}</textarea>
+                                    @error('company_address2')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <label for="company_address3" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Alamat Tambahan 2
+                                    </label>
+                                    <textarea id="company_address3" name="company_address3" rows="2"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">{{ $companyAddress3 ?? '' }}</textarea>
+                                    @error('company_address3')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>

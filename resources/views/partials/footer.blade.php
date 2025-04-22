@@ -36,7 +36,9 @@
                 <p class="text-white text-opacity-80 mb-6 leading-relaxed">{{ $companyInfo->company_description ?? 'PT. Zindan Diantar Express adalah perusahaan jasa pengiriman barang terpercaya dengan jaringan yang luas di seluruh Indonesia.' }}</p>
                 <div class="flex items-start space-x-3 bg-[#FF6000] bg-opacity-5 p-4 rounded-lg backdrop-blur-sm">
                     <i class="fas fa-map-marker-alt text-[#FF6000] mt-1 text-lg"></i>
-                    <p class="text-white text-opacity-90">{{ $companyInfo->contact_address ?? 'Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa, Kec. Jatiasih, Kota Bekasi - Jawa Barat 17424' }}</p>
+                    <div>
+                        <p class="text-white text-opacity-90">{{ $companyInfo->company_address ?? 'Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa, Kec. Jatiasih, Kota Bekasi - Jawa Barat 17424' }}</p>
+                    </div>
                 </div>
             </div>
 

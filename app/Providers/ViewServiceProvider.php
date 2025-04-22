@@ -32,6 +32,8 @@ class ViewServiceProvider extends ServiceProvider
                 $settings = [
                     'company_name' => Setting::getValue('company_name', 'PT ZDX Cargo Indonesia'),
                     'company_address' => Setting::getValue('company_address', 'Jl. Gatot Subroto No. 123, Jakarta Selatan 12930'),
+                    'company_address2' => Setting::getValue('company_address2', ''),
+                    'company_address3' => Setting::getValue('company_address3', ''),
                     'company_phone' => Setting::getValue('company_phone', '021-12345678'),
                     'company_phone2' => Setting::getValue('company_phone2', ''),
                     'company_phone3' => Setting::getValue('company_phone3', ''),

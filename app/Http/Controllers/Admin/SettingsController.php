@@ -25,6 +25,8 @@ class SettingsController extends Controller
         // Data untuk tab Perusahaan
         $companyName = Setting::getValue('company_name', 'PT ZDX Cargo Indonesia');
         $companyAddress = Setting::getValue('company_address', 'Jl. Gatot Subroto No. 123, Jakarta Selatan 12930');
+        $companyAddress2 = Setting::getValue('company_address2', '');
+        $companyAddress3 = Setting::getValue('company_address3', '');
         $companyPhone = Setting::getValue('company_phone', '021-12345678');
         $companyPhone2 = Setting::getValue('company_phone2', '0858 1471 8889');
         $companyPhone3 = Setting::getValue('company_phone3', '0858 1471 8890');
@@ -71,6 +73,8 @@ class SettingsController extends Controller
             'hasCredentials',
             'companyName',
             'companyAddress',
+            'companyAddress2',
+            'companyAddress3',
             'companyPhone',
             'companyPhone2',
             'companyPhone3',
@@ -141,6 +145,8 @@ class SettingsController extends Controller
         $request->validate([
             'company_name' => 'required|string|max:100',
             'company_address' => 'required|string|max:255',
+            'company_address2' => 'nullable|string|max:255',
+            'company_address3' => 'nullable|string|max:255',
             'company_phone' => 'required|string|max:20',
             'company_phone2' => 'nullable|string|max:20',
             'company_phone3' => 'nullable|string|max:20',
@@ -168,6 +174,8 @@ class SettingsController extends Controller
         // Simpan semua pengaturan perusahaan
         Setting::setValue('company_name', $request->company_name, 'company');
         Setting::setValue('company_address', $request->company_address, 'company');
+        Setting::setValue('company_address2', $request->company_address2, 'company');
+        Setting::setValue('company_address3', $request->company_address3, 'company');
         Setting::setValue('company_phone', $request->company_phone, 'company');
         Setting::setValue('company_phone2', $request->company_phone2, 'company');
         Setting::setValue('company_phone3', $request->company_phone3, 'company');
