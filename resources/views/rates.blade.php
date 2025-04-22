@@ -14,6 +14,107 @@
 <meta property="og:url" content="{{ url('/rates') }}">
 <meta property="og:title" content="{{ $seo->title ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
 <meta property="og:description" content="{{ $seo->description ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Custom Select2 CSS -->
+<style>
+    .select2-container--default .select2-selection--single {
+        height: 48px;
+        padding: 10px 8px;
+        border-color: #d1d5db;
+        border-radius: 0.5rem;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 46px;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #4b5563;
+        line-height: normal;
+    }
+    
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #FF6000;
+    }
+    
+    .select2-dropdown {
+        border-color: #d1d5db;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .select2-search--dropdown .select2-search__field {
+        border-radius: 0.25rem;
+        border-color: #d1d5db;
+        padding: 8px;
+    }
+    
+    .select2-search--dropdown .select2-search__field:focus {
+        outline: 2px solid #FF6000;
+        border-color: #FF6000;
+    }
+
+    .elegant-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+        background-size: 200% auto;
+        background-position: right center;
+    }
+    
+    .elegant-button:hover {
+        background-position: left center;
+        transform: translateY(-2px);
+        box-shadow: 0 7px 14px rgba(0, 85, 255, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .elegant-button::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 100%);
+        transform: rotate(30deg);
+        transition: all 0.6s;
+        opacity: 0;
+    }
+    
+    .elegant-button:hover::after {
+        opacity: 1;
+    }
+    
+    .elegant-button .btn-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg, 
+            rgba(255, 255, 255, 0) 0%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            rgba(255, 255, 255, 0) 100%
+        );
+        animation: shine-effect 3s infinite;
+    }
+    
+    @keyframes shine-effect {
+        0% {
+            left: -100%;
+        }
+        20% {
+            left: 100%;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+</style>
 @endsection
 
 @section('content')
@@ -117,10 +218,10 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
-                                        <span class="text-sm text-gray-600">Butuh bantuan?</span>
-                                        <a href="/contact" class="text-[#FF6000] font-medium hover:underline">
-                                            Hubungi Kami
+                                    <div class="mt-4 pt-3 border-t border-gray-200 flex justify-center">
+                                        <a href="/order" class="elegant-button w-full bg-gradient-to-r from-[#0066CC] to-[#2D9CDB] text-white py-3 rounded-lg font-semibold transition-all duration-500 text-center text-lg shadow-md">
+                                            <span class="btn-shine"></span>
+                                            Pesan Sekarang
                                         </a>
                                     </div>
                                 </div>
@@ -177,6 +278,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-2 flex justify-end">
+                            <button id="reset-filters" class="text-sm text-[#FF6000] hover:underline flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Reset Filter
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Table (desktop) dan Cards (mobile) -->
@@ -193,7 +302,11 @@
                             </thead>
                             <tbody id="rate-table-body">
                                 @foreach($popularRates as $rate)
-                                <tr class="border-t border-gray-100 hover:bg-gray-100/30">
+                                <tr class="border-t border-gray-100 hover:bg-gray-100/30" 
+                                    data-island="{{ $rate->pulau }}" 
+                                    data-province="{{ $rate->provinsi }}" 
+                                    data-city="{{ $rate->kota_kab }}" 
+                                    data-kelurahan="{{ $rate->kelurahan_kecamatan }}">
                                     <td class="py-3 px-4">
                                         <div class="font-medium text-gray-800">{{ $rate->kota_kab }}</div>
                                         @if($rate->kelurahan_kecamatan)
@@ -214,7 +327,11 @@
                     <div class="md:hidden" id="mobile-rate-cards">
                         <div class="divide-y divide-gray-100">
                             @foreach($popularRates as $rate)
-                            <div class="p-4 hover:bg-gray-100/30">
+                            <div class="p-4 hover:bg-gray-100/30"
+                                data-island="{{ $rate->pulau }}" 
+                                data-province="{{ $rate->provinsi }}" 
+                                data-city="{{ $rate->kota_kab }}" 
+                                data-kelurahan="{{ $rate->kelurahan_kecamatan }}">
                                 <div class="flex justify-between mb-2">
                                     <div>
                                         <div class="font-medium text-gray-800">{{ $rate->kota_kab }}</div>
@@ -257,8 +374,16 @@
     </div>
 
     @push('scripts')
+    <!-- jQuery (diperlukan untuk Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Menyimpan data popularRates dalam object JavaScript
+        const popularRates = @json($popularRates);
+        
+        $(document).ready(function() {
             const calculateBtn = document.getElementById('calculate-rate');
             const provinceSelect = document.getElementById('province-select');
             const citySelect = document.getElementById('city-select');
@@ -272,30 +397,72 @@
             const resultTotal = document.getElementById('result-total');
             const errorText = document.getElementById('error-text').querySelector('span');
             
+            // Inisialisasi Select2 pada dropdown provinsi
+            $('#province-select').select2({
+                placeholder: "Pilih Provinsi",
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Provinsi tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+            
+            $('#city-select').select2({
+                placeholder: "Pilih Kota/Kabupaten",
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Kota tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+            
+            $('#kelurahan-select').select2({
+                placeholder: "Pilih Kelurahan/Kecamatan",
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Kelurahan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+            
             // Filter selectors
             const filterIsland = document.getElementById('filter-island');
             const filterProvince = document.getElementById('filter-province');
             const searchCity = document.getElementById('search-city');
             const rateTableBody = document.getElementById('rate-table-body');
             
-            // Event listener for provinsi dropdown
-            provinceSelect.addEventListener('change', function() {
+            // Event listener untuk provinsi dropdown (menggunakan event Select2)
+            $('#province-select').on('change', function() {
                 const province = this.value;
                 
                 // Reset dependent dropdowns
-                citySelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
-                kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan/Kecamatan</option>';
+                $('#city-select').empty().append('<option value="">Pilih Kota/Kabupaten</option>').trigger('change');
+                $('#kelurahan-select').empty().append('<option value="">Pilih Kelurahan/Kecamatan</option>').trigger('change');
                 
-                kelurahanSelect.disabled = true;
+                $('#kelurahan-select').prop('disabled', true);
                 
                 if (!province) {
-                    citySelect.disabled = true;
+                    $('#city-select').prop('disabled', true).trigger('change');
                     return;
                 }
                 
                 // Show loading state
-                citySelect.disabled = true;
-                citySelect.innerHTML = '<option value="">Memuat data...</option>';
+                $('#city-select').prop('disabled', true).empty().append('<option value="">Memuat data...</option>').trigger('change');
                 
                 // Create form data for the request
                 const formData = new FormData();
@@ -309,42 +476,41 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    citySelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
+                    $('#city-select').empty().append('<option value="">Pilih Kota/Kabupaten</option>');
                     
                     if (data.success && data.cities.length > 0) {
                         data.cities.forEach(city => {
                             const option = document.createElement('option');
                             option.value = city;
                             option.textContent = city;
-                            citySelect.appendChild(option);
+                            $('#city-select').append(option);
                         });
-                        citySelect.disabled = false;
+                        $('#city-select').prop('disabled', false).trigger('change');
                     } else {
-                        citySelect.innerHTML = '<option value="">Tidak ada data kota</option>';
+                        $('#city-select').empty().append('<option value="">Tidak ada data kota</option>').trigger('change');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    citySelect.innerHTML = '<option value="">Error memuat data</option>';
+                    $('#city-select').empty().append('<option value="">Error memuat data</option>').trigger('change');
                 });
             });
             
-            // Event listener for kota/kabupaten dropdown
-            citySelect.addEventListener('change', function() {
+            // Event listener untuk kota/kabupaten dropdown (menggunakan event Select2)
+            $('#city-select').on('change', function() {
                 const city = this.value;
-                const province = provinceSelect.value;
+                const province = $('#province-select').val();
                 
                 // Reset kelurahan dropdown
-                kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan/Kecamatan</option>';
+                $('#kelurahan-select').empty().append('<option value="">Pilih Kelurahan/Kecamatan</option>').trigger('change');
                 
                 if (!city || !province) {
-                    kelurahanSelect.disabled = true;
+                    $('#kelurahan-select').prop('disabled', true).trigger('change');
                     return;
                 }
                 
                 // Show loading state
-                kelurahanSelect.disabled = true;
-                kelurahanSelect.innerHTML = '<option value="">Memuat data...</option>';
+                $('#kelurahan-select').prop('disabled', true).empty().append('<option value="">Memuat data...</option>').trigger('change');
                 
                 // Create form data for the request
                 const formData = new FormData();
@@ -359,25 +525,25 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan/Kecamatan</option>';
+                    $('#kelurahan-select').empty().append('<option value="">Pilih Kelurahan/Kecamatan</option>');
                     
                     if (data.success && data.kelurahans.length > 0) {
                         data.kelurahans.forEach(kelurahan => {
                             const option = document.createElement('option');
                             option.value = kelurahan;
                             option.textContent = kelurahan;
-                            kelurahanSelect.appendChild(option);
+                            $('#kelurahan-select').append(option);
                         });
-                        kelurahanSelect.disabled = false;
+                        $('#kelurahan-select').prop('disabled', false).trigger('change');
                     } else {
-                        kelurahanSelect.innerHTML = '<option value="">Tidak ada data kelurahan</option>';
+                        $('#kelurahan-select').empty().append('<option value="">Tidak ada data kelurahan</option>').trigger('change');
                         // Allow calculation without kelurahan if no data available
-                        kelurahanSelect.disabled = false;
+                        $('#kelurahan-select').prop('disabled', false).trigger('change');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    kelurahanSelect.innerHTML = '<option value="">Error memuat data</option>';
+                    $('#kelurahan-select').empty().append('<option value="">Error memuat data</option>').trigger('change');
                 });
             });
             
@@ -385,9 +551,9 @@
                 resultDiv.classList.add('hidden');
                 errorDiv.classList.add('hidden');
                 
-                const province = provinceSelect.value;
-                const city = citySelect.value;
-                const kelurahan = kelurahanSelect.value;
+                const province = $('#province-select').val();
+                const city = $('#city-select').val();
+                const kelurahan = $('#kelurahan-select').val();
                 const weightValue = weight.value;
                 
                 if (!province || !city || !weightValue) {
@@ -453,60 +619,99 @@
                 });
             });
             
-            // Filter functionality
-            function applyFilters() {
-                const islandValue = filterIsland.value.toLowerCase();
-                const provinceValue = filterProvince.value.toLowerCase();
-                const cityValue = searchCity.value.toLowerCase();
-                
-                // Filter untuk tampilan tabel desktop
-                const rows = rateTableBody.querySelectorAll('tr');
-                
-                rows.forEach(row => {
-                    const cityCell = row.cells[0].textContent.toLowerCase();
-                    const provinceCell = row.cells[1].textContent.toLowerCase();
-                    const islandIndex = Array.from(row.parentNode.children).indexOf(row);
-                    const islandCell = islandIndex < popularRates.length ? popularRates[islandIndex].pulau.toLowerCase() : '';
-                    
-                    const matchIsland = !islandValue || islandCell.includes(islandValue);
-                    const matchProvince = !provinceValue || provinceCell.includes(provinceValue);
-                    const matchCity = !cityValue || cityCell.includes(cityValue);
-                    
-                    if (matchIsland && matchProvince && matchCity) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-                
-                // Filter untuk tampilan card mobile
-                const mobileCards = document.querySelectorAll('#mobile-rate-cards > div > div');
-                
-                mobileCards.forEach((card, index) => {
-                    if (index >= popularRates.length) return;
-                    
-                    const cardCity = card.querySelector('.font-medium.text-gray-800').textContent.toLowerCase();
-                    const cardKelurahan = card.querySelector('.text-xs.text-gray-500')?.textContent.toLowerCase() || '';
-                    const cardProvince = card.querySelectorAll('.text-xs.text-gray-500')[card.querySelector('.text-xs.text-gray-500:not([class*="mt-"])') ? 1 : 0].textContent.toLowerCase();
-                    const cardIsland = popularRates[index].pulau.toLowerCase();
-                    
-                    const cityFullText = (cardCity + ' ' + cardKelurahan).toLowerCase();
-                    
-                    const matchIsland = !islandValue || cardIsland.includes(islandValue);
-                    const matchProvince = !provinceValue || cardProvince.includes(provinceValue);
-                    const matchCity = !cityValue || cityFullText.includes(cityValue);
-                    
-                    if (matchIsland && matchProvince && matchCity) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+            // Inisialisasi Select2 untuk filter juga
+            $('#filter-island').select2({
+                placeholder: "Semua Pulau",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            $('#filter-province').select2({
+                placeholder: "Semua Provinsi",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Menambahkan fungsi debounce untuk pencarian
+            function debounce(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
             }
             
-            filterIsland.addEventListener('change', applyFilters);
-            filterProvince.addEventListener('change', applyFilters);
-            searchCity.addEventListener('input', applyFilters);
+            // Filter functionality
+            function applyFilters() {
+                const islandValue = $('#filter-island').val() ? $('#filter-island').val().toLowerCase() : '';
+                const provinceValue = $('#filter-province').val() ? $('#filter-province').val().toLowerCase() : '';
+                const cityValue = searchCity.value.toLowerCase();
+                
+                // Tambahkan kelas loading
+                rateTableBody.classList.add('opacity-50');
+                document.getElementById('mobile-rate-cards').classList.add('opacity-50');
+                
+                // Gunakan setTimeout untuk mencegah UI freezing pada dataset besar
+                setTimeout(() => {
+                    // Filter untuk tampilan tabel desktop
+                    const rows = rateTableBody.querySelectorAll('tr');
+                    let visibleCount = 0;
+                    
+                    rows.forEach(row => {
+                        const cityText = (row.getAttribute('data-city') || '').toLowerCase();
+                        const kelurahanText = (row.getAttribute('data-kelurahan') || '').toLowerCase();
+                        const provinceText = (row.getAttribute('data-province') || '').toLowerCase();
+                        const islandText = (row.getAttribute('data-island') || '').toLowerCase();
+                        
+                        const cityFullText = cityText + ' ' + kelurahanText;
+                        
+                        const matchIsland = !islandValue || islandText.includes(islandValue);
+                        const matchProvince = !provinceValue || provinceText.includes(provinceValue);
+                        const matchCity = !cityValue || cityFullText.includes(cityValue);
+                        
+                        const isVisible = matchIsland && matchProvince && matchCity;
+                        row.style.display = isVisible ? '' : 'none';
+                        if (isVisible) visibleCount++;
+                    });
+                    
+                    // Filter untuk tampilan card mobile
+                    const mobileCards = document.querySelectorAll('#mobile-rate-cards > div > div');
+                    
+                    mobileCards.forEach(card => {
+                        const cityText = (card.getAttribute('data-city') || '').toLowerCase();
+                        const kelurahanText = (card.getAttribute('data-kelurahan') || '').toLowerCase();
+                        const provinceText = (card.getAttribute('data-province') || '').toLowerCase();
+                        const islandText = (card.getAttribute('data-island') || '').toLowerCase();
+                        
+                        const cityFullText = cityText + ' ' + kelurahanText;
+                        
+                        const matchIsland = !islandValue || islandText.includes(islandValue);
+                        const matchProvince = !provinceValue || provinceText.includes(provinceValue);
+                        const matchCity = !cityValue || cityFullText.includes(cityValue);
+                        
+                        card.style.display = (matchIsland && matchProvince && matchCity) ? '' : 'none';
+                    });
+                    
+                    // Hapus kelas loading
+                    rateTableBody.classList.remove('opacity-50');
+                    document.getElementById('mobile-rate-cards').classList.remove('opacity-50');
+                }, 50);
+            }
+            
+            // Terapkan debounce untuk input pencarian
+            const debouncedSearch = debounce(applyFilters, 300);
+            
+            $('#filter-island').on('change', applyFilters);
+            $('#filter-province').on('change', applyFilters);
+            searchCity.addEventListener('input', debouncedSearch);
+            
+            // Reset filter button
+            document.getElementById('reset-filters').addEventListener('click', function() {
+                $('#filter-island').val('').trigger('change');
+                $('#filter-province').val('').trigger('change');
+                searchCity.value = '';
+                applyFilters();
+            });
         });
     </script>
     @endpush
