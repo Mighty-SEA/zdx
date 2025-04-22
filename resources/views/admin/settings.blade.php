@@ -402,7 +402,7 @@
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 1 <span class="text-xs text-indigo-600">(Utama)</span></span>
-                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="1">
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="1" onclick="showLogoModal('1')">
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
@@ -415,7 +415,7 @@
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 2</span>
-                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="2">
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="2" onclick="showLogoModal('2')">
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
@@ -428,7 +428,7 @@
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 3</span>
-                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="3">
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="3" onclick="showLogoModal('3')">
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
@@ -441,7 +441,7 @@
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Title Logo <span class="text-xs text-green-600">(Kompress)</span></span>
-                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="title">
+                                                <button type="button" class="logo-edit inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200" data-logo="title" onclick="showLogoModal('title')">
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
@@ -452,6 +452,54 @@
                                     </div>
                                 </div>
                                 
+                                <!-- Struktur Organisasi -->
+                                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                                    <h4 class="font-medium text-blue-800 mb-3">Struktur Organisasi</h4>
+                                    
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h4 class="font-medium text-gray-700">Gambar Struktur Organisasi</h4>
+                                            <button id="changeStructureBtn" type="button" class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring" onclick="showStructureModal()">
+                                                Ubah Gambar
+                                            </button>
+                                        </div>
+                                        <div class="border rounded-lg p-2">
+                                            @php
+                                                $structureImagePath = null;
+                                                $structureUpdatedAt = null;
+                                                
+                                                // Cek apakah ada data di settings
+                                                $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+                                                if ($settings && !empty($settings->structure_image_path)) {
+                                                    $structureImagePath = $settings->structure_image_path;
+                                                    $structureUpdatedAt = $settings->structure_image_updated_at;
+                                                }
+                                                
+                                                // Jika tidak ada di settings, gunakan path default
+                                                $displayPath = $structureImagePath 
+                                                    ? asset($structureImagePath) 
+                                                    : (\Illuminate\Support\Facades\Storage::disk('public')->exists('images/struktur.jpg') 
+                                                        ? \Illuminate\Support\Facades\Storage::url('images/struktur.jpg').'?v='.rand() 
+                                                        : asset('placeholder-image.png'));
+                                                
+                                                // Tambahkan timestamp update jika ada
+                                                if ($structureUpdatedAt) {
+                                                    $displayPath .= '?v=' . strtotime($structureUpdatedAt);
+                                                }
+                                            @endphp
+                                            <img id="structure-preview" src="{{ $displayPath }}" alt="Struktur Organisasi" class="w-full h-48 object-contain rounded">
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-2">
+                                            <i class="fas fa-info-circle mr-1"></i> Gambar ini menampilkan struktur organisasi perusahaan pada halaman profil.
+                                            @if($structureUpdatedAt)
+                                                <div class="mt-1 text-xs text-blue-500">
+                                                    <i class="fas fa-clock mr-1"></i> Terakhir diperbarui: {{ \Carbon\Carbon::parse($structureUpdatedAt)->format('d M Y H:i') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <!-- Gambar Logistik -->
                                 <div class="bg-red-50 p-4 rounded-lg border border-red-200">
                                     <h4 class="font-medium text-red-800 mb-3">Gambar Logistik</h4>
@@ -459,7 +507,7 @@
                                     <div class="bg-white p-4 rounded-lg shadow-sm">
                                         <div class="flex justify-between items-center mb-4">
                                             <h4 class="font-medium text-gray-700">Gambar Operasi Logistik</h4>
-                                            <button id="changeLogisticsBtn" type="button" class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring">
+                                            <button id="changeLogisticsBtn" type="button" class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring" onclick="showLogisticsModal()">
                                                 Ubah Gambar
                                             </button>
                                         </div>
@@ -1654,12 +1702,12 @@
     <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold text-gray-800">Upload Logo Perusahaan</h3>
-            <button type="button" class="close-modal text-gray-500 hover:text-gray-700">
+            <button type="button" class="close-modal text-gray-500 hover:text-gray-700" onclick="hideLogoModal()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <form action="{{ route('admin.logo.upload') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.logo.upload') }}" method="POST" enctype="multipart/form-data" id="logoUploadForm">
             @csrf
             <input type="hidden" name="logo_number" id="logoNumber" value="1">
             
@@ -1680,7 +1728,7 @@
             </div>
             
             <div class="flex justify-end space-x-3">
-                <button type="button" class="close-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                <button type="button" class="close-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="hideLogoModal()">
                     Batal
                 </button>
                 <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">
@@ -1696,12 +1744,12 @@
     <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold text-gray-800">Upload Gambar Logistik</h3>
-            <button type="button" class="close-logistics-modal text-gray-500 hover:text-gray-700">
+            <button type="button" class="close-logistics-modal text-gray-500 hover:text-gray-700" onclick="hideLogisticsModal()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <form action="{{ route('admin.logistics.upload') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.logistics.upload') }}" method="POST" enctype="multipart/form-data" id="logisticsUploadForm">
             @csrf
             <div class="mb-4">
                 <label for="logisticsFile" class="block text-sm font-medium text-gray-700 mb-1">
@@ -1712,8 +1760,15 @@
                 <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, JPG. Ukuran maksimal 2MB.</p>
             </div>
             
+            <div id="logisticsPreviewContainer" class="mb-4 hidden">
+                <p class="text-sm font-medium text-gray-700 mb-1">Preview</p>
+                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
+                    <img id="logisticsPreview" src="#" alt="Logistik Preview" class="max-h-40 mx-auto">
+                </div>
+            </div>
+            
             <div class="flex justify-end space-x-3">
-                <button type="button" class="close-logistics-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                <button type="button" class="close-logistics-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="hideLogisticsModal()">
                     Batal
                 </button>
                 <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
@@ -1724,95 +1779,248 @@
     </div>
 </div> 
 
-<script>
-    // Event listener untuk tombol Test API
-    document.addEventListener('DOMContentLoaded', function() {
-        const testButton = document.getElementById('test_tracking_api');
-        if (testButton) {
-            testButton.addEventListener('click', function() {
-                const trackingNumber = document.getElementById('tracking_test_number').value.trim();
-                if (!trackingNumber) {
-                    alert('Silakan masukkan nomor resi untuk testing');
-                    return;
-                }
+<!-- Modal Upload Gambar Struktur Organisasi -->
+<div id="structureUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Upload Struktur Organisasi</h3>
+            <button type="button" class="close-structure-modal text-gray-500 hover:text-gray-700" onclick="hideStructureModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form action="{{ route('admin.structure.upload') }}" method="POST" enctype="multipart/form-data" id="structureUploadForm">
+            @csrf
+            <div class="mb-4">
+                <label for="structureFile" class="block text-sm font-medium text-gray-700 mb-1">
+                    File Gambar
+                </label>
+                <input type="file" name="structure_file" id="structureFile" accept="image/*" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, JPG. Ukuran maksimal 2MB.</p>
+            </div>
+            
+            <div id="structurePreviewContainer" class="mb-4 hidden">
+                <p class="text-sm font-medium text-gray-700 mb-1">Preview</p>
+                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
+                    <img id="structurePreview" src="#" alt="Struktur Organisasi Preview" class="max-h-40 mx-auto">
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" class="close-structure-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="hideStructureModal()">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+                    Upload Gambar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                // Ambil data penting dari form
-                const apiUrl = document.getElementById('tracking_api_url').value.trim();
-                const apiKey = document.getElementById('tracking_api_key').value.trim();
-                const provider = document.getElementById('tracking_provider').value;
-                const method = document.getElementById('tracking_request_method').value || 'GET';
-                
-                console.log('Mengirim request test tracking dengan data:', {
-                    tracking_number: trackingNumber,
-                    api_url: apiUrl,
-                    api_key: apiKey,
-                    provider: provider,
-                    method: method
-                });
-                
-                // Tampilkan indikator loading
-                testButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Testing...';
-                testButton.disabled = true;
-                
-                // Kirim request ke backend
-                fetch('{{ route("admin.settings.tracking.test") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        tracking_number: trackingNumber,
-                        api_url: apiUrl,
-                        api_key: apiKey,
-                        provider: provider,
-                        method: method,
-                        headers: {} // Header tambahan jika perlu
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Response dari test API:', data);
-                    
-                    // Reset tombol
-                    testButton.innerHTML = 'Test API';
-                    testButton.disabled = false;
-                    
-                    // Tampilkan hasil
-                    const resultContainer = document.getElementById('tracking_api_test_result');
-                    const responseElement = document.getElementById('tracking_test_response');
-                    const requestDetails = document.getElementById('tracking_request_details');
-                    const requestUrl = document.getElementById('request_url');
-                    const requestMethod = document.getElementById('request_method');
-                    
-                    resultContainer.classList.remove('hidden');
-                    
-                    if (data.success) {
-                        responseElement.innerHTML = JSON.stringify(data.response, null, 2);
-                        responseElement.classList.remove('text-red-500');
-                        responseElement.classList.add('text-green-800');
-                    } else {
-                        responseElement.innerHTML = data.message + '\n\n' + (typeof data.response === 'object' ? 
-                            JSON.stringify(data.response, null, 2) : data.response);
-                        responseElement.classList.remove('text-green-800');
-                        responseElement.classList.add('text-red-500');
-                    }
-                    
-                    // Tampilkan detail request
-                    if (data.request_url) {
-                        requestUrl.textContent = data.request_url;
-                        requestMethod.textContent = data.request_method;
-                        requestDetails.classList.remove('hidden');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    testButton.innerHTML = 'Test API';
-                    testButton.disabled = false;
-                    alert('Terjadi kesalahan saat testing API: ' + error.message);
-                });
+@push('scripts')
+<script>
+// Fungsi untuk menampilkan modal upload logo
+function showLogoModal(logoNumber) {
+    const logoUploadModal = document.getElementById('logoUploadModal');
+    const logoNumberInput = document.getElementById('logoNumber');
+    
+    if (logoUploadModal && logoNumberInput) {
+        logoNumberInput.value = logoNumber;
+        logoUploadModal.classList.remove('hidden');
+        
+        // Reset form dan preview jika ada
+        const form = document.getElementById('logoUploadForm');
+        const previewContainer = document.getElementById('previewContainer');
+        if (form) form.reset();
+        if (previewContainer) previewContainer.classList.add('hidden');
+    }
+}
+
+// Fungsi untuk menampilkan modal upload struktur organisasi
+function showStructureModal() {
+    const structureUploadModal = document.getElementById('structureUploadModal');
+    
+    if (structureUploadModal) {
+        structureUploadModal.classList.remove('hidden');
+        
+        // Reset form dan preview jika ada
+        const form = document.getElementById('structureUploadForm');
+        const previewContainer = document.getElementById('structurePreviewContainer');
+        if (form) form.reset();
+        if (previewContainer) previewContainer.classList.add('hidden');
+    }
+}
+
+// Fungsi untuk menampilkan modal upload logistik
+function showLogisticsModal() {
+    const logisticsUploadModal = document.getElementById('logisticsUploadModal');
+    
+    if (logisticsUploadModal) {
+        logisticsUploadModal.classList.remove('hidden');
+        
+        // Reset form dan preview jika ada
+        const form = document.getElementById('logisticsUploadForm');
+        const previewContainer = document.getElementById('logisticsPreviewContainer');
+        if (form) form.reset();
+        if (previewContainer) previewContainer.classList.add('hidden');
+    }
+}
+
+// Fungsi untuk menyembunyikan modal upload logo
+function hideLogoModal() {
+    const logoUploadModal = document.getElementById('logoUploadModal');
+    
+    if (logoUploadModal) {
+        logoUploadModal.classList.add('hidden');
+        
+        // Reset form dan preview
+        const form = document.getElementById('logoUploadForm');
+        const previewContainer = document.getElementById('previewContainer');
+        if (form) form.reset();
+        if (previewContainer) previewContainer.classList.add('hidden');
+    }
+}
+
+// Fungsi untuk menyembunyikan modal upload struktur organisasi
+function hideStructureModal() {
+    const structureUploadModal = document.getElementById('structureUploadModal');
+    
+    if (structureUploadModal) {
+        structureUploadModal.classList.add('hidden');
+        
+        // Reset form dan preview
+        const form = document.getElementById('structureUploadForm');
+        const previewContainer = document.getElementById('structurePreviewContainer');
+        if (form) form.reset();
+        if (previewContainer) previewContainer.classList.add('hidden');
+    }
+}
+
+// Fungsi untuk menyembunyikan modal upload logistik
+function hideLogisticsModal() {
+    const logisticsUploadModal = document.getElementById('logisticsUploadModal');
+    
+    if (logisticsUploadModal) {
+        logisticsUploadModal.classList.add('hidden');
+        
+        // Reset form dan preview
+        const form = document.getElementById('logisticsUploadForm');
+        const previewContainer = document.getElementById('logisticsPreviewContainer');
+        if (form) form.reset();
+        if (previewContainer) previewContainer.classList.add('hidden');
+    }
+}
+
+// Fungsi untuk me-refresh tampilan gambar setelah upload sukses
+function refreshImages() {
+    // Ambil semua gambar yang perlu diperbarui dan tambahkan parameter timestamp baru
+    const logo1Preview = document.getElementById('logo1-preview');
+    const logo2Preview = document.getElementById('logo2-preview');
+    const logo3Preview = document.getElementById('logo3-preview');
+    const titleLogoPreview = document.getElementById('title-logo-preview');
+    const structurePreview = document.getElementById('structure-preview');
+    const logisticsPreview = document.getElementById('logistics-preview');
+    
+    const timestamp = new Date().getTime();
+    
+    if (logo1Preview) {
+        const baseUrl = logo1Preview.src.split('?')[0];
+        logo1Preview.src = baseUrl + '?v=' + timestamp;
+    }
+    
+    if (logo2Preview) {
+        const baseUrl = logo2Preview.src.split('?')[0];
+        logo2Preview.src = baseUrl + '?v=' + timestamp;
+    }
+    
+    if (logo3Preview) {
+        const baseUrl = logo3Preview.src.split('?')[0];
+        logo3Preview.src = baseUrl + '?v=' + timestamp;
+    }
+    
+    if (titleLogoPreview) {
+        const baseUrl = titleLogoPreview.src.split('?')[0];
+        titleLogoPreview.src = baseUrl + '?v=' + timestamp;
+    }
+    
+    if (structurePreview) {
+        const baseUrl = structurePreview.src.split('?')[0];
+        structurePreview.src = baseUrl + '?v=' + timestamp;
+    }
+    
+    if (logisticsPreview) {
+        const baseUrl = logisticsPreview.src.split('?')[0];
+        logisticsPreview.src = baseUrl + '?v=' + timestamp;
+    }
+}
+
+// Inisialisasi event handlers saat DOM sudah siap
+document.addEventListener('DOMContentLoaded', function() {
+    // Preview untuk file logo
+    const logoFile = document.getElementById('logoFile');
+    const logoPreview = document.getElementById('logoPreview');
+    const previewContainer = document.getElementById('previewContainer');
+    
+    if (logoFile && logoPreview && previewContainer) {
+        logoFile.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoPreview.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+    
+    // Preview untuk file struktur organisasi
+    const structureFile = document.getElementById('structureFile');
+    const structurePreview = document.getElementById('structurePreview');
+    const structurePreviewContainer = document.getElementById('structurePreviewContainer');
+    
+    if (structureFile && structurePreview && structurePreviewContainer) {
+        structureFile.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    structurePreview.src = e.target.result;
+                    structurePreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+    
+    // Preview untuk file logistik
+    const logisticsFile = document.getElementById('logisticsFile');
+    const logisticsPreview = document.getElementById('logisticsPreview');
+    const logisticsPreviewContainer = document.getElementById('logisticsPreviewContainer');
+    
+    if (logisticsFile && logisticsPreview && logisticsPreviewContainer) {
+        logisticsFile.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logisticsPreview.src = e.target.result;
+                    logisticsPreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+    
+    // Tambahkan event listener untuk refresh gambar setelah form disubmit
+    ['logoUploadForm', 'structureUploadForm', 'logisticsUploadForm'].forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) {
+            form.addEventListener('submit', function() {
+                setTimeout(refreshImages, 3000); // Refresh images after 3 seconds
             });
         }
     });
-    
-</script> 
+});
+</script>
+@endpush
