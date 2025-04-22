@@ -26,6 +26,8 @@ class SettingsController extends Controller
         $companyName = Setting::getValue('company_name', 'PT ZDX Cargo Indonesia');
         $companyAddress = Setting::getValue('company_address', 'Jl. Gatot Subroto No. 123, Jakarta Selatan 12930');
         $companyPhone = Setting::getValue('company_phone', '021-12345678');
+        $companyPhone2 = Setting::getValue('company_phone2', '0858 1471 8889');
+        $companyPhone3 = Setting::getValue('company_phone3', '0858 1471 8890');
         $companyEmail = Setting::getValue('company_email', 'info@zdxcargo.com');
         $companyTaxId = Setting::getValue('company_tax_id', '01.234.567.8-901.000');
         $companyDescription = Setting::getValue('company_description', 'ZDX Cargo adalah perusahaan jasa pengiriman terpercaya yang melayani kebutuhan logistik bisnis dan pribadi dengan jangkauan nasional dan internasional.');
@@ -70,6 +72,8 @@ class SettingsController extends Controller
             'companyName',
             'companyAddress',
             'companyPhone',
+            'companyPhone2',
+            'companyPhone3',
             'companyEmail',
             'companyTaxId',
             'companyDescription',
@@ -138,6 +142,8 @@ class SettingsController extends Controller
             'company_name' => 'required|string|max:100',
             'company_address' => 'required|string|max:255',
             'company_phone' => 'required|string|max:20',
+            'company_phone2' => 'nullable|string|max:20',
+            'company_phone3' => 'nullable|string|max:20',
             'company_email' => 'required|email|max:100',
             'company_tax_id' => 'nullable|string|max:30',
             'company_description' => 'nullable|string|max:500',
@@ -163,6 +169,8 @@ class SettingsController extends Controller
         Setting::setValue('company_name', $request->company_name, 'company');
         Setting::setValue('company_address', $request->company_address, 'company');
         Setting::setValue('company_phone', $request->company_phone, 'company');
+        Setting::setValue('company_phone2', $request->company_phone2, 'company');
+        Setting::setValue('company_phone3', $request->company_phone3, 'company');
         Setting::setValue('company_email', $request->company_email, 'company');
         Setting::setValue('company_tax_id', $request->company_tax_id, 'company');
         Setting::setValue('company_description', $request->company_description, 'company');
