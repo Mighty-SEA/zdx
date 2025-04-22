@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             HomeContentSeeder::class,
             CompanySettingsSeeder::class,
             ServicesSeeder::class,
+            PartnerSeeder::class,
         ]);
 
         User::factory()->create([

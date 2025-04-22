@@ -570,21 +570,29 @@ Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg
             
             <!-- Clients -->
             <div class="mt-20 mb-0 text-center" data-aos="fade-up">
-                <h3 class="text-xl text-white font-medium mb-8">Dipercaya oleh Perusahaan Terkemuka</h3>
-                <div class="flex flex-wrap justify-center gap-8 items-center">
+                {{-- <h3 class="text-xl text-white font-medium mb-8">Dipercaya </h3> --}}
+                <div class="flex flex-wrap justify-center gap-10 items-center my-8">
                     @if(isset($partners) && is_object($partners) && $partners->count() > 0)
                         @foreach($partners as $partner)
                             @if(isset($partner->logo_path) && !empty($partner->logo_path))
-                                <div class="client-logo">
-                                    <img src="{{ asset(Storage::url($partner->logo_path)) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                                <div class="client-logo p-4 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-110 transform">
+                                    <img src="{{ asset(Storage::url($partner->logo_path)) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
                                 </div>
                             @endif
                         @endforeach
                     @else
-                        <img src="{{ asset('asset/images/client1.png') }}" alt="Client 1" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                        <img src="{{ asset('asset/images/client2.png') }}" alt="Client 2" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                        <img src="{{ asset('asset/images/client3.png') }}" alt="Client 3" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
-                        <img src="{{ asset('asset/images/client4.png') }}" alt="Client 4" class="h-12 opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert">
+                        <div class="client-logo p-4 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-110 transform">
+                            <img src="{{ asset('asset/images/client1.png') }}" alt="Client 1" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
+                        </div>
+                        <div class="client-logo p-4 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-110 transform">
+                            <img src="{{ asset('asset/images/client2.png') }}" alt="Client 2" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
+                        </div>
+                        <div class="client-logo p-4 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-110 transform">
+                            <img src="{{ asset('asset/images/client3.png') }}" alt="Client 3" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
+                        </div>
+                        <div class="client-logo p-4 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-110 transform">
+                            <img src="{{ asset('asset/images/client4.png') }}" alt="Client 4" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
+                        </div>
                     @endif
                 </div>
             </div>
