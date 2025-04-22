@@ -99,7 +99,6 @@ class PageController extends Controller
         $partners = \App\Models\Partner::where('status', 'active')
             ->whereNotNull('logo_path')
             ->orderBy('created_at', 'desc')
-            ->limit(6)
             ->get();
         
         return view('home', compact('seoData', 'services', 'partners', 'homeContent'));
