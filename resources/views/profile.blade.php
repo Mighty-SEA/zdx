@@ -117,7 +117,7 @@
                     <div class="flex flex-col gap-4">
                         <!-- Logo Perusahaan tanpa frame -->
                         <div class="relative">
-                            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
+                            <img src="{{ $logoUrl }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
                         </div>
                         
                         <!-- Gambar Pengiriman Logistik -->

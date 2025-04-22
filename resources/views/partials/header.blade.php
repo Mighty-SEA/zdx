@@ -6,7 +6,7 @@
                 <a href="/" class="flex items-center space-x-3 group">
                     <!-- Logo tanpa frame -->
                     <div class="relative">
-                        <img id="header-logo" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                        <img id="header-logo" src="{{ $logoUrl }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
                     </div>
                     
                     <!-- Teks logo (tampilkan pada mobile dan desktop) -->
