@@ -15,6 +15,35 @@
 <meta property="og:title" content="{{ $seo->title ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
 <meta property="og:description" content="{{ $seo->description ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
 
+<!-- Fungsi formatPhoneNumber -->
+@php
+function formatPhoneNumber($phoneNumber) {
+    // Menghapus semua karakter non-angka
+    $number = preg_replace('/[^0-9]/', '', $phoneNumber);
+    
+    // Jika nomor dimulai dengan 62, ubah ke 0
+    if (substr($number, 0, 2) === '62') {
+        $number = '0' . substr($number, 2);
+    }
+    
+    // Format nomor dengan spasi setiap 4 digit
+    $formatted = '';
+    for ($i = 0; $i < strlen($number); $i++) {
+        $formatted .= $number[$i];
+        if (($i + 1) % 4 == 0 && $i < strlen($number) - 1) {
+            $formatted .= ' ';
+        }
+    }
+    
+    return $formatted;
+}
+
+// Get raw phone number for WhatsApp
+$whatsappPhone = preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '');
+// Get formatted phone for display
+$displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
+@endphp
+
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -192,7 +221,7 @@
                                 <!-- Tampilan pesan khusus untuk tarif 0 -->
                                 <div id="zero-rate-message" class="hidden text-center py-3">
                                     <p class="text-[#FF6000] font-semibold mb-3">Untuk rute ini silahkan hubungi kami</p>
-                                    <a id="whatsapp-link" href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white py-2 px-5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                                    <a id="whatsapp-link" href="https://wa.me/{{ $whatsappPhone }}" target="_blank" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white py-2 px-5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
                                         Hubungi Kami
                                     </a>
                                 </div>
@@ -367,7 +396,13 @@
             <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
                 Dapatkan penawaran harga spesial untuk pengiriman dalam jumlah besar atau kontrak jangka panjang
             </p>
-            <a href="/contact" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+            <a href="https://wa.me/{{ $whatsappPhone }}?text={{ urlencode('Halo Admin ZDX Express,
+
+Saya tertarik untuk mendapatkan penawaran khusus untuk pengiriman dalam jumlah besar.
+
+Mohon informasi lebih lanjut mengenai layanan dan tarif spesial yang tersedia.
+
+Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
                 Minta Penawaran
             </a>
         </div>
@@ -592,7 +627,7 @@
                         // Update WhatsApp link dengan teks tujuan yang dipilih
                         const whatsappLink = document.getElementById('whatsapp-link');
                         let whatsappText = encodeURIComponent(`Halo Admin ZDX Express,\n\nSaya ingin menanyakan informasi pengiriman barang dengan detail:\n- Tujuan: ${destinationText}\n- Berat: ${weightValue} kg\n\nMohon informasi tarif pengiriman untuk rute tersebut.\nTerima kasih.`);
-                        let baseWhatsappUrl = "https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '') }}";
+                        let baseWhatsappUrl = "https://wa.me/{{ $whatsappPhone }}";
                         whatsappLink.href = `${baseWhatsappUrl}?text=${whatsappText}`;
                         
                         // Cek apakah tarif adalah 0
@@ -614,7 +649,7 @@
                             // Update tombol Pesan Sekarang dengan link WhatsApp
                             const orderButton = document.getElementById('order-button');
                             let orderText = encodeURIComponent(`Halo Admin ZDX Express,\n\nSaya ingin melakukan pemesanan pengiriman dengan detail:\n- Tujuan: ${destinationText}\n- Berat: ${weightValue} kg\n- Tarif per kg: Rp${data.rate_formatted}\n- Total Biaya: Rp${data.total_formatted}\n\nMohon bantuan untuk proses pemesanan selanjutnya.\nTerima kasih.`);
-                            orderButton.href = `https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '') }}?text=${orderText}`;
+                            orderButton.href = `https://wa.me/{{ $whatsappPhone }}?text=${orderText}`;
                             orderButton.target = "_blank";
                         }
                         
