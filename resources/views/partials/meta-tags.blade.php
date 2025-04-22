@@ -3,6 +3,9 @@
     <meta name="description" content="{{ $seoData['description'] }}">
     <meta name="keywords" content="{{ $seoData['keywords'] }}">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl }}" sizes="32x32">
+
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ $seoData['canonical_url'] }}">
 
@@ -27,5 +30,9 @@
     <title>{{ request()->path() === '/' ? 'Beranda' : ucfirst(request()->path()) }} - {{ config('app.name', 'ZDX Express') }}</title>
     <meta name="description" content="ZDX Express - Jasa pengiriman terpercaya untuk kebutuhan logistik Anda">
     <meta name="keywords" content="jasa pengiriman, ekspedisi, kurir">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ $logoUrl }}" sizes="32x32">
+    
     <link rel="canonical" href="{{ url()->current() }}">
 @endif 
