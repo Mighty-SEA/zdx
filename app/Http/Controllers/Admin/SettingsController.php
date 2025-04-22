@@ -474,6 +474,11 @@ class SettingsController extends Controller
                 'Accept' => 'application/json',
             ];
             
+            // Tambahkan headers Content-Type jika provider adalah zdx_api
+            if ($request->provider === 'zdx_api') {
+                $headers['Content-Type'] = 'application/json';
+            }
+            
             // Tambahkan API key ke headers jika ada
             if ($request->api_key) {
                 $headers['Authorization'] = 'Bearer ' . $request->api_key;
@@ -486,7 +491,8 @@ class SettingsController extends Controller
             
             // Buat request
             $client = new \GuzzleHttp\Client([
-                'verify' => false // Menonaktifkan verifikasi SSL untuk lingkungan development
+                'verify' => false, // Menonaktifkan verifikasi SSL untuk lingkungan development
+                'timeout' => 30,
             ]);
             
             $options = [
@@ -494,24 +500,29 @@ class SettingsController extends Controller
                 'http_errors' => false,
             ];
             
-            // Tambahkan parameter tracking_number ke URL jika metode GET dan URL tidak memiliki placeholder
-            if ($request->method === 'GET' && strpos($request->api_url, '{tracking_number}') === false) {
-                if (strpos($url, 'api_key') === false && !empty($request->api_key)) {
-                    // Tambahkan API key sebagai parameter URL untuk provider tertentu
-                    $url .= (strpos($url, '?') !== false ? '&' : '?') . 'api_key=' . $request->api_key;
+            // Tambahkan parameter khusus berdasarkan provider
+            if ($request->method === 'GET') {
+                if (strpos($request->api_url, '{tracking_number}') === false) {
+                    if (strpos($url, 'api_key') === false && !empty($request->api_key)) {
+                        // Tambahkan API key sebagai parameter URL untuk provider tertentu
+                        $url .= (strpos($url, '?') !== false ? '&' : '?') . 'api_key=' . $request->api_key;
+                    }
+                    
+                    // Tambahkan parameter berdasarkan provider
+                    if ($request->provider === 'binderbyte' || strpos($url, 'binderbyte.com') !== false) {
+                        $url .= (strpos($url, '?') !== false ? '&' : '?') . 'courier=jnt&awb=' . $request->tracking_number;
+                    } else {
+                        $url .= (strpos($url, '?') !== false ? '&' : '?') . 'tracking_number=' . $request->tracking_number;
+                    }
                 }
-                
-                // Tambahkan parameter berdasarkan provider
-                if ($request->provider === 'binderbyte' || strpos($url, 'binderbyte.com') !== false) {
-                    $url .= (strpos($url, '?') !== false ? '&' : '?') . 'courier=jnt&awb=' . $request->tracking_number;
+            } else if ($request->method === 'POST') {
+                // Tambahkan body dengan format sesuai provider
+                if ($request->provider === 'zdx_api') {
+                    $options['json'] = ['awb_no' => $request->tracking_number];
+                    Log::info('Using ZDX API format for request body', ['body' => $options['json']]);
                 } else {
-                    $url .= (strpos($url, '?') !== false ? '&' : '?') . 'tracking_number=' . $request->tracking_number;
+                    $options['json'] = ['tracking_number' => $request->tracking_number];
                 }
-            }
-            
-            // Tambahkan body jika metode POST
-            if ($request->method === 'POST') {
-                $options['json'] = ['tracking_number' => $request->tracking_number];
             }
             
             Log::info('Sending request to: ' . $url, [
@@ -526,10 +537,18 @@ class SettingsController extends Controller
             // Parsing response
             $statusCode = $response->getStatusCode();
             $body = (string) $response->getBody();
+            
+            Log::info('Response received', [
+                'status_code' => $statusCode,
+                'body_length' => strlen($body),
+                'body_preview' => substr($body, 0, 500)
+            ]);
+            
             $jsonResponse = null;
             
             try {
                 $jsonResponse = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                Log::info('Response parsed successfully as JSON');
             } catch (\Exception $e) {
                 Log::error('Failed to parse JSON response', [
                     'error' => $e->getMessage(),

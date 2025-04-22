@@ -7,6 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
 @section('content')
@@ -672,12 +673,50 @@
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
                                         <option value="" disabled {{ empty($trackingProvider) ? 'selected' : '' }}>-- Pilih Penyedia API --</option>
                                         <option value="zdx_internal" {{ ($trackingProvider ?? '') == 'zdx_internal' ? 'selected' : '' }}>ZDX Internal (Default)</option>
+                                        <option value="zdx_api" {{ ($trackingProvider ?? '') == 'zdx_api' ? 'selected' : '' }}>ZDX API</option>
                                         <option value="wahana" {{ ($trackingProvider ?? '') == 'wahana' ? 'selected' : '' }}>Wahana Express</option>
                                         <option value="jne" {{ ($trackingProvider ?? '') == 'jne' ? 'selected' : '' }}>JNE</option>
                                         <option value="sicepat" {{ ($trackingProvider ?? '') == 'sicepat' ? 'selected' : '' }}>SiCepat</option>
                                         <option value="pos_indonesia" {{ ($trackingProvider ?? '') == 'pos_indonesia' ? 'selected' : '' }}>Pos Indonesia</option>
                                         <option value="custom" {{ ($trackingProvider ?? '') == 'custom' ? 'selected' : '' }}>Custom API</option>
                                     </select>
+                                </div>
+                                
+                                <!-- Penjelasan ZDX API -->
+                                <div id="zdx-api-info" class="bg-blue-50 p-3 rounded-md border border-blue-200 mb-4 {{ ($trackingProvider ?? '') == 'zdx_api' ? '' : 'hidden' }}">
+                                    <h5 class="text-sm font-medium text-blue-700 mb-2">
+                                        <i class="fas fa-info-circle mr-1"></i> Informasi ZDX API
+                                    </h5>
+                                    <p class="text-xs text-blue-600">
+                                        ZDX API menggunakan endpoint-endpoint berikut sesuai dengan dokumentasi resmi:
+                                    </p>
+                                    <ul class="list-disc list-inside ml-2 mt-1 text-xs text-blue-600">
+                                        <li>Tracking By AWB: <code class="bg-blue-100 px-1 py-0.5 rounded">https://www.apiweb.zdx.co.id/api/web/trackingWebAwb</code></li>
+                                        <li>Detail Tracking By AWB: <code class="bg-blue-100 px-1 py-0.5 rounded">https://apiweb.zdx.co.id/api/web/detailAwb</code></li>
+                                    </ul>
+                                    <p class="text-xs text-blue-600 mt-1">
+                                        Untuk menggunakan API ini, masukkan token API dari ZDX pada field API Key/Token.
+                                    </p>
+                                    
+                                    <details class="mt-2">
+                                        <summary class="text-xs font-medium text-blue-700 cursor-pointer">Tampilkan contoh format mapping response</summary>
+                                        <div class="mt-2 p-2 bg-gray-100 rounded text-xs font-mono text-gray-800 whitespace-pre-wrap">
+{
+  "tracking_number": "process.awbdetail.awb_no",
+  "status": "process.lasthistory.status",
+  "service": "process.awbdetail.service_name",
+  "shipper": {
+    "name": "process.awbdetail.shipper_name",
+    "address": "process.awbdetail.city_origin"
+  },
+  "receiver": {
+    "name": "process.awbdetail.receiver_name", 
+    "address": "process.awbdetail.receiver_address"
+  },
+  "timeline": "data"
+}
+                                        </div>
+                                    </details>
                                 </div>
                             </div>
                             
@@ -1018,8 +1057,30 @@
         }
     }
 
+    // Fungsi untuk menampilkan/menyembunyikan informasi ZDX API
+    function toggleZdxApiInfo() {
+        const provider = document.getElementById('tracking_provider').value;
+        const zdxApiInfo = document.getElementById('zdx-api-info');
+        
+        if (zdxApiInfo) {
+            if (provider === 'zdx_api') {
+                zdxApiInfo.classList.remove('hidden');
+            } else {
+                zdxApiInfo.classList.add('hidden');
+            }
+        }
+    }
+
     // Tab navigation
     document.addEventListener('DOMContentLoaded', function() {
+        // Tambahkan event listener untuk perubahan provider
+        const trackingProviderSelect = document.getElementById('tracking_provider');
+        if (trackingProviderSelect) {
+            trackingProviderSelect.addEventListener('change', toggleZdxApiInfo);
+            // Jalankan satu kali saat halaman dimuat
+            toggleZdxApiInfo();
+        }
+
         const navLinks = document.querySelectorAll('[id^="nav-"]');
         const contentSections = document.querySelectorAll('[id^="content-"]');
         
@@ -1178,8 +1239,10 @@
                     }
                 }
                 
+                console.log('Mengirim data testing:', testData);
+                
                 // Kirim request ke endpoint testing
-                fetch('/admin/settings/tracking/test', {
+                fetch('{{ route("admin.settings.tracking.test") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1187,8 +1250,12 @@
                     },
                     body: JSON.stringify(testData)
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Response data:', data);
                     if (data.success) {
                         responseElement.textContent = JSON.stringify(data.response, null, 2);
                     } else {
@@ -1209,7 +1276,8 @@
                     }
                 })
                 .catch(error => {
-                    responseElement.textContent = 'Error saat menghubungi API: ' + error.message;
+                    console.error('Error testing API:', error);
+                    responseElement.textContent = 'Error saat melakukan request: ' + error.message;
                 });
             });
         }
@@ -1655,3 +1723,96 @@
         </form>
     </div>
 </div> 
+
+<script>
+    // Event listener untuk tombol Test API
+    document.addEventListener('DOMContentLoaded', function() {
+        const testButton = document.getElementById('test_tracking_api');
+        if (testButton) {
+            testButton.addEventListener('click', function() {
+                const trackingNumber = document.getElementById('tracking_test_number').value.trim();
+                if (!trackingNumber) {
+                    alert('Silakan masukkan nomor resi untuk testing');
+                    return;
+                }
+
+                // Ambil data penting dari form
+                const apiUrl = document.getElementById('tracking_api_url').value.trim();
+                const apiKey = document.getElementById('tracking_api_key').value.trim();
+                const provider = document.getElementById('tracking_provider').value;
+                const method = document.getElementById('tracking_request_method').value || 'GET';
+                
+                console.log('Mengirim request test tracking dengan data:', {
+                    tracking_number: trackingNumber,
+                    api_url: apiUrl,
+                    api_key: apiKey,
+                    provider: provider,
+                    method: method
+                });
+                
+                // Tampilkan indikator loading
+                testButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Testing...';
+                testButton.disabled = true;
+                
+                // Kirim request ke backend
+                fetch('{{ route("admin.settings.tracking.test") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        tracking_number: trackingNumber,
+                        api_url: apiUrl,
+                        api_key: apiKey,
+                        provider: provider,
+                        method: method,
+                        headers: {} // Header tambahan jika perlu
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response dari test API:', data);
+                    
+                    // Reset tombol
+                    testButton.innerHTML = 'Test API';
+                    testButton.disabled = false;
+                    
+                    // Tampilkan hasil
+                    const resultContainer = document.getElementById('tracking_api_test_result');
+                    const responseElement = document.getElementById('tracking_test_response');
+                    const requestDetails = document.getElementById('tracking_request_details');
+                    const requestUrl = document.getElementById('request_url');
+                    const requestMethod = document.getElementById('request_method');
+                    
+                    resultContainer.classList.remove('hidden');
+                    
+                    if (data.success) {
+                        responseElement.innerHTML = JSON.stringify(data.response, null, 2);
+                        responseElement.classList.remove('text-red-500');
+                        responseElement.classList.add('text-green-800');
+                    } else {
+                        responseElement.innerHTML = data.message + '\n\n' + (typeof data.response === 'object' ? 
+                            JSON.stringify(data.response, null, 2) : data.response);
+                        responseElement.classList.remove('text-green-800');
+                        responseElement.classList.add('text-red-500');
+                    }
+                    
+                    // Tampilkan detail request
+                    if (data.request_url) {
+                        requestUrl.textContent = data.request_url;
+                        requestMethod.textContent = data.request_method;
+                        requestDetails.classList.remove('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    testButton.innerHTML = 'Test API';
+                    testButton.disabled = false;
+                    alert('Terjadi kesalahan saat testing API: ' + error.message);
+                });
+            });
+        }
+    });
+    
+</script> 

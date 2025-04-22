@@ -94,6 +94,27 @@
                                             {{ $trackingData['status_text'] }}
                                         </span>
                                     </li>
+                                    
+                                    @if(isset($trackingData['volumetric']))
+                                    <li class="flex justify-between border-b border-gray-200 mt-3 pt-2 pb-2">
+                                        <span class="text-gray-600">Volumetrik:</span>
+                                        <span>{{ $trackingData['volumetric'] }}</span>
+                                    </li>
+                                    @endif
+                                    
+                                    @if(isset($trackingData['total_colly']))
+                                    <li class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-600">Total Colly:</span>
+                                        <span>{{ $trackingData['total_colly'] }}</span>
+                                    </li>
+                                    @endif
+                                    
+                                    @if(isset($trackingData['total_weight']))
+                                    <li class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-600">Berat (kg):</span>
+                                        <span>{{ $trackingData['total_weight'] }}</span>
+                                    </li>
+                                    @endif
                                 </ul>
                             </div>
                             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
@@ -110,7 +131,17 @@
                                         <p class="font-medium text-gray-700 mb-1">Penerima:</p>
                                         <p>{{ $trackingData['receiver']['name'] ?? 'PT. Maju Bersama' }}</p>
                                         <p class="text-gray-500">{{ $trackingData['receiver']['address'] ?? 'Bandung, Jawa Barat' }}</p>
+                                        @if(isset($trackingData['receiver']['phone']))
+                                        <p class="text-gray-500">Tel: {{ $trackingData['receiver']['phone'] }}</p>
+                                        @endif
                                     </div>
+                                    
+                                    @if(isset($trackingData['special_instruction']))
+                                    <div class="mt-3 pt-3 border-t border-gray-200">
+                                        <p class="font-medium text-gray-700 mb-1">Instruksi Khusus:</p>
+                                        <p class="text-gray-600 italic">{{ $trackingData['special_instruction'] }}</p>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

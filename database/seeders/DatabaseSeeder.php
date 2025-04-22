@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             CompanySettingsSeeder::class,
             ServicesSeeder::class,
             PartnerSeeder::class,
+            TrackingApiSettingsSeeder::class,
         ]);
 
         User::factory()->create([
@@ -32,5 +33,8 @@ class DatabaseSeeder extends Seeder
 
         // Tambahkan CommoditySeeder
         $this->call(CommoditySeeder::class);
+        
+        // Tambahkan ZdxTrackingDummySeeder
+        $this->call(ZdxTrackingDummySeeder::class);
     }
 }

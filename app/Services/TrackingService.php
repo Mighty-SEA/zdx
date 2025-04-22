@@ -74,6 +74,8 @@ class TrackingService
         
         // Gunakan provider tertentu
         switch ($this->settings['provider']) {
+            case 'zdx_api':
+                return $this->trackZdxApi($trackingNumber);
             case 'wahana':
                 return $this->trackWahana($trackingNumber);
             case 'jne':
@@ -141,6 +143,227 @@ class TrackingService
                     'location' => 'Jakarta',
                 ],
             ],
+        ];
+    }
+    
+    /**
+     * Lacak pengiriman menggunakan API ZDX
+     */
+    protected function trackZdxApi($trackingNumber)
+    {
+        try {
+            // Siapkan URL dan headers untuk API ZDX
+            $baseUrl = $this->settings['api_url'] ?: 'https://www.apiweb.zdx.co.id/api/web/trackingWebAwb';
+            
+            // Siapkan headers
+            $headers = [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ];
+            
+            // Tambahkan Authorization header jika API key tersedia
+            if (!empty($this->settings['api_key'])) {
+                $headers['Authorization'] = 'Bearer ' . $this->settings['api_key'];
+            }
+            
+            // Siapkan data untuk request
+            $options = [
+                'headers' => $headers,
+                'json' => [
+                    'awb_no' => $trackingNumber
+                ]
+            ];
+            
+            // Kirim request
+            $response = $this->client->request(
+                'POST',
+                $baseUrl,
+                $options
+            );
+            
+            // Parse response
+            $statusCode = $response->getStatusCode();
+            $body = (string) $response->getBody();
+            $jsonData = json_decode($body, true);
+            
+            // Jika sukses, lakukan mapping data ke format yang diharapkan
+            if ($statusCode >= 200 && $statusCode < 300 && isset($jsonData['status']) && $jsonData['status'] === true) {
+                // Ambil juga detail AWB jika tracking berhasil
+                $detailAwb = $this->getZdxDetailAwb($trackingNumber, $headers);
+                
+                // Gabungkan data tracking dengan detail AWB
+                $trackingData = $this->mapZdxApiResponseData($jsonData, $trackingNumber);
+                
+                // Jika detail AWB berhasil diambil, tambahkan informasi tambahan
+                if (!empty($detailAwb) && !isset($detailAwb['error'])) {
+                    // Tambahkan informasi tambahan dari detail AWB jika diperlukan
+                    if (isset($detailAwb['receiver_phone'])) {
+                        $trackingData['receiver']['phone'] = $detailAwb['receiver_phone'];
+                    }
+                    
+                    if (isset($detailAwb['special_instruction'])) {
+                        $trackingData['special_instruction'] = $detailAwb['special_instruction'];
+                    }
+                    
+                    if (isset($detailAwb['total_colly'])) {
+                        $trackingData['total_colly'] = $detailAwb['total_colly'];
+                    }
+                    
+                    if (isset($detailAwb['volumetric'])) {
+                        $trackingData['volumetric'] = $detailAwb['volumetric'];
+                    }
+                    
+                    if (isset($detailAwb['total_weight_charge'])) {
+                        $trackingData['total_weight'] = $detailAwb['total_weight_charge'];
+                    }
+                }
+                
+                return $trackingData;
+            }
+            
+            Log::error('ZDX API response error', [
+                'statusCode' => $statusCode,
+                'response' => $jsonData
+            ]);
+            
+            return [
+                'error' => true,
+                'message' => $jsonData['message'] ?? 'Gagal mengambil data tracking dari ZDX API.',
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in TrackingService (ZDX API): ' . $e->getMessage());
+            
+            return [
+                'error' => true,
+                'message' => 'Gagal mengambil data tracking dari ZDX API. Detail: ' . $e->getMessage(),
+            ];
+        }
+    }
+    
+    /**
+     * Ambil detail AWB dari API ZDX
+     */
+    protected function getZdxDetailAwb($trackingNumber, $headers = [])
+    {
+        try {
+            // URL untuk detail AWB
+            $detailUrl = 'https://apiweb.zdx.co.id/api/web/detailAwb';
+            
+            // Siapkan data untuk request
+            $options = [
+                'headers' => $headers,
+                'json' => [
+                    'awb_no' => $trackingNumber
+                ]
+            ];
+            
+            // Kirim request
+            $response = $this->client->request(
+                'POST',
+                $detailUrl,
+                $options
+            );
+            
+            // Parse response
+            $statusCode = $response->getStatusCode();
+            $body = (string) $response->getBody();
+            $jsonData = json_decode($body, true);
+            
+            // Jika sukses, ambil data
+            if ($statusCode >= 200 && $statusCode < 300 && isset($jsonData['status']) && $jsonData['status'] === true) {
+                return $jsonData['data'] ?? [];
+            }
+            
+            Log::warning('ZDX Detail API response error', [
+                'statusCode' => $statusCode,
+                'response' => $jsonData
+            ]);
+            
+            return [
+                'error' => true,
+                'message' => $jsonData['message'] ?? 'Gagal mengambil detail AWB dari ZDX API.',
+            ];
+        } catch (\Exception $e) {
+            Log::warning('Error in getZdxDetailAwb: ' . $e->getMessage());
+            return [
+                'error' => true,
+                'message' => 'Gagal mengambil detail AWB: ' . $e->getMessage(),
+            ];
+        }
+    }
+    
+    /**
+     * Map data response dari API ZDX ke format yang diharapkan
+     */
+    protected function mapZdxApiResponseData($data, $trackingNumber)
+    {
+        // Pastikan data yang dibutuhkan tersedia
+        if (!isset($data['process']['awbdetail']) || !isset($data['data'])) {
+            return [
+                'error' => true,
+                'message' => 'Format data dari ZDX API tidak valid atau tidak lengkap.'
+            ];
+        }
+        
+        $awbDetail = $data['process']['awbdetail'];
+        $lastHistory = $data['process']['lasthistory'] ?? null;
+        $timeline = $data['data'] ?? [];
+        
+        // Map status ZDX ke status internal
+        $statusMap = [
+            'DATA ENTRY' => 'received',
+            'OUTGOING' => 'processed',
+            'TRANSFER LOCATION' => 'processed',
+            'ARRIVAL FACILITIES' => 'on_delivery',
+            'WITH COURIER' => 'on_delivery',
+            'SUCCESS DELIVERY' => 'delivered',
+            'PENDING' => 'pending',
+            'RETURN' => 'returned',
+            'CANCELLED' => 'failed',
+        ];
+        
+        // Default status
+        $currentStatus = 'pending';
+        $currentStatusText = 'Status Tidak Diketahui';
+        
+        // Ambil status terbaru dari lastHistory
+        if ($lastHistory && isset($lastHistory['status'])) {
+            $apiStatus = $lastHistory['status'];
+            $currentStatus = $statusMap[$apiStatus] ?? 'pending';
+            $currentStatusText = $lastHistory['status'] ?? 'Status Tidak Diketahui';
+        }
+        
+        // Siapkan data timeline
+        $formattedTimeline = [];
+        foreach ($timeline as $item) {
+            $status = $item['status'] ?? '';
+            $mappedStatus = $statusMap[$status] ?? 'pending';
+            
+            $formattedTimeline[] = [
+                'status' => $mappedStatus,
+                'status_text' => $status,
+                'description' => $item['description'] ?? 'Tidak ada deskripsi',
+                'timestamp' => $item['created_at'] ?? date('Y-m-d H:i:s'),
+                'location' => $item['city_name'] ?? 'Tidak diketahui',
+            ];
+        }
+        
+        // Susun hasil akhir
+        return [
+            'tracking_number' => $trackingNumber,
+            'status' => $currentStatus,
+            'status_text' => $currentStatusText,
+            'date_sent' => isset($awbDetail['created_at']) ? date('Y-m-d', strtotime($awbDetail['created_at'])) : date('Y-m-d'),
+            'service' => $awbDetail['service_name'] ?? 'ZDX Express',
+            'shipper' => [
+                'name' => $awbDetail['shipper_name'] ?? 'Tidak diketahui',
+                'address' => $awbDetail['city_origin'] ?? 'Tidak diketahui',
+            ],
+            'receiver' => [
+                'name' => $awbDetail['receiver_name'] ?? 'Tidak diketahui',
+                'address' => $awbDetail['receiver_address'] ?? 'Tidak diketahui',
+            ],
+            'timeline' => $formattedTimeline,
         ];
     }
     
