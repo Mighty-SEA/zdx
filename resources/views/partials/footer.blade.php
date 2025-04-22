@@ -139,7 +139,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Customer Service</p>
-                            <p class="font-medium">{{ $companyInfo->contact_phone ?? '0858 1471 8888' }}</p>
+                            <p class="font-medium">{{ $companyInfo->contact_phone2 ?? '0858 1471 8888' }}</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
