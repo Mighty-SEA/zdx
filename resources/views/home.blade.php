@@ -25,6 +25,35 @@
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
 @endif
+
+<!-- Fungsi formatPhoneNumber -->
+@php
+function formatPhoneNumber($phoneNumber) {
+    // Menghapus semua karakter non-angka
+    $number = preg_replace('/[^0-9]/', '', $phoneNumber);
+    
+    // Jika nomor dimulai dengan 62, ubah ke 0
+    if (substr($number, 0, 2) === '62') {
+        $number = '0' . substr($number, 2);
+    }
+    
+    // Format nomor dengan spasi setiap 4 digit
+    $formatted = '';
+    for ($i = 0; $i < strlen($number); $i++) {
+        $formatted .= $number[$i];
+        if (($i + 1) % 4 == 0 && $i < strlen($number) - 1) {
+            $formatted .= ' ';
+        }
+    }
+    
+    return $formatted;
+}
+
+// Get raw phone number for WhatsApp
+$whatsappPhone = preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '');
+// Get formatted phone for display
+$displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
+@endphp
 @endsection
 
 @php
@@ -485,7 +514,13 @@ use Illuminate\Support\Str;
                         
                         <!-- CTA Buttons -->
                         <div class="flex flex-wrap gap-4">
-                            <a href="/contact" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                            <a href="https://wa.me/{{ $whatsappPhone }}?text={{ urlencode('Halo Admin ZDX Express,
+
+Saya ingin menanyakan informasi lebih lanjut tentang layanan pengiriman dari ZDX Express.
+
+Mohon informasi lengkap mengenai layanan yang tersedia dan cara melakukan pemesanan.
+
+Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
                                 Hubungi Kami
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />

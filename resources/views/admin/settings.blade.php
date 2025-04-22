@@ -49,6 +49,10 @@
                         <i class="fas fa-code w-5 mr-2"></i>
                         <span>API</span>
                     </a>
+                    <a href="#update" id="nav-update" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-sync-alt w-5 mr-2"></i>
+                        <span>Update Aplikasi</span>
+                    </a>
                 </nav>
             </div>
         </div>
@@ -888,6 +892,104 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Update Aplikasi -->
+                <div id="content-update" class="hidden bg-white rounded-lg shadow-sm p-5 border border-gray-200 mb-6">
+                    <div class="mb-4 border-b border-gray-200 pb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Update Aplikasi dari GitHub</h3>
+                        <p class="text-sm text-gray-600">Perbarui aplikasi dari repository GitHub yang terhubung</p>
+                    </div>
+
+                    <div class="alert alert-info bg-blue-50 text-blue-700 p-4 rounded-lg border border-blue-200 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-3">
+                                <i class="fas fa-info-circle text-xl"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-medium mb-2">Informasi Penting</h5>
+                                <ul class="list-disc pl-5 space-y-1 text-sm">
+                                    <li>Fitur ini akan memperbarui aplikasi dari repository GitHub yang terhubung.</li>
+                                    <li>Pastikan Anda telah melakukan backup database sebelum melakukan update, terutama jika memilih opsi migrate:refresh.</li>
+                                    <li>Opsi "Update Saja" akan melakukan git pull dan membersihkan cache tanpa mengubah database.</li>
+                                    <li>Opsi "Update dengan Migrasi" akan melakukan git pull, membersihkan cache dan menjalankan migrasi database baru.</li>
+                                    <li>Opsi "Update dengan Refresh Database" akan melakukan git pull, membersihkan cache dan me-reset seluruh database lalu melakukan seeding ulang.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if(session('update_error'))
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+                        {{ session('update_error') }}
+                    </div>
+                    @endif
+
+                    @if(session('update_success'))
+                    <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6">
+                        {{ session('update_success') }}
+                    </div>
+                    
+                    @if(session('output'))
+                    <div class="card mt-4 mb-6">
+                        <div class="card-header bg-gray-800 text-white p-3">
+                            <h6 class="m-0 font-medium">Output Proses Update</h6>
+                        </div>
+                        <div class="card-body bg-gray-50 border border-gray-200 rounded-b-lg">
+                            <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg text-sm" style="max-height: 400px; overflow-y: auto;">{{ session('output') }}</pre>
+                        </div>
+                    </div>
+                    @endif
+                    @endif
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <!-- Update Saja -->
+                        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                            <div class="p-5">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">Update Saja</h4>
+                                <p class="text-gray-600 text-sm mb-4">Melakukan git pull dan membersihkan cache aplikasi tanpa mengubah struktur database.</p>
+                                <form action="{{ route('admin.update.perform') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center w-full transition-all duration-200">
+                                        <i class="fas fa-sync-alt mr-2"></i> Update Aplikasi
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Update dengan Migrasi -->
+                        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                            <div class="p-5">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">Update dengan Migrasi</h4>
+                                <p class="text-gray-600 text-sm mb-4">Melakukan git pull, membersihkan cache dan menjalankan migrasi database baru (php artisan migrate).</p>
+                                <form action="{{ route('admin.update.perform') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="with_migration" value="1">
+                                    <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center w-full transition-all duration-200">
+                                        <i class="fas fa-database mr-2"></i> Update & Migrate
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Update dengan Refresh Database -->
+                        <div class="bg-white rounded-lg border border-red-300 shadow-sm overflow-hidden">
+                            <div class="p-5">
+                                <h4 class="text-lg font-semibold text-red-600 mb-2">Update dengan Refresh Database</h4>
+                                <p class="text-gray-600 text-sm mb-4">Melakukan git pull, membersihkan cache dan me-reset seluruh database lalu melakukan seeding (migrate:refresh --seed).</p>
+                                <div class="bg-red-50 p-3 rounded-lg text-red-600 text-sm mb-4">
+                                    <i class="fas fa-exclamation-triangle"></i> Perhatian: Tindakan ini akan menghapus semua data dan mengisinya kembali dengan data default!
+                                </div>
+                                <form action="{{ route('admin.update.perform') }}" method="POST" onsubmit="return confirm('PERINGATAN: Tindakan ini akan MENGHAPUS SEMUA DATA di database dan mengisinya kembali dengan data default! Apakah Anda yakin?');">
+                                    @csrf
+                                    <input type="hidden" name="with_refresh" value="1">
+                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center w-full transition-all duration-200">
+                                        <i class="fas fa-exclamation-circle mr-2"></i> Update & Refresh Database
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1353,7 +1455,131 @@
         }
     });
 </script>
-@endpush
+
+<script>
+    // Fungsi untuk menangani tampilan tab
+    function handleTabNavigation() {
+        // Mendapatkan hash dari URL atau menggunakan default
+        let currentTab = window.location.hash || '#analytics';
+        
+        // Menghapus class active dari semua nav links
+        document.querySelectorAll('[id^="nav-"]').forEach(navItem => {
+            navItem.classList.remove('bg-indigo-50', 'text-indigo-600');
+            navItem.classList.add('text-gray-700', 'hover:bg-gray-50');
+        });
+        
+        // Menambahkan class active ke nav link yang aktif
+        const activeNav = document.getElementById('nav-' + currentTab.substring(1));
+        if (activeNav) {
+            activeNav.classList.add('bg-indigo-50', 'text-indigo-600');
+            activeNav.classList.remove('text-gray-700', 'hover:bg-gray-50');
+        }
+        
+        // Sembunyikan semua content
+        document.querySelectorAll('[id^="content-"]').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Tampilkan content yang sesuai
+        const activeContent = document.getElementById('content-' + currentTab.substring(1));
+        if (activeContent) {
+            activeContent.classList.remove('hidden');
+        }
+    }
+    
+    // Menangani klik pada nav link
+    document.querySelectorAll('[id^="nav-"]').forEach(navItem => {
+        navItem.addEventListener('click', function(event) {
+            event.preventDefault();
+            const tabId = this.id.replace('nav-', '');
+            window.location.hash = tabId;
+            handleTabNavigation();
+        });
+    });
+    
+    // Menerapkan tab navigasi saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', handleTabNavigation);
+    
+    // Mendeteksi perubahan hash
+    window.addEventListener('hashchange', handleTabNavigation);
+
+    // Handle "content-company" subtabs
+    const tabGeneral = document.getElementById('tab-general');
+    const tabLogos = document.getElementById('tab-logos');
+    const tabAbout = document.getElementById('tab-about');
+    const tabMission = document.getElementById('tab-mission');
+    
+    const panelGeneral = document.getElementById('panel-general');
+    const panelLogos = document.getElementById('panel-logos');
+    const panelAbout = document.getElementById('panel-about');
+    const panelMission = document.getElementById('panel-mission');
+    
+    // Fungsi untuk mengaktifkan tab
+    function activateCompanyTab(tab, panel) {
+            // Reset semua tab
+            [tabGeneral, tabLogos, tabAbout, tabMission].forEach(t => {
+                if (t) t.classList.remove('border-indigo-600', 'text-indigo-600', 'active');
+                if (t) t.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+            });
+            
+            // Reset semua panel
+            document.querySelectorAll('.company-panel').forEach(p => {
+                p.classList.add('hidden');
+            });
+            
+            // Aktifkan tab yang dipilih
+            if (tab) {
+                tab.classList.add('border-indigo-600', 'text-indigo-600', 'active');
+                tab.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+            }
+            
+            // Tampilkan panel yang sesuai
+            if (panel) {
+                panel.classList.remove('hidden');
+            }
+        }
+        
+        // Tambahkan event listener untuk tab
+        if (tabGeneral) {
+            tabGeneral.addEventListener('click', function(e) {
+                e.preventDefault();
+                activateCompanyTab(tabGeneral, panelGeneral);
+            });
+        }
+        
+        if (tabLogos) {
+            tabLogos.addEventListener('click', function(e) {
+                e.preventDefault();
+                activateCompanyTab(tabLogos, panelLogos);
+            });
+        }
+        
+        if (tabAbout) {
+            tabAbout.addEventListener('click', function(e) {
+                e.preventDefault();
+                activateCompanyTab(tabAbout, panelAbout);
+            });
+        }
+        
+        if (tabMission) {
+            tabMission.addEventListener('click', function(e) {
+                e.preventDefault();
+                activateCompanyTab(tabMission, panelMission);
+            });
+        }
+        
+        // Check session message for update status
+        const updateSuccessMessage = "{{ session('update_success') }}";
+        const updateErrorMessage = "{{ session('update_error') }}";
+        
+        if (updateSuccessMessage || updateErrorMessage) {
+            // Redirect to update tab if there are update messages
+            window.location.hash = 'update';
+            handleTabNavigation();
+        }
+    </script>
+  @endpush
+</script>
 
 <!-- Modal Upload Logo -->
 <div id="logoUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">

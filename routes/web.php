@@ -57,6 +57,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Dashboard
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     
+    // Update Aplikasi
+    Route::post('/update/perform', [App\Http\Controllers\Admin\UpdateController::class, 'update'])->name('update.perform');
+    
     // SEO routes
     Route::get('/seo', [PageSeoController::class, 'index'])->name('seo');
     Route::get('/seo/page/{id}/edit', [PageSeoController::class, 'edit'])->name('seo.edit');

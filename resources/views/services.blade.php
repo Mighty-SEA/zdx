@@ -25,6 +25,35 @@
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
 @endif
+
+<!-- Fungsi formatPhoneNumber -->
+@php
+function formatPhoneNumber($phoneNumber) {
+    // Menghapus semua karakter non-angka
+    $number = preg_replace('/[^0-9]/', '', $phoneNumber);
+    
+    // Jika nomor dimulai dengan 62, ubah ke 0
+    if (substr($number, 0, 2) === '62') {
+        $number = '0' . substr($number, 2);
+    }
+    
+    // Format nomor dengan spasi setiap 4 digit
+    $formatted = '';
+    for ($i = 0; $i < strlen($number); $i++) {
+        $formatted .= $number[$i];
+        if (($i + 1) % 4 == 0 && $i < strlen($number) - 1) {
+            $formatted .= ' ';
+        }
+    }
+    
+    return $formatted;
+}
+
+// Get raw phone number for WhatsApp
+$whatsappPhone = preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '');
+// Get formatted phone for display
+$displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
+@endphp
 @endsection
 
 @section('content')
@@ -59,7 +88,7 @@
         @endif
 
         <!-- Additional Services -->
-        <h2 class="text-3xl font-bold text-center mb-12">Layanan Tambahan</h2>
+        {{-- <h2 class="text-3xl font-bold text-center mb-12">Layanan Tambahan</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <!-- Warehousing -->
             <div class="bg-white p-8 rounded-xl shadow-lg flex">
@@ -116,7 +145,7 @@
                     </p>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Call to Action -->
@@ -126,7 +155,13 @@
             <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
                 Kami siap menyediakan solusi logistik yang disesuaikan dengan kebutuhan spesifik bisnis Anda
             </p>
-            <a href="/kontak" class="inline-block bg-[#FF6000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#E65100] transition-colors">
+            <a href="https://wa.me/{{ $whatsappPhone }}?text={{ urlencode('Halo Admin ZDX Express,
+
+Saya tertarik untuk konsultasi gratis mengenai layanan logistik khusus untuk bisnis kami.
+
+Mohon informasi lebih lanjut untuk layanan yang dapat disesuaikan dengan kebutuhan bisnis kami.
+
+Terima kasih.') }}" target="_blank" class="inline-block bg-[#FF6000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#E65100] transition-colors">
                 Konsultasi Gratis
             </a>
         </div>

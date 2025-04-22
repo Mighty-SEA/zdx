@@ -134,7 +134,7 @@
                             <i class="fas fa-cog text-lg w-5 text-center"></i>
                             <span>Pengaturan</span>
                         </a>
-
+                        
                         <a href="{{ route('admin.profile') }}" class="sidebar-link {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
                             <i class="fas fa-user-circle text-lg w-5 text-center"></i>
                             <span>Profil Saya</span>
