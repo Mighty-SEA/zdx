@@ -1,19 +1,62 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-<title>{{ $seo->title ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}</title>
+<title>{{ $seoData['title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}</title>
 <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
-<meta name="description" content="{{ $seo->description ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
-<meta name="keywords" content="{{ $seo->keywords ?? 'tarif pengiriman, harga cargo, biaya logistik, ongkos kirim, ekspedisi' }}">
+<meta name="description" content="{{ $seoData['description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+<meta name="keywords" content="{{ $seoData['keywords'] ?? 'tarif pengiriman, harga cargo, biaya logistik, ongkos kirim, ekspedisi' }}">
 
 <!-- Canonical URL -->
-<link rel="canonical" href="{{ url('/rates') }}">
+<link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/tarif') }}">
+
+<!-- Robots Meta -->
+<meta name="robots" content="{{ $seoData['meta_robots'] ?? 'index, follow' }}">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ url('/rates') }}">
-<meta property="og:title" content="{{ $seo->title ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
-<meta property="og:description" content="{{ $seo->description ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:title" content="{{ $seoData['og_title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
+<meta property="og:description" content="{{ $seoData['og_description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+@if(isset($seoData['og_image']))
+<meta property="og:image" content="{{ asset($seoData['og_image']) }}">
+@endif
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
+<meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+@if(isset($seoData['twitter_image']))
+<meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
+@endif
+
+<!-- Custom Schema.org JSON-LD -->
+@if(isset($seoData['custom_schema']))
+{!! $seoData['custom_schema'] !!}
+@else
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Tarif Pengiriman - PT. Zindan Diantar Express",
+    "description": "Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.",
+    "url": "{{ url('/tarif') }}",
+    "mainEntity": {
+        "@type": "Service",
+        "name": "Layanan Cek Tarif ZDX Express",
+        "description": "Layanan untuk memeriksa dan menghitung biaya pengiriman barang ke berbagai tujuan di Indonesia",
+        "provider": {
+            "@type": "Organization",
+            "name": "PT. Zindan Diantar Express"
+        },
+        "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "IDR",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+}
+</script>
+@endif
 
 <!-- Fungsi formatPhoneNumber -->
 @php

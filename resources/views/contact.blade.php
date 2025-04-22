@@ -1,19 +1,73 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-    <title>Kontak Kami - PT. Zindan Diantar Express</title>
+    <title>{{ $seoData['title'] ?? 'Kontak Kami - PT. Zindan Diantar Express' }}</title>
     <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
-    <meta name="description" content="Hubungi ZDX Cargo untuk informasi layanan pengiriman dan pertanyaan lainnya.">
-    <meta name="keywords" content="kontak zdx, hubungi zdx, alamat zdx, telepon zdx, email zdx">
+    <meta name="description" content="{{ $seoData['description'] ?? 'Hubungi ZDX Cargo untuk informasi layanan pengiriman dan pertanyaan lainnya.' }}">
+    <meta name="keywords" content="{{ $seoData['keywords'] ?? 'kontak zdx, hubungi zdx, alamat zdx, telepon zdx, email zdx' }}">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url('/contact') }}">
+    <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/contact') }}">
+    
+    <!-- Robots Meta -->
+    <meta name="robots" content="{{ $seoData['meta_robots'] ?? 'index, follow' }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('/contact') }}">
-    <meta property="og:title" content="Kontak Kami - PT. Zindan Diantar Express">
-    <meta property="og:description" content="Hubungi ZDX Cargo untuk informasi layanan pengiriman dan pertanyaan lainnya.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $seoData['og_title'] ?? 'Kontak Kami - PT. Zindan Diantar Express' }}">
+    <meta property="og:description" content="{{ $seoData['og_description'] ?? 'Hubungi ZDX Cargo untuk informasi layanan pengiriman dan pertanyaan lainnya.' }}">
+    <meta property="og:image" content="{{ $seoData['og_image'] ?? asset('asset/images/zdx-logo.png') }}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? $seoData['og_title'] ?? 'Kontak Kami - PT. Zindan Diantar Express' }}">
+    <meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? $seoData['og_description'] ?? 'Hubungi ZDX Cargo untuk informasi layanan pengiriman dan pertanyaan lainnya.' }}">
+    <meta name="twitter:image" content="{{ $seoData['twitter_image'] ?? $seoData['og_image'] ?? asset('asset/images/zdx-logo.png') }}">
+    
+    <!-- Schema.org JSON-LD -->
+    @if(isset($seoData['custom_schema']))
+    {!! $seoData['custom_schema'] !!}
+    @else
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PT. Zindan Diantar Express",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('asset/logo.png') }}",
+        "contactPoint": [
+            {
+                "@type": "ContactPoint",
+                "telephone": "+62-21-38711144",
+                "contactType": "customer service",
+                "areaServed": "ID",
+                "availableLanguage": ["id", "en"]
+            },
+            {
+                "@type": "ContactPoint",
+                "telephone": "+62-21-38711181",
+                "contactType": "technical support",
+                "areaServed": "ID",
+                "availableLanguage": ["id", "en"]
+            }
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa, Kec. Jatiasih",
+            "addressLocality": "Bekasi",
+            "addressRegion": "Jawa Barat",
+            "postalCode": "17424",
+            "addressCountry": "ID"
+        },
+        "sameAs": [
+            "https://www.facebook.com/zdxcargo",
+            "https://www.instagram.com/zdxcargo",
+            "https://twitter.com/zdxcargo"
+        ]
+    }
+    </script>
+    @endif
 @endsection
 
 @section('content')

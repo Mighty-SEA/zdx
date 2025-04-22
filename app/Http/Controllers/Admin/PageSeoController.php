@@ -110,6 +110,13 @@ class PageSeoController extends Controller
                 'page_identifier' => 'contact',
                 'page_name' => 'Kontak',
             ],
+            [
+                'page_identifier' => 'blogs',
+                'page_name' => 'Blog',
+                'title' => 'Blog - PT. Zindan Diantar Express',
+                'description' => 'Blog artikel terbaru dari PT. Zindan Diantar Express. Informasi seputar logistik, pengiriman, dan perkembangan industri.',
+                'keywords' => 'blog, artikel, zdx cargo, pengiriman, logistik, cargo, ekspedisi',
+            ],
         ];
 
         foreach ($defaultPages as $page) {
@@ -186,6 +193,18 @@ class PageSeoController extends Controller
      */
     public function syncBlogPages()
     {
+        // Pastikan halaman blog utama ada
+        PageSeoSetting::updateOrCreate(
+            ['page_identifier' => 'blogs'],
+            [
+                'page_name' => 'Blog',
+                'title' => 'Blog - PT. Zindan Diantar Express',
+                'description' => 'Blog artikel terbaru dari PT. Zindan Diantar Express. Informasi seputar logistik, pengiriman, dan perkembangan industri.',
+                'keywords' => 'blog, artikel, zdx cargo, pengiriman, logistik, cargo, ekspedisi',
+                'canonical_url' => url('/blog')
+            ]
+        );
+        
         // Dapatkan semua blog yang dipublikasikan
         $blogs = \App\Models\Blog::where('status', 'published')->get();
         

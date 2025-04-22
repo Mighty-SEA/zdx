@@ -2,19 +2,59 @@
 
 @section('meta_tags')
 <title>{{ $seoData['title'] ?? 'Pelanggan / Partner ZDX - PT. Zindan Diantar Express' }}</title>
+<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
 <meta name="description" content="{{ $seoData['description'] ?? 'Pelanggan dan partner terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.' }}">
 <meta name="keywords" content="{{ $seoData['keywords'] ?? 'pelanggan zdx, partner zdx, customer logistik, partner logistik, testimonial pengiriman, cargo customer' }}">
 
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/customer') }}">
 
+<!-- Robots Meta -->
+<meta name="robots" content="{{ $seoData['meta_robots'] ?? 'index, follow' }}">
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ url('/customer') }}">
+<meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:title" content="{{ $seoData['og_title'] ?? 'Pelanggan / Partner ZDX - PT. Zindan Diantar Express' }}">
 <meta property="og:description" content="{{ $seoData['og_description'] ?? 'Pelanggan dan partner terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.' }}">
 @if(isset($seoData['og_image']))
 <meta property="og:image" content="{{ $seoData['og_image'] }}">
+@endif
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ url()->current() }}">
+<meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? $seoData['og_title'] ?? 'Pelanggan / Partner ZDX - PT. Zindan Diantar Express' }}">
+<meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? $seoData['og_description'] ?? 'Pelanggan dan partner terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo untuk kebutuhan logistik mereka.' }}">
+@if(isset($seoData['twitter_image']))
+<meta name="twitter:image" content="{{ $seoData['twitter_image'] }}">
+@elseif(isset($seoData['og_image']))
+<meta name="twitter:image" content="{{ $seoData['og_image'] }}">
+@endif
+
+<!-- Custom Schema.org JSON-LD -->
+@if(isset($seoData['custom_schema']))
+{!! $seoData['custom_schema'] !!}
+@else
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PT. Zindan Diantar Express",
+    "url": "{{ url('/customer') }}",
+    "description": "Pelanggan dan partner terpercaya yang telah menggunakan layanan pengiriman ZDX Cargo",
+    "logo": "{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}",
+    "member": [
+        @foreach($partners as $index => $partner)
+        {
+            "@type": "Organization",
+            "name": "{{ $partner->company ?: $partner->name }}",
+            "description": "{{ $partner->industry ?? 'Business Partner' }}"
+        }{{ $index < $partners->count() - 1 ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
 @endif
 @endsection
 

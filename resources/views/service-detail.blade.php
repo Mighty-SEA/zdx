@@ -21,6 +21,15 @@
 <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
 @endif
 
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ url()->current() }}">
+<meta name="twitter:title" content="{{ $seoData['og_title'] }}">
+<meta name="twitter:description" content="{{ $seoData['og_description'] }}">
+@if($seoData['og_image'])
+<meta name="twitter:image" content="{{ asset($seoData['og_image']) }}">
+@endif
+
 <!-- Custom Schema.org JSON-LD -->
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}

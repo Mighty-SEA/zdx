@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-<title>{{ $seoData['title'] }} - PT. Zindan Diantar Express</title>
+<title>{{ $seoData['title'] }}</title>
 <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
 <meta name="description" content="{{ $seoData['description'] }}">
 <meta name="keywords" content="{{ $seoData['keywords'] }}">

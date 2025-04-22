@@ -1,8 +1,59 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-    <title>PT. Zindan Diantar Express - Jasa Pengiriman Barang Terpercaya</title>
-    <meta name="description" content="Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia.">
+    <title>{{ $seoData['title'] ?? 'PT. Zindan Diantar Express - Jasa Pengiriman Barang Terpercaya' }}</title>
+    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
+    <meta name="description" content="{{ $seoData['description'] ?? 'Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia.' }}">
+    <meta name="keywords" content="{{ $seoData['keywords'] ?? 'pengiriman barang, cargo, ekspedisi, jasa kirim, logistik, zdx, zindan express' }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/') }}">
+    
+    <!-- Robots Meta -->
+    <meta name="robots" content="{{ $seoData['meta_robots'] ?? 'index, follow' }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $seoData['og_title'] ?? 'PT. Zindan Diantar Express - Jasa Pengiriman Barang Terpercaya' }}">
+    <meta property="og:description" content="{{ $seoData['og_description'] ?? 'Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia.' }}">
+    @if(isset($seoData['og_image']))
+    <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
+    @endif
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? $seoData['og_title'] ?? 'PT. Zindan Diantar Express - Jasa Pengiriman Barang Terpercaya' }}">
+    <meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? $seoData['og_description'] ?? 'Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia.' }}">
+    @if(isset($seoData['twitter_image']))
+    <meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
+    @elseif(isset($seoData['og_image']))
+    <meta name="twitter:image" content="{{ asset($seoData['og_image']) }}">
+    @endif
+    
+    <!-- Custom Schema.org JSON-LD -->
+    @if(isset($seoData['custom_schema']))
+    {!! $seoData['custom_schema'] !!}
+    @else
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PT. Zindan Diantar Express",
+        "url": "{{ url('/') }}",
+        "logo": "{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}",
+        "description": "Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia.",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "{{ $companyInfo->company_phone ?? '+62-21-38711144' }}",
+            "contactType": "customer service",
+            "areaServed": "ID",
+            "availableLanguage": "id"
+        }
+    }
+    </script>
+    @endif
 @endsection
 
 @section('content')
