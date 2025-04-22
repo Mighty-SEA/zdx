@@ -429,14 +429,21 @@
     }
     
     /* Modal Fixes & Animations */
-    #importModal.fixed {
+    #importModal {
         z-index: 9999 !important;
     }
-    #modalOverlay.fixed {
+    #modalOverlay {
         z-index: 9998 !important;
     }
     #modalContent {
+        z-index: 10000 !important;
+        transform: scale(0.95);
+        opacity: 0;
         transition: transform 0.3s ease-out, opacity 0.2s ease-out;
+    }
+    #modalContent.scale-100 {
+        transform: scale(1);
+        opacity: 1;
     }
     
     /* Tooltip styles */
@@ -619,25 +626,32 @@ jQuery(document).ready(function($) {
     const removeFile = document.getElementById('remove-file');
     const submitBtn = document.getElementById('submitImport');
     
-    // Open modal with animation
+    // Open modal with animation - PERBAIKAN DISINI
     openBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
+        // Tampilkan modal dahulu
+        modal.style.display = 'block';
         
-        // Add slight delay for the animation to work properly
+        // Hapus kelas hidden setelah modal ditampilkan
         setTimeout(() => {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            
+            // Terapkan animasi pada konten modal
             modalContent.classList.remove('scale-95', 'opacity-0');
             modalContent.classList.add('scale-100', 'opacity-100');
         }, 10);
     });
     
-    // Close modal with animation
+    // Close modal with animation - PERBAIKAN DISINI
     function closeModal() {
+        // Animasi untuk menghilangkan content modal
         modalContent.classList.remove('scale-100', 'opacity-100');
         modalContent.classList.add('scale-95', 'opacity-0');
         
+        // Hilangkan modal setelah animasi selesai
         setTimeout(() => {
             modal.classList.add('hidden');
+            modal.style.display = '';
             document.body.classList.remove('overflow-hidden');
         }, 200);
     }
