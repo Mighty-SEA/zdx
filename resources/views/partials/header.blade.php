@@ -123,7 +123,7 @@
                         <i class="fas fa-headset"></i><span>Hubungi Kami</span>
                     </a>
                     
-                    <a href="/login" class="px-4 py-3 border border-[#FF6000] text-[#FF6000] bg-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:bg-[#FFF0E6] transition-colors">
+                    <a href="/admin" class="px-4 py-3 border border-[#FF6000] text-[#FF6000] bg-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:bg-[#FFF0E6] transition-colors">
                         <i class="fas fa-sign-in-alt"></i><span>Login</span>
                     </a>
                 </div>
