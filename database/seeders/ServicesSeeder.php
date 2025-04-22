@@ -55,7 +55,7 @@ class ServicesSeeder extends Seeder
             [
                 'title' => 'Land Freight',
                 'slug' => 'land-freight',
-                'description' => 'Land freight, atau kargo darat, adalah metode pengiriman barang melalui transportasi darat menggunakan kendaraan seperti truk, kereta api, atau van. Ini adalah salah satu metode pengiriman yang paling umum digunakan untuk mengangkut barang dalam jarak pendek hingga menengah.',
+                'description' => 'Land freight adalah layanan pengiriman darat menggunakan truk, kereta api, atau van untuk mengangkut barang dalam jarak pendek hingga menengah dengan efisien dan aman.',
                 'content' => '<h2>Land Freight - Pengiriman Darat</h2>
                 
 <p>Land freight adalah metode pengiriman barang via darat menggunakan truk, kereta api, atau van. Metode ini umum digunakan untuk pengiriman jarak pendek hingga menengah, baik domestik maupun internasional.</p>

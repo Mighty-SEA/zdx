@@ -118,14 +118,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     })->name('profile-content.edit');
     
     // Admin Users
-    Route::get('/users', function () {
-        return view('admin.users');
-    })->name('users');
+    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
+    Route::post('/users', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/reset-password', [App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('users.reset-password');
     
     // Admin Profile
-    Route::get('/profile', function () {
-        return view('admin.profile');
-    })->name('profile');
+    Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    Route::post('/profile/photo', [App\Http\Controllers\Admin\ProfileController::class, 'uploadPhoto'])->name('profile.upload-photo');
+    Route::get('/profile/activities', [App\Http\Controllers\Admin\ProfileController::class, 'getActivities'])->name('profile.activities');
     
     // Admin Services
     Route::get('/services', [ServiceController::class, 'index'])->name('services');

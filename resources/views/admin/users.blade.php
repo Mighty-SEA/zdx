@@ -64,137 +64,62 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Admin User -->
-                    <tr class="hover:bg-gray-50">
+                    @foreach($users as $user)
+                    <tr class="hover:bg-gray-50" data-user-id="{{ $user->id }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <input type="checkbox" class="userCheckbox h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                <input type="checkbox" class="userCheckbox h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" value="{{ $user->id }}">
                                 <div class="flex items-center ml-4">
                                     <div class="flex-shrink-0 h-10 w-10">
                                         <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium">
-                                            A
+                                            {{ substr($user->name, 0, 1) }}
                                         </div>
                                     </div>
                                     <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">Admin User</div>
-                                        <div class="text-sm text-gray-500">Terdaftar pada 01 Jan 2024</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
+                                        <div class="text-sm text-gray-500">Terdaftar pada {{ $user->created_at->format('d M Y') }}</div>
                                     </div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">admin@zdxcargo.com</div>
+                            <div class="text-sm text-gray-900">{{ $user->email }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            @if($user->active)
                             <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
                                 <i class="fas fa-check-circle mr-1"></i> Aktif
                             </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Hari ini, 09:45</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex space-x-2">
-                                <button class="text-indigo-600 hover:text-indigo-900" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="text-yellow-600 hover:text-yellow-900" title="Reset Password">
-                                    <i class="fas fa-key"></i>
-                                </button>
-                                <button class="text-red-600 hover:text-red-900" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Editor User -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <input type="checkbox" class="userCheckbox h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                                <div class="flex items-center ml-4">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                                            E
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">Editor User</div>
-                                        <div class="text-sm text-gray-500">Terdaftar pada 15 Feb 2024</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">editor@zdxcargo.com</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                                <i class="fas fa-check-circle mr-1"></i> Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Kemarin, 14:30</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex space-x-2">
-                                <button class="text-indigo-600 hover:text-indigo-900" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="text-yellow-600 hover:text-yellow-900" title="Reset Password">
-                                    <i class="fas fa-key"></i>
-                                </button>
-                                <button class="text-red-600 hover:text-red-900" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Staff User -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <input type="checkbox" class="userCheckbox h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                                <div class="flex items-center ml-4">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
-                                            S
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">Staff User</div>
-                                        <div class="text-sm text-gray-500">Terdaftar pada 05 Mar 2024</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">staff@zdxcargo.com</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                            @else
                             <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
                                 <i class="fas fa-clock mr-1"></i> Non-aktif
                             </span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">10 Mar 2024, 16:20</div>
+                            <div class="text-sm text-gray-900">
+                                @if($user->last_login_at)
+                                    {{ \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}
+                                @else
+                                    Belum pernah login
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex space-x-2">
-                                <button class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                                <button class="text-indigo-600 hover:text-indigo-900 edit-user-btn" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}" data-active="{{ $user->active ? 1 : 0 }}" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="text-yellow-600 hover:text-yellow-900" title="Reset Password">
+                                <button class="text-yellow-600 hover:text-yellow-900 reset-password-btn" data-id="{{ $user->id }}" title="Reset Password">
                                     <i class="fas fa-key"></i>
                                 </button>
-                                <button class="text-red-600 hover:text-red-900" title="Hapus">
+                                <button class="text-red-600 hover:text-red-900 delete-user-btn" data-id="{{ $user->id }}" title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -202,33 +127,16 @@
         <!-- Pagination -->
         <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4">
             <div class="flex-1 flex justify-between sm:hidden">
-                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                    Sebelumnya
-                </a>
-                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                    Selanjutnya
-                </a>
+                {{ $users->onEachSide(1)->links() }}
             </div>
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm text-gray-700">
-                        Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">3</span> dari <span class="font-medium">3</span> pengguna
+                        Menampilkan <span class="font-medium">{{ $users->firstItem() }}</span> sampai <span class="font-medium">{{ $users->lastItem() }}</span> dari <span class="font-medium">{{ $users->total() }}</span> pengguna
                     </p>
                 </div>
                 <div>
-                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            <span class="sr-only">Sebelumnya</span>
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                        <a href="#" aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                            1
-                        </a>
-                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            <span class="sr-only">Selanjutnya</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </nav>
+                    {{ $users->onEachSide(1)->links() }}
                 </div>
             </div>
         </div>
@@ -239,13 +147,17 @@
 <div id="addUserModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg max-w-md w-full mx-4 md:mx-0">
         <div class="flex justify-between items-center p-6 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800">Tambah Pengguna Baru</h3>
+            <h3 class="text-lg font-semibold text-gray-800" id="modalTitle">Tambah Pengguna Baru</h3>
             <button id="closeAddUserModal" class="text-gray-400 hover:text-gray-500">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <form id="addUserForm" class="p-6">
+        <form id="userForm" class="p-6">
+            @csrf
+            <input type="hidden" id="userId" name="userId" value="">
+            <input type="hidden" id="formMethod" name="_method" value="POST">
+            
             <div class="space-y-4">
                 <div>
                     <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
@@ -258,10 +170,10 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div id="passwordContainer">
                         <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                         <div class="relative">
-                            <input type="password" id="userPassword" name="password" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200" placeholder="••••••••" required>
+                            <input type="password" id="userPassword" name="password" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200" placeholder="••••••••">
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 cursor-pointer" onclick="togglePasswordVisibility('userPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -270,7 +182,7 @@
                     
                     <div>
                         <label class="flex items-center">
-                            <input type="checkbox" name="active" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                            <input type="checkbox" name="active" id="userActive" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
                             <span class="ml-2 text-sm text-gray-700">Aktifkan pengguna</span>
                         </label>
                     </div>
@@ -281,11 +193,76 @@
                 <button type="button" id="cancelAddUser" class="bg-white border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200">
                     Batal
                 </button>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
-                    <i class="fas fa-user-plus mr-2"></i> Tambah Pengguna
+                <button type="submit" id="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
+                    <i class="fas fa-user-plus mr-2"></i> <span id="submitBtnText">Tambah Pengguna</span>
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div id="resetPasswordModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg max-w-md w-full mx-4 md:mx-0">
+        <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800">Reset Password</h3>
+            <button id="closeResetPasswordModal" class="text-gray-400 hover:text-gray-500">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="resetPasswordForm" class="p-6">
+            @csrf
+            <input type="hidden" id="resetUserId" name="userId" value="">
+            
+            <div class="space-y-4">
+                <p class="text-gray-600">Masukkan password baru untuk pengguna</p>
+                
+                <div>
+                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
+                    <div class="relative">
+                        <input type="password" id="newPassword" name="password" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200" placeholder="••••••••" required>
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 cursor-pointer" onclick="togglePasswordVisibility('newPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" id="cancelResetPassword" class="bg-white border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                    Batal
+                </button>
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
+                    <i class="fas fa-key mr-2"></i> Reset Password
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete User Confirmation Modal -->
+<div id="deleteUserModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg max-w-md w-full mx-4 md:mx-0">
+        <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800">Konfirmasi Hapus</h3>
+            <button id="closeDeleteUserModal" class="text-gray-400 hover:text-gray-500">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <p class="text-gray-700 mb-6">Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.</p>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" id="cancelDeleteUser" class="bg-white border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                    Batal
+                </button>
+                <button type="button" id="confirmDeleteUser" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
+                    <i class="fas fa-trash mr-2"></i> Hapus Pengguna
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

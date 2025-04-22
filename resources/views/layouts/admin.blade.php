@@ -27,6 +27,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
     
+    @stack('styles')
+    
     <style>
         .logo-image {
             height: 40px;
@@ -125,10 +127,10 @@
                         <i class="fas fa-cogs mr-2 text-gray-400"></i>Sistem
                     </h3>
                     <nav class="space-y-1">
-                        <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
-                            <i class="fas fa-users text-lg w-5 text-center"></i>
-                            <span>Pengguna</span>
-                        </a>
+                            {{-- <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+                                <i class="fas fa-users text-lg w-5 text-center"></i>
+                                <span>Pengguna</span>
+                            </a> --}}
                         
                         <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                             <i class="fas fa-cog text-lg w-5 text-center"></i>

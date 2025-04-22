@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserActivity;
+use App\Traits\LogsUserActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +16,8 @@ use Illuminate\Auth\Events\Lockout;
 
 class LoginController extends Controller
 {
+    use LogsUserActivity;
+
     /**
      * Where to redirect users after login.
      *
@@ -103,6 +107,14 @@ class LoginController extends Controller
             // Reset throttle after successful login
             RateLimiter::clear($this->throttleKey($request));
 
+            // Update last login time
+            $user = Auth::user();
+            $user->last_login_at = now();
+            $user->save();
+
+            // Log aktivitas login
+            $this->logUserActivity('Login Berhasil');
+
             return redirect()->intended($this->redirectTo);
         }
 
@@ -154,6 +166,11 @@ class LoginController extends Controller
      */
     public function logout(Request $request): RedirectResponse
     {
+        // Log aktivitas logout
+        if (Auth::check()) {
+            $this->logUserActivity('Logout');
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
