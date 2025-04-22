@@ -114,6 +114,15 @@
     .responsive-subheading {
         font-size: 1.125rem;
     }
+    
+    /* Tambahan untuk landing page mobile view */
+    .relative.overflow-hidden.h-\[94vh\] {
+        padding-top: 30px !important; /* Tambahkan padding atas pada hero section */
+    }
+    
+    .hero-content-mobile {
+        padding-top: 40px !important; /* Tambah padding top untuk konten hero */
+    }
 }
 
 /* Custom Theme Colors for Tailwind Classes */

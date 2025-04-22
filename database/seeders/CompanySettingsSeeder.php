@@ -26,8 +26,8 @@ class CompanySettingsSeeder extends Seeder
         
         // Kontak Perusahaan
         $this->createSetting('company_email', 'info@zdx.co.id', 'company');
-        $this->createSetting('company_phone', '0858 1471 8888', 'company');
-        $this->createSetting('company_phone2', '0821 3000 0600', 'company');
+        $this->createSetting('company_phone', '+62 858 1471 8888', 'company');
+        $this->createSetting('company_phone2', '+62 821 3000 0600', 'company');
         $this->createSetting('company_phone3', '', 'company');
         
         // Social Media
@@ -41,15 +41,6 @@ class CompanySettingsSeeder extends Seeder
         $this->createSetting('company_latitude', '-6.282268', 'company');
         $this->createSetting('company_longitude', '106.960346', 'company');
         
-        // Setting untuk kontak tampilan web
-        $this->createSetting('contact_phone', '0858 1471 8888', 'company');
-        $this->createSetting('contact_phone2', '0821 3000 0600', 'company');
-        $this->createSetting('contact_email', 'info@zdx.co.id', 'company');
-        $this->createSetting('contact_address', 'Jl. Swatantra 1 RT 09 RW 05, Kel. Jatirasa, Kec. Jatiasih, Kota Bekasi - Jawa Barat 17424', 'company');
-        $this->createSetting('contact_facebook', 'https://facebook.com/zdxcargo', 'company');
-        $this->createSetting('contact_instagram', 'https://instagram.com/zdxcargo', 'company');
-        $this->createSetting('contact_twitter', '', 'company');
-        $this->createSetting('contact_youtube', '', 'company');
     }
     
     /**

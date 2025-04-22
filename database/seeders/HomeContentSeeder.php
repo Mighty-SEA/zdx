@@ -46,26 +46,31 @@ class HomeContentSeeder extends Seeder
                 'metadata' => json_encode([
                     'items' => [
                         [
-                            'number' => '10000',
-                            'label' => 'Partner',
-                            'symbol' => '+'
+                            'number' => '34',
+                            'label' => 'PARTNER',
+                            'symbol' => '',
+                            'icon' => 'fas fa-users'
                         ],
                         [
-                            'number' => '100',
-                            'label' => 'Project',
-                            'symbol' => '+'
+                            'number' => '400',
+                            'label' => 'PROJECT',
+                            'symbol' => '',
+                            'icon' => 'fas fa-chart-bar'
                         ],
                         [
-                            'number' => '24',
-                            'label' => 'Success',
-                            'symbol' => '/7'
+                            'number' => '400',
+                            'label' => 'SUCCESS',
+                            'symbol' => '',
+                            'icon' => 'fas fa-chart-line'
                         ],
                         [
-                            'number' => '99',
-                            'label' => 'Country',
-                            'symbol' => '%'
+                            'number' => '200',
+                            'label' => 'COUNTRY',
+                            'symbol' => '',
+                            'icon' => 'fas fa-globe'
                         ]
-                    ]
+                    ],
+                    'background_color' => '#FFCC00' // Warna kuning sesuai gambar
                 ]),
                 'created_at' => now(),
                 'updated_at' => now(),

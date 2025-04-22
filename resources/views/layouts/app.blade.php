@@ -40,6 +40,15 @@
         
         /* Penyesuaian responsif untuk tampilan mobile */
         @media (max-width: 640px) {
+            main {
+                padding-top: 100px; /* Tambah padding untuk mobile agar konten tidak terlalu dekat dengan navbar */
+            }
+            
+            .hero-fullheight {
+                margin-top: -100px; /* Sesuaikan dengan padding-top mobile */
+                padding-top: 20px; /* Tambahkan sedikit padding atas */
+            }
+            
             .container {
                 padding-left: 1rem;
                 padding-right: 1rem;
@@ -65,6 +74,18 @@
             
             .gap-mobile-smaller {
                 gap: 0.5rem !important;
+            }
+        }
+        
+        /* Tampilan tablet */
+        @media (min-width: 641px) and (max-width: 1023px) {
+            main {
+                padding-top: 90px; /* Tambah padding untuk tablet */
+            }
+            
+            .hero-fullheight {
+                margin-top: -90px; /* Sesuaikan dengan padding-top tablet */
+                padding-top: 10px;
             }
         }
         
