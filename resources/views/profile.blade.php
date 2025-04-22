@@ -1,19 +1,65 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-    <title>Profile - PT. Zindan Diantar Express</title>
+    <title>{{ $seoData['title'] ?? 'Profile - PT. Zindan Diantar Express' }}</title>
     <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
-    <meta name="description" content="Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.">
-    <meta name="keywords" content="profil zdx, sejarah zdx, visi misi zdx, pengiriman barang, cargo indonesia">
+    <meta name="description" content="{{ $seoData['description'] ?? 'Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.' }}">
+    <meta name="keywords" content="{{ $seoData['keywords'] ?? 'profil zdx, sejarah zdx, visi misi zdx, pengiriman barang, cargo indonesia' }}">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url('/profile') }}">
+    <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/profile') }}">
+
+    <!-- Robots Meta -->
+    <meta name="robots" content="{{ $seoData['meta_robots'] ?? 'index, follow' }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('/profile') }}">
-    <meta property="og:title" content="Profile - PT. Zindan Diantar Express">
-    <meta property="og:description" content="Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $seoData['og_title'] ?? 'Profile - PT. Zindan Diantar Express' }}">
+    <meta property="og:description" content="{{ $seoData['og_description'] ?? 'Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.' }}">
+    @if(isset($seoData['og_image']))
+    <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
+    @endif
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? 'Profile - PT. Zindan Diantar Express' }}">
+    <meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? 'Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.' }}">
+    @if(isset($seoData['twitter_image']))
+    <meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
+    @endif
+
+    <!-- Custom Schema.org JSON-LD -->
+    @if(isset($seoData['custom_schema']))
+    {!! $seoData['custom_schema'] !!}
+    @else
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PT. Zindan Diantar Express",
+        "url": "{{ url('/profile') }}",
+        "logo": "{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}",
+        "description": "Profil PT. Zindan Diantar Express, perusahaan jasa pengiriman barang terpercaya di Indonesia.",
+        "founder": "PT. Zindan Diantar Express",
+        "foundingDate": "2023-04-10",
+        "sameAs": [
+            @if(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->contact_facebook))
+            "{{ $contents['about'][0]->contact_facebook }}",
+            @endif
+            @if(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->contact_instagram))
+            "{{ $contents['about'][0]->contact_instagram }}",
+            @endif
+            @if(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->contact_twitter))
+            "{{ $contents['about'][0]->contact_twitter }}",
+            @endif
+            @if(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->contact_youtube))
+            "{{ $contents['about'][0]->contact_youtube }}"
+            @endif
+        ]
+    }
+    </script>
+    @endif
 @endsection
 
 @section('content')
@@ -71,7 +117,7 @@
                     <div class="flex flex-col gap-4">
                         <!-- Logo Perusahaan tanpa frame -->
                         <div class="relative">
-                            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.time() : asset('asset/logo.png') }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
+                            <img src="{{ $logoUrl }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
                         </div>
                         
                         <!-- Gambar Pengiriman Logistik -->

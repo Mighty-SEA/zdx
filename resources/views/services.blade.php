@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-<title>{{ $seoData['title'] }} - PT. Zindan Diantar Express</title>
+<title>{{ $seoData['title'] }}</title>
 <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
 <meta name="description" content="{{ $seoData['description'] }}">
 <meta name="keywords" content="{{ $seoData['keywords'] }}">
@@ -21,9 +21,40 @@
 <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
 @endif
 
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? $seoData['og_title'] ?? $seoData['title'] }}">
+<meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? $seoData['og_description'] ?? $seoData['description'] }}">
+@if(isset($seoData['twitter_image']))
+<meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
+@elseif($seoData['og_image'])
+<meta name="twitter:image" content="{{ asset($seoData['og_image']) }}">
+@endif
+
 <!-- Custom Schema.org JSON-LD -->
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
+@else
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Layanan PT. Zindan Diantar Express",
+    "description": "Daftar layanan pengiriman dan logistik yang disediakan oleh PT. Zindan Diantar Express",
+    "url": "{{ url('/layanan') }}",
+    "itemListElement": [
+        @foreach($services as $index => $service)
+        {
+            "@type": "ListItem",
+            "position": {{ $loop->iteration }},
+            "name": "{{ $service->title }}",
+            "description": "{{ $service->description }}",
+            "url": "{{ url('/layanan/' . $service->slug) }}"
+        }{{ $index < $services->count() - 1 ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
 @endif
 
 <!-- Fungsi formatPhoneNumber -->

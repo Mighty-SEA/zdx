@@ -1,19 +1,57 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-    <title>Tracking - PT. Zindan Diantar Express</title>
+    <title>{{ $seoData['title'] ?? 'Tracking - PT. Zindan Diantar Express' }}</title>
     <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
-    <meta name="description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.">
-    <meta name="keywords" content="lacak pengiriman, tracking zdx, cek resi, status kiriman, cargo tracking">
+    <meta name="description" content="{{ $seoData['description'] ?? 'Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.' }}">
+    <meta name="keywords" content="{{ $seoData['keywords'] ?? 'lacak pengiriman, tracking zdx, cek resi, status kiriman, cargo tracking' }}">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url('/tracking') }}">
+    <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/tracking') }}">
+
+    <!-- Robots Meta -->
+    <meta name="robots" content="{{ $seoData['meta_robots'] ?? 'index, follow' }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('/tracking') }}">
-    <meta property="og:title" content="Tracking Pengiriman - PT. Zindan Diantar Express">
-    <meta property="og:description" content="Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $seoData['og_title'] ?? 'Tracking Pengiriman - PT. Zindan Diantar Express' }}">
+    <meta property="og:description" content="{{ $seoData['og_description'] ?? 'Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.' }}">
+    @if(isset($seoData['og_image']))
+    <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
+    @endif
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? 'Tracking Pengiriman - PT. Zindan Diantar Express' }}">
+    <meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? 'Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.' }}">
+    @if(isset($seoData['twitter_image']))
+    <meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
+    @endif
+
+    <!-- Custom Schema.org JSON-LD -->
+    @if(isset($seoData['custom_schema']))
+    {!! $seoData['custom_schema'] !!}
+    @else
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Tracking Pengiriman - PT. Zindan Diantar Express",
+        "description": "Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.",
+        "url": "{{ url('/tracking') }}",
+        "mainEntity": {
+            "@type": "Service",
+            "name": "Layanan Tracking ZDX Express",
+            "description": "Layanan pelacakan pengiriman untuk memantau status pengiriman barang Anda secara real-time",
+            "provider": {
+                "@type": "Organization",
+                "name": "PT. Zindan Diantar Express"
+            }
+        }
+    }
+    </script>
+    @endif
 @endsection
 
 @section('content')

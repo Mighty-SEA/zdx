@@ -21,9 +21,53 @@
 <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
 @endif
 
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? 'Blog - PT. Zindan Diantar Express' }}">
+<meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? 'Blog artikel terbaru dari PT. Zindan Diantar Express' }}">
+@if(isset($seoData['twitter_image']))
+<meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
+@endif
+
 <!-- Custom Schema.org JSON-LD -->
 @if(isset($seoData['custom_schema']))
 {!! $seoData['custom_schema'] !!}
+@else
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Blog PT. Zindan Diantar Express",
+    "url": "{{ url('/blog') }}",
+    "description": "Blog artikel terbaru dari PT. Zindan Diantar Express",
+    "publisher": {
+        "@type": "Organization",
+        "name": "PT. Zindan Diantar Express",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}"
+        }
+    },
+    "blogPost": [
+        @foreach($blogs as $index => $blog)
+        {
+            "@type": "BlogPosting",
+            "headline": "{{ $blog->title }}",
+            "description": "{{ $blog->description }}",
+            "datePublished": "{{ $blog->published_at->toIso8601String() }}",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "{{ url($blog->slug) }}"
+            },
+            "author": {
+                "@type": "Person",
+                "name": "{{ $blog->author ?? 'Admin' }}"
+            }
+        }{{ $index < $blogs->count() - 1 ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
 @endif
 @endsection
 

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('meta_tags')
-<title>{{ $seoData['title'] }} - PT. Zindan Diantar Express</title>
-<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
+<title>{{ $seoData['title'] }}</title>
+<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl }}">
 <meta name="description" content="{{ $seoData['description'] }}">
 <meta name="keywords" content="{{ $seoData['keywords'] }}">
 
@@ -24,6 +24,13 @@
 <!-- Custom Schema.org JSON-LD -->
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
+@endif
+
+<!-- CSS Khusus Halaman Home -->
+@if(app()->environment('production'))
+<link rel="stylesheet" href="{{ asset('css/home.min.css') }}">
+@else
+<link rel="stylesheet" href="{{ asset('css/home.css') }}">
 @endif
 
 <!-- Fungsi formatPhoneNumber -->
@@ -57,7 +64,7 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
 @endsection
 
 @php
-use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 @endphp
 
@@ -393,7 +400,7 @@ use Illuminate\Support\Str;
                 <div class="relative order-2 md:order-1" data-aos="fade-right">
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl">
                         @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->image_path))
-                            <img src="{{ asset(Storage::url($homeContent['features']->image_path)) }}" 
+                            <img src="{{ asset($homeContent['features']->image_path) }}" 
                                  alt="Features Image" 
                                  class="w-full h-auto rounded-2xl transform transition duration-700 hover:scale-105">
                         @else
@@ -576,7 +583,7 @@ Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg
                         @foreach($partners as $partner)
                             @if(isset($partner->logo_path) && !empty($partner->logo_path))
                                 <div class="client-logo p-4 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-110 transform">
-                                    <img src="{{ asset(Storage::url($partner->logo_path)) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
+                                    <img src="{{ asset($partner->logo_path) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="h-20 md:h-24 opacity-80 hover:opacity-100 transition-all duration-300 filter brightness-0 invert drop-shadow-lg hover:filter-none hover:brightness-100 hover:invert-0">
                                 </div>
                             @endif
                         @endforeach
@@ -599,178 +606,18 @@ Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg
         </div>
     </div>
 
-    @push('scripts')
-    <!-- AOS - Animate On Scroll Library -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    
-    <script>
-        /* Initialize AOS */
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true,
-                mirror: false
-            });
-        });
-        
-        /* Particle JS Config */
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof particlesJS !== 'undefined') {
-                particlesJS("particles-js", {
-                    "particles": {
-                        "number": {
-                            "value": 80,
-                            "density": {
-                                "enable": true,
-                                "value_area": 800
-                            }
-                        },
-                        "color": {
-                            "value": "#ffffff"
-                        },
-                        "shape": {
-                            "type": "circle",
-                            "stroke": {
-                                "width": 0,
-                                "color": "#000000"
-                            }
-                        },
-                        "opacity": {
-                            "value": 0.5,
-                            "random": false
-                        },
-                        "size": {
-                            "value": 3,
-                            "random": true
-                        },
-                        "line_linked": {
-                            "enable": true,
-                            "distance": 150,
-                            "color": "#ffffff",
-                            "opacity": 0.4,
-                            "width": 1
-                        },
-                        "move": {
-                            "enable": true,
-                            "speed": 2,
-                            "direction": "none",
-                            "random": false,
-                            "straight": false,
-                            "out_mode": "out",
-                            "bounce": false
-                        }
-                    },
-                    "interactivity": {
-                        "detect_on": "canvas",
-                        "events": {
-                            "onhover": {
-                                "enable": true,
-                                "mode": "repulse"
-                            },
-                            "onclick": {
-                                "enable": true,
-                                "mode": "push"
-                            },
-                            "resize": true
-                        }
-                    },
-                    "retina_detect": true
-                });
-            }
-        });
+@endsection
 
-        /* Counter Animation */
-        document.addEventListener('DOMContentLoaded', function() {
-            const counters = document.querySelectorAll('.counter');
-            const speed = 200; // Kecepatan animasi (ms)
+@push('scripts')
+<!-- Library yang dibutuhkan -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
-            const animateCounter = (counter) => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
-                const increment = target / speed;
-
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + increment);
-                    setTimeout(() => animateCounter(counter), 1);
-                } else {
-                    counter.innerText = target;
-                }
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        animateCounter(entry.target);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            counters.forEach(counter => {
-                observer.observe(counter);
-            });
-        });
-    </script>
-    
-    <style>
-        /* Tambahkan CSS untuk animasi */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        @keyframes fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .animate-fade-in-up {
-            opacity: 0;
-            animation: fade-in-up 0.8s ease forwards;
-        }
-        
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-        }
-        
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-    </style>
-    @endpush
-@endsection 
+<!-- Script khusus halaman home -->
+@if(app()->environment('production'))
+<script src="{{ asset('js/home.min.js') }}"></script>
+@else
+<script src="{{ asset('js/home.js') }}"></script>
+@endif
+@endpush 
