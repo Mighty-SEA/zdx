@@ -14,51 +14,51 @@ class PartnerSeeder extends Seeder
     {
         $partners = [
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'RANO CIPTA NUSALOG',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'PT PANDARAN',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'ONGKIR EXPRESS',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'S-LOG',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'BERLY CARGO',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'PT BAHAGIA RIZKI SELARAS',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'EXPRESS & LOGISTICS',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'ARTAJASA',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'INTEGRATED LOGISTICS SERVICES',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'INTAN UTAMA LOGISTIK',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'EXPRESS CARGO',
             ],
             [
-                'type' => 'Pelanggan',
+                'type' => 'partner',
                 'name' => 'PT BAHAGIA JAYA SEJAHTERA',
             ],
         ];
