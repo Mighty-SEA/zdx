@@ -25,6 +25,47 @@
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
 @endif
+
+<style>
+    .prose h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: #1f2937;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+    }
+    
+    .prose h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.25rem;
+        margin-bottom: 0.75rem;
+        color: #1f2937;
+    }
+    
+    .prose p {
+        margin-bottom: 1.25rem;
+        line-height: 1.8;
+    }
+    
+    .prose ul {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .prose ul li {
+        margin-bottom: 0.5rem;
+        padding-left: 0.5rem;
+    }
+    
+    .prose strong {
+        font-weight: 600;
+        color: #1f2937;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -61,7 +102,7 @@
             <!-- Content -->
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden mb-10 shadow-sm">
                 <div class="p-8 md:p-10">
-                    <div class="prose prose-xl max-w-none">
+                    <div class="prose prose-xl prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-ul:my-6 prose-ul:list-disc prose-li:my-2 max-w-none">
                         {!! $service->content !!}
                     </div>
                 </div>
@@ -116,18 +157,27 @@
             <div class="bg-white rounded-xl border border-gray-200 p-8 mb-10 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Layanan Terkait</h3>
                 <div class="space-y-4">
-                    <a href="#" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
-                        <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
-                        <span>Pengiriman Domestik</span>
-                    </a>
-                    <a href="#" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
-                        <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
-                        <span>Pengiriman Internasional</span>
-                    </a>
-                    <a href="#" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
-                        <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
-                        <span>Cargo & Logistik</span>
-                    </a>
+                    @if(isset($services) && count($services) > 0)
+                        @foreach($services->where('id', '!=', $service->id)->take(3) as $relatedService)
+                            <a href="/layanan/{{ $relatedService->slug }}" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
+                                <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
+                                <span>{{ $relatedService->title }}</span>
+                            </a>
+                        @endforeach
+                    @else
+                        <a href="#" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
+                            <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
+                            <span>Pengiriman Domestik</span>
+                        </a>
+                        <a href="#" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
+                            <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
+                            <span>Pengiriman Internasional</span>
+                        </a>
+                        <a href="#" class="flex items-center text-gray-700 hover:text-[#FF6000] p-3 rounded-lg hover:bg-gray-50 text-lg">
+                            <i class="fas fa-chevron-right text-sm w-5 text-[#FF6000]"></i>
+                            <span>Cargo & Logistik</span>
+                        </a>
+                    @endif
                 </div>
                 <div class="mt-6 pt-6 border-t border-gray-100">
                     <a href="/layanan" class="text-[#FF6000] font-medium hover:underline flex items-center text-lg">
@@ -138,20 +188,20 @@
             </div>
             
             <!-- Share -->
-            <div class="mb-10">
+            <div>
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Bagikan</h3>
                 <div class="flex gap-3">
-                    <a href="#" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-whatsapp text-lg"></i>
+                    <a href="#" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-xl"></i>
                     </a>
-                    <a href="#" class="bg-[#1877F2] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-facebook-f text-lg"></i>
+                    <a href="#" class="bg-[#1877F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-facebook-f text-xl"></i>
                     </a>
-                    <a href="#" class="bg-[#1DA1F2] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-twitter text-lg"></i>
+                    <a href="#" class="bg-[#1DA1F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-twitter text-xl"></i>
                     </a>
-                    <a href="#" class="bg-[#0A66C2] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-linkedin-in text-lg"></i>
+                    <a href="#" class="bg-[#0A66C2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-linkedin-in text-xl"></i>
                     </a>
                 </div>
             </div>
@@ -160,7 +210,7 @@
         <!-- Right Sidebar -->
         <div class="w-full md:w-1/3">
             <!-- Quick Contact -->
-            <div class="bg-white rounded-xl border border-gray-200 p-8 sticky top-24 mb-8 shadow-sm">
+            <div class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Hubungi Kami</h3>
                 <div class="space-y-4 mb-8">
                     <a href="tel:+628123456789" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
@@ -181,76 +231,13 @@
                 </a>
             </div>
             
-            <!-- Iklan -->
-            <div class="bg-gradient-to-br from-[#FF6000] to-[#FF8333] rounded-xl p-6 mb-8 text-white shadow-lg relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 -mt-10 -mr-10">
-                    <div class="absolute transform rotate-45 bg-white/10 w-40 h-10"></div>
-                </div>
-                <h3 class="text-xl font-bold mb-4">Promo Spesial!</h3>
-                <p class="mb-6">Dapatkan diskon 20% untuk pengiriman pertama Anda. Promo terbatas hingga akhir bulan.</p>
-                <a href="/promo" class="bg-white text-[#FF6000] px-4 py-2 rounded-lg font-medium inline-block hover:bg-gray-100 transition-colors">
-                    Dapatkan Sekarang
-                </a>
-            </div>
-            
-            <!-- Iklan Layanan Premium -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gray-900">Layanan Premium</h3>
-                    <span class="bg-yellow-400 text-xs text-yellow-800 px-2 py-1 rounded font-semibold">HOT!</span>
-                </div>
-                <div class="space-y-4">
-                    <div class="flex items-start border-b border-gray-100 pb-4">
-                        <div class="bg-[#FFF0E6] p-3 rounded-lg mr-3">
-                            <i class="fas fa-truck text-[#FF6000]"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">Express Delivery</h4>
-                            <p class="text-sm text-gray-500">Pengiriman super cepat dalam 24 jam</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start border-b border-gray-100 pb-4">
-                        <div class="bg-[#FFF0E6] p-3 rounded-lg mr-3">
-                            <i class="fas fa-box text-[#FF6000]"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">Packaging Premium</h4>
-                            <p class="text-sm text-gray-500">Packaging khusus anti rusak & anti air</p>
-                        </div>
-                    </div>
-                </div>
-                <a href="/premium" class="mt-4 block text-[#FF6000] font-medium hover:underline text-center">
-                    Lihat Detail
-                </a>
-            </div>
-            
-            <!-- Banner Aplikasi -->
-            <div class="bg-gray-900 rounded-xl p-6 mb-8 text-white shadow-md">
-                <h3 class="text-xl font-bold mb-3">Download Aplikasi</h3>
-                <p class="mb-4 text-gray-300">Lacak pengiriman lebih mudah dengan aplikasi mobile kami</p>
-                <div class="flex space-x-3">
-                    <a href="#" class="bg-black flex items-center px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fab fa-google-play text-xl mr-2"></i>
-                        <div class="text-xs">
-                            <span class="block opacity-70">GET IT ON</span>
-                            <span class="block text-sm font-medium">Google Play</span>
-                        </div>
-                    </a>
-                    <a href="#" class="bg-black flex items-center px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fab fa-apple text-xl mr-2"></i>
-                        <div class="text-xs">
-                            <span class="block opacity-70">DOWNLOAD ON</span>
-                            <span class="block text-sm font-medium">App Store</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
 
 <!-- CTA -->
-<div class="bg-gray-50 mt-16 py-16">
+<div class="bg-gray-50 mt-6 py-16">
     <div class="max-w-6xl mx-auto px-4">
         <div class="bg-gradient-to-r from-[#E65100] to-[#FF6000] rounded-xl p-10 text-white relative overflow-hidden">
             <div class="absolute top-0 right-0 opacity-10">

@@ -139,7 +139,10 @@ class PageController extends Controller
         // Canonical URL selalu ke layanan
         $seoData['canonical_url'] = url('layanan/' . $service->slug);
         
-        return view('service-detail', compact('service', 'seoData'));
+        // Mengambil semua layanan lain yang dipublikasikan untuk bagian "Layanan Terkait"
+        $services = \App\Models\Service::where('status', 'published')->get();
+        
+        return view('service-detail', compact('service', 'seoData', 'services'));
     }
     
     /**
@@ -507,7 +510,14 @@ class PageController extends Controller
                 ->get();
         }
         
-        return view('blog-detail', compact('blog', 'seoData', 'relatedBlogs'));
+        // Mengambil artikel terbaru untuk sidebar
+        $recentBlogs = Blog::where('status', 'published')
+            ->where('id', '!=', $blog->id)
+            ->orderBy('published_at', 'desc')
+            ->limit(3)
+            ->get();
+        
+        return view('blog-detail', compact('blog', 'seoData', 'relatedBlogs', 'recentBlogs'));
     }
     
     /**

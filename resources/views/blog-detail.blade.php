@@ -25,6 +25,47 @@
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
 @endif
+
+<style>
+    .prose h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: #1f2937;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+    }
+    
+    .prose h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.25rem;
+        margin-bottom: 0.75rem;
+        color: #1f2937;
+    }
+    
+    .prose p {
+        margin-bottom: 1.25rem;
+        line-height: 1.8;
+    }
+    
+    .prose ul {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .prose ul li {
+        margin-bottom: 0.5rem;
+        padding-left: 0.5rem;
+    }
+    
+    .prose strong {
+        font-weight: 600;
+        color: #1f2937;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -69,7 +110,7 @@
             <!-- Content -->
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden mb-10 shadow-sm">
                 <div class="p-8 md:p-10">
-                    <div class="prose prose-xl max-w-none">
+                    <div class="prose prose-xl prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-ul:my-6 prose-ul:list-disc prose-li:my-2 max-w-none">
                         {!! $blog->content !!}
                     </div>
                 </div>
@@ -89,21 +130,21 @@
             </div>
             @endif
             
-            <!-- Share -->
-            <div class="mb-10">
+             <!-- Share -->
+             <div>
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Bagikan</h3>
                 <div class="flex gap-3">
-                    <a href="https://wa.me/?text={{ urlencode($blog->title . ' ' . url()->current()) }}" target="_blank" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-whatsapp text-lg"></i>
+                    <a href="#" class="bg-[#25D366] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-xl"></i>
                     </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="bg-[#1877F2] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-facebook-f text-lg"></i>
+                    <a href="#" class="bg-[#1877F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-facebook-f text-xl"></i>
                     </a>
-                    <a href="https://twitter.com/intent/tweet?text={{ urlencode($blog->title) }}&url={{ urlencode(url()->current()) }}" target="_blank" class="bg-[#1DA1F2] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-twitter text-lg"></i>
+                    <a href="#" class="bg-[#1DA1F2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-twitter text-xl"></i>
                     </a>
-                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(url()->current()) }}&title={{ urlencode($blog->title) }}&summary={{ urlencode($blog->description) }}" target="_blank" class="bg-[#0A66C2] text-white p-3 rounded-full hover:opacity-90">
-                        <i class="fab fa-linkedin-in text-lg"></i>
+                    <a href="#" class="bg-[#0A66C2] text-white p-3 rounded-full hover:opacity-90 w-12 h-12 flex items-center justify-center">
+                        <i class="fab fa-linkedin-in text-xl"></i>
                     </a>
                 </div>
             </div>
@@ -143,7 +184,7 @@
         <!-- Right Sidebar -->
         <div class="w-full md:w-1/3">
             <!-- Quick Contact -->
-            <div class="bg-white rounded-xl border border-gray-200 p-8 sticky top-24 mb-8 shadow-sm">
+            <div class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Hubungi Kami</h3>
                 <div class="space-y-4 mb-8">
                     <a href="tel:+628123456789" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
@@ -164,60 +205,32 @@
                 </a>
             </div>
             
-            <!-- Categories -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Kategori</h3>
-                <div class="space-y-2">
-                    <a href="/blog/category/logistik" class="flex items-center justify-between py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-[#FF6000]">
-                        <span>Logistik</span>
-                        <span class="bg-gray-100 text-gray-600 text-xs rounded-full px-2 py-1">12</span>
-                    </a>
-                    <a href="/blog/category/pengiriman" class="flex items-center justify-between py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-[#FF6000]">
-                        <span>Pengiriman</span>
-                        <span class="bg-gray-100 text-gray-600 text-xs rounded-full px-2 py-1">8</span>
-                    </a>
-                    <a href="/blog/category/bisnis" class="flex items-center justify-between py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-[#FF6000]">
-                        <span>Bisnis</span>
-                        <span class="bg-gray-100 text-gray-600 text-xs rounded-full px-2 py-1">5</span>
-                    </a>
-                    <a href="/blog/category/tips" class="flex items-center justify-between py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-[#FF6000]">
-                        <span>Tips & Trik</span>
-                        <span class="bg-gray-100 text-gray-600 text-xs rounded-full px-2 py-1">3</span>
-                    </a>
-                </div>
-            </div>
             
             <!-- Recent Posts -->
             <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">Artikel Terbaru</h3>
                 <div class="space-y-4">
-                    <a href="#" class="flex items-start border-b border-gray-100 pb-4 group">
-                        <div class="bg-gray-100 w-16 h-16 rounded overflow-hidden mr-3 flex-shrink-0">
-                            <img src="https://via.placeholder.com/150" alt="Article Thumbnail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900 group-hover:text-[#FF6000] transition-colors line-clamp-2">Strategi Pengiriman Efisien untuk Bisnis E-commerce</h4>
-                            <p class="text-xs text-gray-500 mt-1">24 Mar 2023</p>
-                        </div>
-                    </a>
-                    <a href="#" class="flex items-start border-b border-gray-100 pb-4 group">
-                        <div class="bg-gray-100 w-16 h-16 rounded overflow-hidden mr-3 flex-shrink-0">
-                            <img src="https://via.placeholder.com/150" alt="Article Thumbnail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900 group-hover:text-[#FF6000] transition-colors line-clamp-2">Panduan Lengkap Pengiriman Internasional</h4>
-                            <p class="text-xs text-gray-500 mt-1">15 Mar 2023</p>
-                        </div>
-                    </a>
-                    <a href="#" class="flex items-start group">
-                        <div class="bg-gray-100 w-16 h-16 rounded overflow-hidden mr-3 flex-shrink-0">
-                            <img src="https://via.placeholder.com/150" alt="Article Thumbnail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900 group-hover:text-[#FF6000] transition-colors line-clamp-2">Tren Logistik yang Perlu Anda Ketahui di 2023</h4>
-                            <p class="text-xs text-gray-500 mt-1">5 Mar 2023</p>
-                        </div>
-                    </a>
+                    @if($recentBlogs->count() > 0)
+                        @foreach($recentBlogs as $recentBlog)
+                        <a href="/{{ $recentBlog->slug }}" class="flex items-start {{ !$loop->last ? 'border-b border-gray-100 pb-4' : '' }} group">
+                            <div class="bg-gray-100 w-16 h-16 rounded overflow-hidden mr-3 flex-shrink-0">
+                                @if($recentBlog->image)
+                                <img src="{{ asset($recentBlog->image) }}" alt="{{ $recentBlog->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                                @else
+                                <div class="w-full h-full bg-gradient-to-br from-[#FF6000] to-[#FF8C00] flex items-center justify-center">
+                                    <i class="fas fa-newspaper text-white text-xl"></i>
+                                </div>
+                                @endif
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900 group-hover:text-[#FF6000] transition-colors line-clamp-2">{{ $recentBlog->title }}</h4>
+                                <p class="text-xs text-gray-500 mt-1">{{ $recentBlog->published_at->format('d M Y') }}</p>
+                            </div>
+                        </a>
+                        @endforeach
+                    @else
+                        <p class="text-gray-500">Belum ada artikel terbaru lainnya.</p>
+                    @endif
                 </div>
                 <div class="mt-4 pt-3 border-t border-gray-100">
                     <a href="/blog" class="text-[#FF6000] font-medium hover:underline flex items-center text-sm">
@@ -227,27 +240,6 @@
                 </div>
             </div>
             
-            <!-- Banner Aplikasi -->
-            <div class="bg-gray-900 rounded-xl p-6 mb-8 text-white shadow-md">
-                <h3 class="text-xl font-bold mb-3">Download Aplikasi</h3>
-                <p class="mb-4 text-gray-300">Lacak pengiriman lebih mudah dengan aplikasi mobile kami</p>
-                <div class="flex space-x-3">
-                    <a href="#" class="bg-black flex items-center px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fab fa-google-play text-xl mr-2"></i>
-                        <div class="text-xs">
-                            <span class="block opacity-70">GET IT ON</span>
-                            <span class="block text-sm font-medium">Google Play</span>
-                        </div>
-                    </a>
-                    <a href="#" class="bg-black flex items-center px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fab fa-apple text-xl mr-2"></i>
-                        <div class="text-xs">
-                            <span class="block opacity-70">DOWNLOAD ON</span>
-                            <span class="block text-sm font-medium">App Store</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 </div>

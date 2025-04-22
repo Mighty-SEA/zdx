@@ -62,7 +62,7 @@ use Illuminate\Support\Str;
 @endphp
 
 @section('content')
-<div class="relative overflow-hidden h-[94vh] flex items-center justify-center">
+<div class="relative overflow-hidden h-[94vh] flex items-center justify-center hero-section">
     <!-- Background dengan efek gradient yang lebih menarik -->
     <div class="absolute inset-0 bg-gradient-to-br from-[#FF6000] via-[#FF8C00] to-[#E65100]">
         <!-- Pattern overlay untuk tekstur -->
@@ -78,7 +78,7 @@ use Illuminate\Support\Str;
     <div class="absolute inset-0 overflow-hidden" id="particles-js"></div>
 
     <!-- Hero Content dengan desain yang lebih menarik -->
-    <div class="relative w-full max-w-7xl mx-auto px-4 flex flex-col h-full justify-center z-10">
+    <div class="relative w-full max-w-7xl mx-auto px-4 flex flex-col h-full justify-center z-10 pt-10 sm:pt-0 hero-content-mobile">
         <div class="text-center">
             <!-- Main headline dengan efek melayang -->
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-white">
