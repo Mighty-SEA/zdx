@@ -56,6 +56,9 @@
                         <a href="/commodity" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('commodity') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                             <i class="fas fa-box mr-2 text-sm"></i>Commodity
                         </a>
+                        <a href="/blog" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('blog') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
+                            <i class="fas fa-newspaper mr-2 text-sm"></i>Blog
+                        </a>
                     </div>
                 </div>
                 <a href="/contact" class="ml-2 px-4 py-2 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white rounded-md shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 font-medium">
@@ -114,6 +117,9 @@
                     </a>
                     <a href="/commodity" class="px-4 py-3 pl-8 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('commodity') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                         <i class="fas fa-box w-5 text-center"></i><span>Commodity</span>
+                    </a>
+                    <a href="/blog" class="px-4 py-3 pl-8 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('blog') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
+                        <i class="fas fa-newspaper w-5 text-center"></i><span>Blog</span>
                     </a>
                 </div>
                 
