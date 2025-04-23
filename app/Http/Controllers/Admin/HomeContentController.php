@@ -75,6 +75,13 @@ class HomeContentController extends Controller
                 $rules['on_time_percentage'] = 'nullable|string|max:255';
                 break;
                 
+            case 'cta':
+                $rules['benefits'] = 'nullable|array';
+                $rules['benefits.*'] = 'required|string';
+                $rules['button2_text'] = 'nullable|string|max:255';
+                $rules['button2_url'] = 'nullable|string|max:255';
+                break;
+                
             case 'service_cards':
                 $rules['content'] = 'nullable|string';
                 break;
@@ -122,6 +129,18 @@ class HomeContentController extends Controller
                 }
                 if (isset($validated['on_time_percentage'])) {
                     $metadata['on_time_percentage'] = $validated['on_time_percentage'];
+                }
+                break;
+                
+            case 'cta':
+                if (isset($validated['benefits'])) {
+                    $metadata['benefits'] = $validated['benefits'];
+                }
+                if (isset($validated['button2_text'])) {
+                    $metadata['button2_text'] = $validated['button2_text'];
+                }
+                if (isset($validated['button2_url'])) {
+                    $metadata['button2_url'] = $validated['button2_url'];
                 }
                 break;
         }

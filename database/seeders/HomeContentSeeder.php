@@ -76,18 +76,6 @@ class HomeContentSeeder extends Seeder
                 'updated_at' => now(),
             ],
             
-            // 3. Layanan
-            [
-                'section_name' => 'Layanan',
-                'section_key' => 'services',
-                'title' => 'Layanan Kami',
-                'subtitle' => 'Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda',
-                'order' => 3,
-                'is_active' => true,
-                'use_rich_editor' => false,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
             
             // 4. Keunggulan (Mengapa Memilih Kami)
             [
@@ -108,31 +96,27 @@ class HomeContentSeeder extends Seeder
                 'updated_at' => now(),
             ],
             
-            // 5. Layanan Card
+            // 5. CTA Section
             [
-                'section_name' => 'Layanan Card',
-                'section_key' => 'service_cards',
-                'title' => 'Kargo Darat',
-                'subtitle' => 'Layanan pengiriman darat dengan armada yang lengkap dan terpercaya',
-                'content' => '<p>Kami menyediakan layanan kargo darat yang efisien dengan jangkauan seluruh Indonesia. Armada kami dilengkapi dengan sistem tracking yang memudahkan Anda memantau pengiriman.</p>',
-                'button_text' => 'Selengkapnya',
-                'button_url' => '/layanan/kargo-darat',
+                'section_name' => 'CTA Section',
+                'section_key' => 'cta',
+                'title' => 'Siap Mengirim Barang Anda?',
+                'subtitle' => 'Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.',
+                'button_text' => 'Hubungi Kami',
+                'button_url' => '/kontak',
                 'order' => 5,
                 'is_active' => true,
-                'use_rich_editor' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            
-            // 6. Partner
-            [
-                'section_name' => 'Partner',
-                'section_key' => 'partners',
-                'title' => 'Dipercaya oleh Perusahaan Terkemuka',
-                'subtitle' => 'Perusahaan dan brand yang telah mempercayakan pengiriman mereka kepada kami',
-                'order' => 6,
-                'is_active' => true,
                 'use_rich_editor' => false,
+                'metadata' => json_encode([
+                    'benefits' => [
+                        'Tarif bersaing untuk semua jenis pengiriman',
+                        'Konsultasi gratis untuk kebutuhan logistik',
+                        'Jaminan kepuasan untuk setiap pengiriman'
+                    ],
+                    'button2_text' => 'Lacak Kiriman',
+                    'button2_url' => '/tracking',
+                    'image_path' => 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55'
+                ]),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

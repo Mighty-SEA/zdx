@@ -92,6 +92,8 @@
                     @include('admin.home_content.partials.service_cards_form', ['section' => $section])
                 @elseif($section->section_key === 'partners')
                     @include('admin.home_content.partials.partners_form', ['section' => $section])
+                @elseif($section->section_key === 'cta')
+                    @include('admin.home_content.partials.cta_form')
                 @else
                     <!-- Default form untuk section yang tidak spesifik -->
                     <div class="mb-6">

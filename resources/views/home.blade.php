@@ -416,7 +416,7 @@ use Illuminate\Support\Str;
                             @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->button_text))
                                 {{ $homeContent['features']->button_text }}
                             @else
-                                Terpercaya
+           
                             @endif
                         </div>
                     </div>
@@ -424,20 +424,14 @@ use Illuminate\Support\Str;
                     <!-- Floating stats cards -->
                     <div class="absolute -bottom-8 -right-8 bg-white rounded-xl shadow-xl p-4 max-w-xs transform rotate-3 hover:rotate-0 transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
                         <div class="flex items-center">
-                            <div class="bg-[#FFF0E6] rounded-full p-3 mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF6000]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
                             <div>
                                 <p class="text-[#FF6000] font-semibold">
                                     @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->button_url))
                                         {{ $homeContent['features']->button_url }}
                                     @else
-                                        Pengiriman Tepat Waktu
+                        
                                     @endif
                                 </p>
-                                <p class="text-gray-600 text-sm">98% pengiriman tepat waktu</p>
                             </div>
                         </div>
                     </div>
@@ -492,49 +486,95 @@ use Illuminate\Support\Str;
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <!-- Left Column -->
                     <div data-aos="fade-right" class="order-2 md:order-1">
-                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Siap Mengirim Barang Anda?</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                            @if(isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->title))
+                                {{ $homeContent['cta']->title }}
+                            @else
+                                Siap Mengirim Barang Anda?
+                            @endif
+                        </h2>
                         <p class="text-white text-opacity-90 text-lg mb-6">
-                            Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.
+                            @if(isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->subtitle))
+                                {{ $homeContent['cta']->subtitle }}
+                            @else
+                                Dapatkan penawaran terbaik untuk pengiriman barang Anda dengan layanan berkualitas prima dan jangkauan luas.
+                            @endif
                         </p>
                         
                         <!-- Checklist items -->
                         <div class="space-y-3 mb-8">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-white">Tarif bersaing untuk semua jenis pengiriman</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-white">Konsultasi gratis untuk kebutuhan logistik</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-white">Jaminan kepuasan untuk setiap pengiriman</span>
-                            </div>
+                            @if(isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->metadata))
+                                @php
+                                    $metadata = json_decode($homeContent['cta']->metadata, true);
+                                    $benefits = $metadata['benefits'] ?? [
+                                        'Tarif bersaing untuk semua jenis pengiriman',
+                                        'Konsultasi gratis untuk kebutuhan logistik',
+                                        'Jaminan kepuasan untuk setiap pengiriman'
+                                    ];
+                                @endphp
+                                
+                                @foreach($benefits as $benefit)
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-white">{{ $benefit }}</span>
+                                </div>
+                                @endforeach
+                            @else
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-white">Tarif bersaing untuk semua jenis pengiriman</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-white">Konsultasi gratis untuk kebutuhan logistik</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-white">Jaminan kepuasan untuk setiap pengiriman</span>
+                                </div>
+                            @endif
                         </div>
                         
                         <!-- CTA Buttons -->
                         <div class="flex flex-wrap gap-4">
-                            <a href="https://wa.me/{{ $whatsappPhone }}?text={{ urlencode('Halo Admin ZDX Express,
-
-Saya ingin menanyakan informasi lebih lanjut tentang layanan pengiriman dari ZDX Express.
-
-Mohon informasi lengkap mengenai layanan yang tersedia dan cara melakukan pemesanan.
-
-Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
-                                Hubungi Kami
+                            @php
+                                $ctaButtonText = isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->button_text) ? $homeContent['cta']->button_text : 'Hubungi Kami';
+                                $ctaButtonUrl = isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->button_url) ? $homeContent['cta']->button_url : 'https://wa.me/'.$whatsappPhone;
+                                
+                                $ctaButton2Text = '';
+                                $ctaButton2Url = '';
+                                
+                                if(isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->metadata)) {
+                                    $ctaMetadata = json_decode($homeContent['cta']->metadata, true);
+                                    $ctaButton2Text = $ctaMetadata['button2_text'] ?? 'Lacak Kiriman';
+                                    $ctaButton2Url = $ctaMetadata['button2_url'] ?? '/tracking';
+                                } else {
+                                    $ctaButton2Text = 'Lacak Kiriman';
+                                    $ctaButton2Url = '/tracking';
+                                }
+                                
+                                // Jika URL adalah '/kontak', maka konversi ke WhatsApp
+                                if($ctaButtonUrl == '/kontak') {
+                                    $ctaButtonUrl = 'https://wa.me/'.$whatsappPhone.'?text='.urlencode('Halo Admin ZDX Express, Saya ingin menanyakan informasi lebih lanjut tentang layanan pengiriman dari ZDX Express. Mohon informasi lengkap mengenai layanan yang tersedia dan cara melakukan pemesanan. Terima kasih.');
+                                }
+                            @endphp
+                            
+                            <a href="{{ $ctaButtonUrl }}" {{ strpos($ctaButtonUrl, 'http') === 0 ? 'target="_blank"' : '' }} class="inline-flex items-center px-6 py-3 bg-white text-[#FF6000] font-semibold rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                                {{ $ctaButtonText }}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                             </a>
-                            <a href="/tracking" class="inline-flex items-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg transition-all duration-300 hover:bg-white/10">
-                                Lacak Kiriman
+                            <a href="{{ $ctaButton2Url }}" {{ strpos($ctaButton2Url, 'http') === 0 ? 'target="_blank"' : '' }} class="inline-flex items-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg transition-all duration-300 hover:bg-white/10">
+                                {{ $ctaButton2Text }}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -548,27 +588,17 @@ Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg
                         <div class="relative w-full max-w-md">
                             <div class="absolute top-0 left-0 right-0 bottom-0 bg-[#FF6000]/20 rounded-xl blur-2xl"></div>
                             <div class="relative bg-white p-6 rounded-xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500">
-                                <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">
-                                
-                                <!-- Badge -->
-                                <div class="absolute -top-4 -right-4 bg-[#FF6000] text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg transform rotate-12">
-                                    <div class="text-center leading-tight">
-                                        <div class="text-xs">MULAI</div>
-                                        <div class="font-bold text-lg">HARI INI</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Quote -->
-                                <div class="bg-white shadow-lg rounded-lg p-4 absolute -bottom-5 -left-5 max-w-xs transform -rotate-6 hover:rotate-0 transition-all duration-300">
-                                    <div class="flex items-start">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#FF6000] mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                                        </svg>
-                                        <p class="text-gray-600 text-sm">
-                                            "Layanan terbaik yang pernah kami gunakan untuk logistik perusahaan kami."
-                                        </p>
-                                    </div>
-                                </div>
+                                @if(isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->image_path))
+                                    <img src="{{ asset('storage/' . $homeContent['cta']->image_path) }}" alt="CTA Image" class="w-full h-auto rounded-lg shadow">
+                                @elseif(isset($homeContent) && isset($homeContent['cta']) && !empty($homeContent['cta']->metadata))
+                                    @php
+                                        $ctaMetadata = json_decode($homeContent['cta']->metadata, true);
+                                        $imagePath = $ctaMetadata['image_path'] ?? 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80';
+                                    @endphp
+                                    <img src="{{ $imagePath }}" alt="CTA Image" class="w-full h-auto rounded-lg shadow">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -587,7 +617,7 @@ Terima kasih.') }}" target="_blank" class="inline-flex items-center px-6 py-3 bg
                                 <div class="swiper-slide">
                                     <div class="client-logo bg-white/10 p-6 rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 h-40 flex flex-col items-center justify-center mx-2">
                                         @if(isset($partner->logo_path) && !empty($partner->logo_path))
-                                            <img src="{{ Storage::url($partner->logo_path) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="max-h-24 max-w-full group-hover:grayscale-0 transition-all duration-300">
+                                            <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->company ?: ($partner->name ?? 'Partner') }}" class="max-h-24 max-w-full group-hover:grayscale-0 transition-all duration-300">
                                         @else
                                             <div class="w-20 h-20 bg-[#FFF0E6] rounded-full flex items-center justify-center mb-3">
                                                 <span class="text-[#FF6000] text-2xl font-bold">{{ substr($partner->name ?? 'P', 0, 1) }}</span>
