@@ -321,25 +321,51 @@
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                     <div>
-                                        <label for="company_phone2" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Telepon 2
+                                        <label for="company_phone_cs1" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Telepon CS 1
                                         </label>
-                                        <input type="text" id="company_phone2" name="company_phone2" value="{{ $companyPhone2 ?? '' }}"
+                                        <input type="text" id="company_phone_cs1" name="company_phone_cs1" value="{{ $companyPhone2 ?? '' }}"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                        <p class="text-gray-500 text-xs mt-1">Nomor telepon alternatif untuk customer service</p>
-                                        @error('company_phone2')
+                                        <p class="text-gray-500 text-xs mt-1">Nomor telepon untuk customer service 1</p>
+                                        @error('company_phone_cs1')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                     
                                     <div>
-                                        <label for="company_phone3" class="block text-sm font-medium text-gray-700 mb-1">
-                                            Telepon 3
+                                        <label for="cs_name1" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Nama CS 1
                                         </label>
-                                        <input type="text" id="company_phone3" name="company_phone3" value="{{ $companyPhone3 ?? '' }}"
+                                        <input type="text" id="cs_name1" name="cs_name1" value="{{ $csName1 ?? '' }}"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
-                                        <p class="text-gray-500 text-xs mt-1">Nomor telepon alternatif tambahan</p>
-                                        @error('company_phone3')
+                                        <p class="text-gray-500 text-xs mt-1">Nama customer service 1</p>
+                                        @error('cs_name1')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="company_phone_cs2" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Telepon CS 2
+                                        </label>
+                                        <input type="text" id="company_phone_cs2" name="company_phone_cs2" value="{{ $companyPhone3 ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <p class="text-gray-500 text-xs mt-1">Nomor telepon untuk customer service 2</p>
+                                        @error('company_phone_cs2')
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="cs_name2" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Nama CS 2
+                                        </label>
+                                        <input type="text" id="cs_name2" name="cs_name2" value="{{ $csName2 ?? '' }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+                                        <p class="text-gray-500 text-xs mt-1">Nama customer service 2</p>
+                                        @error('cs_name2')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>

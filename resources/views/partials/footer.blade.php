@@ -139,7 +139,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 uppercase tracking-wider">Telepon</p>
-                            <p class="font-medium">{{ $companyInfo->contact_phone ?? '0858 1471 8888' }}</p>
+                            <p class="font-medium">{{ $companyInfo->company_phone ?? '0858 1471 8888' }}</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
@@ -147,8 +147,8 @@
                             <i class="fas fa-headset text-white"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400 uppercase tracking-wider">Customer Service</p>
-                            <p class="font-medium">{{ $companyInfo->contact_phone2 ?? '0858 1471 8888' }}</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider">{{ $companyInfo->cs_name1 ?? 'Customer Service' }}</p>
+                            <p class="font-medium">{{ $companyInfo->company_phone_cs1 ?? '0858 1471 8888' }}</p>
                         </div>
                     </li>
                     <li class="flex items-center text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition-all duration-300">
@@ -236,28 +236,28 @@
         
         <p class="text-gray-600 text-sm mb-3">Silakan pilih nomor yang ingin Anda hubungi:</p>
         
-        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->contact_phone ?? '6285814718888') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '6285814718888') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
            target="_blank">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
                 <i class="fab fa-whatsapp text-white text-xl"></i>
             </div>
             <div>
-                <p class="font-medium text-gray-800">Customer Service 1</p>
-                <p class="text-sm text-gray-600">{{ $companyInfo->contact_phone ?? '0858 1471 8888' }}</p>
+                <p class="font-medium text-gray-800">{{ $companyInfo->cs_name1 ?? 'Customer Service 1' }}</p>
+                <p class="text-sm text-gray-600">{{ $companyInfo->company_phone_cs1 ?? '0858 1471 8888' }}</p>
             </div>
         </a>
         
-        @if(isset($companyInfo->contact_phone2))
-        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->contact_phone2 ?: '6285814718889') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+        @if(isset($companyInfo->company_phone_cs2))
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs2 ?: '6285814718889') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
            target="_blank">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
                 <i class="fab fa-whatsapp text-white text-xl"></i>
             </div>
             <div>
-                <p class="font-medium text-gray-800">Customer Service 2</p>
-                <p class="text-sm text-gray-600">{{ $companyInfo->contact_phone2 ?: '0858 1471 8889' }}</p>
+                <p class="font-medium text-gray-800">{{ $companyInfo->cs_name2 ?? 'Customer Service 2' }}</p>
+                <p class="text-sm text-gray-600">{{ $companyInfo->company_phone_cs2 ?: '0858 1471 8889' }}</p>
             </div>
         </a>
         @endif

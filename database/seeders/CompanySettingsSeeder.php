@@ -26,9 +26,11 @@ class CompanySettingsSeeder extends Seeder
         
         // Kontak Perusahaan
         $this->createSetting('company_email', 'info@zdx.co.id', 'company');
-        $this->createSetting('company_phone', '+62 858 1471 8888', 'company');
-        $this->createSetting('company_phone2', '+62 821 3000 0600', 'company');
-        $this->createSetting('company_phone3', '', 'company');
+        $this->createSetting('company_phone', '+62 21 2387 1144', 'company');
+        $this->createSetting('company_phone_cs1', '+62 858 1471 8888', 'company');
+        $this->createSetting('company_phone_cs2', '+62 821 3000 0600', 'company');
+        $this->createSetting('cs_name1', ' CS1 - Putri', 'company');
+        $this->createSetting('cs_name2', 'CS2 - Amirudin', 'company');
         
         // Social Media
         $this->createSetting('company_facebook', 'https://facebook.com/zdxcargo', 'company');

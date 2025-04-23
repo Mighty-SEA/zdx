@@ -28,8 +28,10 @@ class SettingsController extends Controller
         $companyAddress2 = Setting::getValue('company_address2', '');
         $companyAddress3 = Setting::getValue('company_address3', '');
         $companyPhone = Setting::getValue('company_phone', '021-12345678');
-        $companyPhone2 = Setting::getValue('company_phone2', '0858 1471 8889');
-        $companyPhone3 = Setting::getValue('company_phone3', '0858 1471 8890');
+        $companyPhone2 = Setting::getValue('company_phone_cs1', '');
+        $companyPhone3 = Setting::getValue('company_phone_cs2', '');
+        $csName1 = Setting::getValue('cs_name1', '');
+        $csName2 = Setting::getValue('cs_name2', '');
         $companyEmail = Setting::getValue('company_email', 'info@zdxcargo.com');
         $companyTaxId = Setting::getValue('company_tax_id', '01.234.567.8-901.000');
         $companyDescription = Setting::getValue('company_description', 'ZDX Cargo adalah perusahaan jasa pengiriman terpercaya yang melayani kebutuhan logistik bisnis dan pribadi dengan jangkauan nasional dan internasional.');
@@ -78,6 +80,8 @@ class SettingsController extends Controller
             'companyPhone',
             'companyPhone2',
             'companyPhone3',
+            'csName1',
+            'csName2',
             'companyEmail',
             'companyTaxId',
             'companyDescription',
@@ -148,8 +152,10 @@ class SettingsController extends Controller
             'company_address2' => 'nullable|string|max:255',
             'company_address3' => 'nullable|string|max:255',
             'company_phone' => 'required|string|max:20',
-            'company_phone2' => 'nullable|string|max:20',
-            'company_phone3' => 'nullable|string|max:20',
+            'company_phone_cs1' => 'nullable|string|max:20',
+            'company_phone_cs2' => 'nullable|string|max:20',
+            'cs_name1' => 'nullable|string|max:100',
+            'cs_name2' => 'nullable|string|max:100',
             'company_email' => 'required|email|max:100',
             'company_tax_id' => 'nullable|string|max:30',
             'company_description' => 'nullable|string|max:500',
@@ -177,8 +183,10 @@ class SettingsController extends Controller
         Setting::setValue('company_address2', $request->company_address2, 'company');
         Setting::setValue('company_address3', $request->company_address3, 'company');
         Setting::setValue('company_phone', $request->company_phone, 'company');
-        Setting::setValue('company_phone2', $request->company_phone2, 'company');
-        Setting::setValue('company_phone3', $request->company_phone3, 'company');
+        Setting::setValue('company_phone_cs1', $request->company_phone_cs1, 'company');
+        Setting::setValue('company_phone_cs2', $request->company_phone_cs2, 'company');
+        Setting::setValue('cs_name1', $request->cs_name1, 'company');
+        Setting::setValue('cs_name2', $request->cs_name2, 'company');
         Setting::setValue('company_email', $request->company_email, 'company');
         Setting::setValue('company_tax_id', $request->company_tax_id, 'company');
         Setting::setValue('company_description', $request->company_description, 'company');

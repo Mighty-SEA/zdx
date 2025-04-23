@@ -22,8 +22,12 @@ return new class extends Migration
         });
 
         // Tambahkan kontak telepon kedua dan ketiga
-        $this->createSetting('company_phone2', '', 'company');
-        $this->createSetting('company_phone3', '', 'company');
+        $this->createSetting('company_phone_cs1', '', 'company');
+        $this->createSetting('company_phone_cs2', '', 'company');
+        
+        // Tambahkan nama customer service
+        $this->createSetting('cs_name1', '', 'company');
+        $this->createSetting('cs_name2', '', 'company');
         
         // Tambahkan alamat tambahan
         $this->createSetting('company_address2', '', 'company');
