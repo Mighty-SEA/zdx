@@ -174,6 +174,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::put('/blogs/{id}', [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('/blogs/{id}', [BlogController::class, 'destroy'])->name('blogs.destroy');
     Route::delete('/blogs/{id}/image', [BlogController::class, 'deleteImage'])->name('blogs.delete-image');
+    Route::post('/upload/tinymce', [BlogController::class, 'uploadTinyMCE'])->name('tinymce.upload');
 });
 
 // Daftar rute yang harus dikecualikan dari penanganan blog

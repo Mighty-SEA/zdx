@@ -315,4 +315,36 @@ class BlogController extends Controller
         
         return response()->json(['success' => false, 'message' => 'Tidak ada gambar untuk dihapus'], 404);
     }
+
+    /**
+     * Upload gambar untuk TinyMCE editor
+     */
+    public function uploadTinyMCE(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // max 5MB
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // Simpan gambar ke storage publik di dalam folder tinymce
+            $path = Storage::disk('public')->putFileAs(
+                'tinymce', 
+                $file, 
+                $fileName
+            );
+            
+            // Kembalikan URL gambar yang dapat diakses publik
+            $url = Storage::url($path);
+            
+            return response()->json([
+                'location' => $url // Kuncinya harus 'location' untuk TinyMCE
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error saat upload gambar TinyMCE: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal mengupload gambar'], 500);
+        }
+    }
 }

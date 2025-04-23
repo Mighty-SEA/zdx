@@ -185,22 +185,167 @@
         if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
             tinymce.init({
                 selector: '#content',
-                height: 500,
+                height: 600,
                 menubar: true,
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
+                    'codesample', 'quickbars', 'template', 'pagebreak', 'nonbreaking',
+                    'paste', 'print', 'visualchars', 'save', 'directionality', 'autoresize'
                 ],
-                toolbar: 'undo redo | styles | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
-                        'bullist numlist outdent indent | link image media table emoticons | removeformat help',
-                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 16px; line-height: 1.6; }',
+                toolbar: 'undo redo | blocks | formatselect | ' +
+                        'bold italic forecolor backcolor emoticons | ' +
+                        'alignleft aligncenter alignright alignjustify | ' +
+                        'bullist numlist outdent indent | link image media table codesample | ' +
+                        'visualblocks fullscreen preview | ' +
+                        'pagebreak nonbreaking | removeformat help',
+                formats: {
+                    h1: { block: 'h1', wrapper: false },
+                    h2: { block: 'h2', wrapper: false },
+                    h3: { block: 'h3', wrapper: false },
+                    h4: { block: 'h4', wrapper: false },
+                },
+                style_formats: [
+                    { title: 'Headings', items: [
+                        { title: 'Heading 1', format: 'h1' },
+                        { title: 'Heading 2', format: 'h2' },
+                        { title: 'Heading 3', format: 'h3' },
+                        { title: 'Heading 4', format: 'h4' },
+                        { title: 'Heading 5', format: 'h5' },
+                        { title: 'Heading 6', format: 'h6' }
+                    ]},
+                    { title: 'Inline', items: [
+                        { title: 'Bold', format: 'bold' },
+                        { title: 'Italic', format: 'italic' },
+                        { title: 'Underline', format: 'underline' },
+                        { title: 'Strikethrough', format: 'strikethrough' },
+                        { title: 'Code', format: 'code' }
+                    ]},
+                    { title: 'Blocks', items: [
+                        { title: 'Paragraph', format: 'p' },
+                        { title: 'Blockquote', format: 'blockquote' },
+                        { title: 'Div', format: 'div' },
+                        { title: 'Pre', format: 'pre' }
+                    ]}
+                ],
+                toolbar_mode: 'sliding',
+                toolbar_sticky: true,
+                content_style: `
+                    body { 
+                        font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; 
+                        font-size: 16px; 
+                        line-height: 1.6; 
+                        padding: 20px;
+                    }
+                    h1 {
+                        font-size: 2.25rem;
+                        font-weight: 700;
+                        margin-top: 2.5rem;
+                        margin-bottom: 1.25rem;
+                        color: #1f2937;
+                    }
+                    img { 
+                        max-width: 100%; 
+                        height: auto;
+                        border-radius: 4px;
+                    }
+                    pre {
+                        background-color: #f5f5f5;
+                        padding: 12px;
+                        border-radius: 4px;
+                        overflow-x: auto;
+                    }
+                    blockquote {
+                        background-color: #f9f9f9;
+                        padding: 10px 20px;
+                        border-left: 4px solid #ccc;
+                        margin: 15px 0;
+                    }
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+                    table td, table th {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                    }
+                `,
                 branding: false,
                 promotion: false,
-                images_upload_url: '/admin/upload/tinymce',
+                images_upload_url: '{{ route("admin.tinymce.upload") }}',
+                automatic_uploads: true,
+                file_picker_types: 'image',
+                image_class_list: [
+                    {title: 'Responsive', value: 'img-fluid'},
+                    {title: 'Left Aligned', value: 'float-left me-3 mb-3'},
+                    {title: 'Right Aligned', value: 'float-right ms-3 mb-3'},
+                    {title: 'Centered', value: 'mx-auto d-block'},
+                    {title: 'No margins', value: 'mb-0'}
+                ],
+                image_caption: true,
+                image_advtab: true,
                 relative_urls: false,
                 remove_script_host: false,
                 convert_urls: true,
+                extended_valid_elements: 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]',
+                setup: function(editor) {
+                    // Keydown handler untuk menekan tab
+                    editor.on('keydown', function(e) {
+                        if (e.keyCode === 9) { // Tab key
+                            if (e.shiftKey) {
+                                editor.execCommand('Outdent');
+                            } else {
+                                editor.execCommand('Indent');
+                            }
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                },
+                templates: [
+                    {
+                        title: 'Callout Box',
+                        description: 'Creates a callout box with a title',
+                        content: '<div style="background-color: #f8f9fa; border-left: 4px solid #0d6efd; padding: 15px; margin-bottom: 20px;">' +
+                                '<h3 style="margin-top: 0; color: #0d6efd;">Judul Callout</h3>' +
+                                '<p>Teks callout Anda di sini...</p>' +
+                                '</div>'
+                    },
+                    {
+                        title: 'Info Box',
+                        description: 'Creates an info box',
+                        content: '<div style="background-color: #e8f4f8; border-radius: 5px; padding: 15px; margin-bottom: 20px;">' +
+                                '<h4 style="color: #0c5460;"><strong>Info Penting</strong></h4>' +
+                                '<p>Info Anda di sini...</p>' +
+                                '</div>'
+                    },
+                    {
+                        title: 'Tabel Perbandingan',
+                        description: 'Membuat tabel perbandingan sederhana',
+                        content: '<table style="width:100%; border-collapse: collapse;">' +
+                                '<thead>' +
+                                '<tr style="background-color: #f8f9fa;">' +
+                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Fitur</th>' +
+                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Opsi A</th>' +
+                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Opsi B</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+                                '<tr>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Fitur 1</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '</tr>' +
+                                '<tr style="background-color: #f8f9fa;">' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Fitur 2</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '</tr>' +
+                                '</tbody>' +
+                                '</table>'
+                    }
+                ]
             });
         } else {
             // Fallback to basic editor if no API key
