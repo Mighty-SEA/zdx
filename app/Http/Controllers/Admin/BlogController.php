@@ -46,6 +46,9 @@ class BlogController extends Controller
             'category' => 'nullable|string|max:100',
             'tags' => 'nullable|string',
             'status' => 'required|in:draft,published',
+            'focus_keyword' => 'nullable|string|max:255',
+            'toc_mode' => 'nullable|string|in:auto,manual',
+            'toc_manual' => 'nullable|string',
         ]);
         
         // Periksa jika tombol "Simpan Draft" ditekan
@@ -65,6 +68,11 @@ class BlogController extends Controller
         }
         $validated['tags'] = $tags;
         
+        // Set mode TOC jika tidak diisi
+        if (!isset($validated['toc_mode'])) {
+            $validated['toc_mode'] = 'auto';
+        }
+        
         // Set tanggal publikasi jika status published
         if ($validated['status'] === 'published' && !isset($validated['published_at'])) {
             $validated['published_at'] = now();
@@ -82,6 +90,8 @@ class BlogController extends Controller
             $blog->category = $validated['category'];
             $blog->tags = $validated['tags'];
             $blog->author = $validated['author'] ?? (Auth::check() ? Auth::user()->name : 'Admin');
+            $blog->toc_mode = $validated['toc_mode'] ?? 'auto';
+            $blog->toc_manual = $validated['toc_manual'] ?? null;
             
             if ($blog->status == 'published') {
                 $blog->published_at = $validated['published_at'] ?? now();
@@ -143,6 +153,9 @@ class BlogController extends Controller
             'category' => 'nullable|max:255',
             'tags' => 'nullable',
             'author' => 'nullable|max:255',
+            'focus_keyword' => 'nullable|string|max:255',
+            'toc_mode' => 'nullable|string|in:auto,manual',
+            'toc_manual' => 'nullable|string',
         ]);
 
         try {
@@ -160,6 +173,8 @@ class BlogController extends Controller
             $blog->category = $request->category;
             $blog->tags = $request->tags ? array_map('trim', explode(',', $request->tags)) : null;
             $blog->author = $request->author ?? $blog->author;
+            $blog->toc_mode = $request->toc_mode ?? 'auto';
+            $blog->toc_manual = $request->toc_manual;
             
             // Set published_at jika status berubah ke published
             if ($oldStatus != 'published' && $blog->status == 'published') {
@@ -265,18 +280,34 @@ class BlogController extends Controller
     {
         $identifier = 'blog-' . $blog->slug;
         
+        // Mengambil focus keyword dari input form jika tersedia, atau dari kategori/tag
+        $focusKeyword = request('focus_keyword');
+        if (empty($focusKeyword)) {
+            if (!empty($blog->category)) {
+                $focusKeyword = $blog->category;
+            } elseif (!empty($blog->tags) && is_array($blog->tags) && count($blog->tags) > 0) {
+                $focusKeyword = $blog->tags[0];
+            }
+        }
+        
+        // Mengambil metadata dasar dari form jika tersedia
+        $title = request('seo_title') ? request('seo_title') : $blog->title;
+        $description = request('seo_description') ? request('seo_description') : $blog->description;
+        $keywords = request('seo_keywords') ? request('seo_keywords') : 'blog ' . $blog->title . ', artikel, zdx cargo' . ($blog->category ? ', ' . $blog->category : '');
+        
         try {
             PageSeoSetting::updateOrCreate(
                 ['page_identifier' => $identifier],
                 [
                     'page_name' => 'Blog: ' . $blog->title,
-                    'title' => $blog->title . ' - ZDX Cargo',
-                    'description' => $blog->description,
-                    'keywords' => 'blog ' . $blog->title . ', artikel, zdx cargo' . ($blog->category ? ', ' . $blog->category : ''),
+                    'title' => $title,
+                    'description' => $description,
+                    'keywords' => $keywords,
                     'og_title' => $blog->title,
                     'og_description' => $blog->description,
                     'og_image' => $blog->image ?? null,
                     'canonical_url' => url($blog->slug),
+                    'focus_keyword' => $focusKeyword,
                 ]
             );
         } catch (\Exception $e) {

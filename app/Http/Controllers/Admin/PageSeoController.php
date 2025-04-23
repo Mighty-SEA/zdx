@@ -115,7 +115,7 @@ class PageSeoController extends Controller
                 'page_name' => 'Blog',
                 'title' => 'Blog - PT. Zindan Diantar Express',
                 'description' => 'Blog artikel terbaru dari PT. Zindan Diantar Express. Informasi seputar logistik, pengiriman, dan perkembangan industri.',
-                'keywords' => 'blog, artikel, zdx cargo, pengiriman, logistik, cargo, ekspedisi',
+                'keywords' => 'blog, artikel, zdx express, pengiriman, logistik, cargo, ekspedisi',
             ],
         ];
 
@@ -161,9 +161,9 @@ class PageSeoController extends Controller
                 PageSeoSetting::create([
                     'page_identifier' => $identifier,
                     'page_name' => 'Layanan: ' . $service->title,
-                    'title' => $service->title . ' - ZDX Cargo',
+                    'title' => $service->title ,
                     'description' => $service->description,
-                    'keywords' => 'layanan ' . $service->title . ', jasa pengiriman, zdx cargo',
+                    'keywords' => 'layanan ' . $service->title . ', jasa pengiriman, zdx express',
                     'og_title' => $service->title,
                     'og_description' => $service->description,
                     'og_image' => $service->image ? 'storage/' . $service->image : null,
@@ -200,7 +200,7 @@ class PageSeoController extends Controller
                 'page_name' => 'Blog',
                 'title' => 'Blog - PT. Zindan Diantar Express',
                 'description' => 'Blog artikel terbaru dari PT. Zindan Diantar Express. Informasi seputar logistik, pengiriman, dan perkembangan industri.',
-                'keywords' => 'blog, artikel, zdx cargo, pengiriman, logistik, cargo, ekspedisi',
+                'keywords' => 'blog, artikel, zdx express, pengiriman, logistik, cargo, ekspedisi',
                 'canonical_url' => url('/blog')
             ]
         );
@@ -229,9 +229,9 @@ class PageSeoController extends Controller
                 PageSeoSetting::create([
                     'page_identifier' => $identifier,
                     'page_name' => 'Blog: ' . $blog->title,
-                    'title' => $blog->title . ' - ZDX Cargo',
+                    'title' => $blog->title ,
                     'description' => $blog->description,
-                    'keywords' => 'blog ' . $blog->title . ', artikel, zdx cargo' . ($blog->category ? ', ' . $blog->category : ''),
+                    'keywords' => 'blog ' . $blog->title . ', artikel, zdx express' . ($blog->category ? ', ' . $blog->category : ''),
                     'og_title' => $blog->title,
                     'og_description' => $blog->description,
                     'og_image' => $blog->image ?? null,

@@ -30,7 +30,7 @@
             @method('PUT')
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Kolom Kiri -->
+                <!-- Kolom Kiri - Untuk Info Utama -->
                 <div class="col-span-2 space-y-6">
                     <!-- Judul -->
                     <div>
@@ -57,46 +57,42 @@
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Singkat <span class="text-red-500">*</span></label>
                         <textarea name="description" id="description" rows="3" class="form-textarea w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>{{ old('description', $blog->description) }}</textarea>
-                        <p class="text-gray-500 text-xs mt-1">Ringkasan singkat dari artikel yang akan tampil di halaman daftar blog (maksimal 255 karakter)</p>
+                        <div class="flex justify-between">
+                            <p class="text-gray-500 text-xs mt-1">Ringkasan singkat yang akan tampil di halaman daftar blog</p>
+                            <div class="text-xs text-gray-500 mt-1"><span id="descriptionCounter">0</span>/255 karakter</div>
+                        </div>
                         @error('description')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
-                        <div class="text-xs text-gray-500 mt-1"><span id="descriptionCounter">0</span>/255 karakter</div>
                     </div>
 
-                    <!-- Konten -->
+                    <!-- Table of Contents -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-sm font-medium text-gray-700">Table of Contents</label>
+                            <span class="text-xs text-gray-600">Otomatis dari heading (H2, H3)</span>
+                                </div>
+                        <div id="toc_auto_container" class="bg-gray-50 border border-gray-200 rounded-md p-3">
+                            <div class="text-sm text-gray-700">TOC akan dibuat otomatis dari heading (H2, H3) dalam konten.</div>
+                            <div id="toc_preview" class="mt-2 text-sm">
+                                <div class="text-gray-500 italic text-xs">Preview akan muncul setelah konten artikel ditulis dengan heading.</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="toc_mode" value="auto">
+                    </div>
+
+                    <!-- Konten dengan tinggi statis -->
                     <div>
                         <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten <span class="text-red-500">*</span></label>
-                        <textarea name="content" id="content" rows="12" class="form-textarea w-full rounded-md">{{ old('content', $blog->content) }}</textarea>
+                        <textarea name="content" id="content" class="form-textarea w-full rounded-md" style="height: 500px; min-height: 500px; max-height: 500px;">{{ old('content', $blog->content) }}</textarea>
                         @error('content')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Kolom Kanan -->
+                <!-- Kolom Kanan - Untuk Pengaturan -->
                 <div class="col-span-1 space-y-6">
-                    <!-- Preview -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="font-medium text-gray-800 mb-3 flex items-center justify-between">
-                            <span>Preview</span>
-                            <button type="button" id="refreshPreview" class="text-blue-500 hover:text-blue-700 text-sm">
-                                <i class="fas fa-sync-alt mr-1"></i> Refresh
-                            </button>
-                        </h3>
-                        <div class="border rounded-lg bg-white p-4">
-                            <h2 id="previewTitle" class="text-xl font-bold text-gray-800">{{ $blog->title }}</h2>
-                            <div id="previewDescription" class="text-gray-600 mt-2 text-sm">{{ $blog->description }}</div>
-                            @if($blog->image)
-                            <div id="previewImage" class="mt-3">
-                                <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" class="w-full h-32 object-cover rounded">
-                            </div>
-                            @else
-                            <div id="previewImage" class="mt-3 hidden"></div>
-                            @endif
-                        </div>
-                    </div>
-                    
                     <!-- Publikasi -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="font-medium text-gray-800 mb-4">Publikasi</h3>
@@ -153,7 +149,7 @@
                             <p class="text-gray-500 text-xs mt-1">Pisahkan tag dengan koma</p>
                         </div>
                     </div>
-
+                    
                     <!-- Gambar -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="font-medium text-gray-800 mb-4">Gambar Blog</h3>
@@ -223,6 +219,170 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Bagian SEO Optimization (2 baris) dipindahkan ke bawah -->
+            <div class="mt-8 border-t pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Kolom Kiri - Focus Keyword dan Metadata -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="font-medium text-gray-800 mb-4 flex items-center justify-between">
+                            <span><i class="fas fa-chart-line text-blue-500 mr-1"></i> SEO Optimization</span>
+                            <span class="text-sm bg-gray-200 text-gray-700 py-1 px-2 rounded-full" id="seo-score">0%</span>
+                        </h3>
+                        
+                        <!-- Focus Keyword -->
+                        <div class="mb-4">
+                            <label for="focus_keyword" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-key text-blue-500 mr-1"></i> Focus Keyword
+                            </label>
+                            @php
+                                $blogSeo = \App\Models\PageSeoSetting::where('page_identifier', 'blog-' . $blog->slug)->first();
+                                $focusKeyword = $blogSeo ? $blogSeo->focus_keyword : '';
+                            @endphp
+                            <input type="text" name="focus_keyword" id="focus_keyword" class="form-input w-full rounded-md" value="{{ old('focus_keyword', $focusKeyword) }}" placeholder="keyword utama artikel">
+                            <p class="text-gray-500 text-xs mt-1">Kata kunci yang menjadi fokus optimasi SEO artikel ini</p>
+                        </div>
+                        
+                        <!-- Metadata Dasar -->
+                        <div class="mb-4 pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-search text-blue-500 mr-2"></i> Metadata Dasar:
+                            </h4>
+                            
+                            <!-- Title Override -->
+                            <div class="mb-3">
+                                <label for="seo_title" class="block text-xs font-medium text-gray-700 mb-1">
+                                    Title <span class="text-xs text-gray-500">(maks. 60 karakter)</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="seo_title" name="seo_title" 
+                                        value="{{ old('seo_title', $blogSeo ? $blogSeo->title : '') }}"
+                                        class="form-input w-full rounded-md text-sm"
+                                        maxlength="100"
+                                        placeholder="Judul untuk mesin pencari (kosongkan untuk gunakan judul artikel)">
+                                    <span class="absolute right-2 bottom-2 text-xs text-gray-500">
+                                        <span id="seoTitleCount">0</span>/60
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Meta Description Override -->
+                            <div class="mb-3">
+                                <label for="seo_description" class="block text-xs font-medium text-gray-700 mb-1">
+                                    Meta Description <span class="text-xs text-gray-500">(maks. 160 karakter)</span>
+                                </label>
+                                <div class="relative">
+                                    <textarea id="seo_description" name="seo_description" rows="2"
+                                        class="form-textarea w-full rounded-md text-sm"
+                                        maxlength="255"
+                                        placeholder="Deskripsi singkat untuk mesin pencari (kosongkan untuk gunakan deskripsi artikel)">{{ old('seo_description', $blogSeo ? $blogSeo->description : '') }}</textarea>
+                                    <span class="absolute right-2 bottom-2 text-xs text-gray-500">
+                                        <span id="seoDescriptionCount">0</span>/160
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Meta Keywords -->
+                            <div class="mb-3">
+                                <label for="seo_keywords" class="block text-xs font-medium text-gray-700 mb-1">
+                                    Meta Keywords <span class="text-xs text-gray-500">(pisahkan dengan koma)</span>
+                                </label>
+                                <input type="text" id="seo_keywords" name="seo_keywords" 
+                                    value="{{ old('seo_keywords', $blogSeo ? $blogSeo->keywords : '') }}"
+                                    class="form-input w-full rounded-md text-sm"
+                                    placeholder="kata-kunci, seo, artikel, blog">
+                            </div>
+                        </div>
+                        
+                        <!-- Preview di Google -->
+                        <div class="mb-4 pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-search text-blue-500 mr-2"></i> Preview di Google:
+                            </h4>
+                            <div class="p-3 bg-white rounded border border-gray-300">
+                                <h5 id="seo-preview-title" class="text-blue-600 font-medium text-base line-clamp-1">{{ $blog->title }} - ZDX Cargo</h5>
+                                <div class="text-green-600 text-xs mt-1">{{ url('/') }}/<span id="seo-preview-slug">{{ $blog->slug }}</span></div>
+                                <p id="seo-preview-desc" class="text-gray-600 text-sm mt-1 line-clamp-2">{{ $blog->description }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- SEO Tips -->
+                        <div class="pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Tips:
+                            </h4>
+                            <div id="seo-tips" class="text-xs text-gray-600 bg-yellow-50 p-3 rounded">
+                                Masukkan focus keyword untuk mulai analisis SEO.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kolom Kanan - SEO Checklist -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                            <i class="fas fa-clipboard-check text-blue-500 mr-2"></i> SEO Checklist:
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <!-- Kolom Checklist Kiri -->
+                            <div class="space-y-3">
+                                <div class="flex items-center" id="keyword-presence">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Keyword dalam konten</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="keyword-title">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Keyword dalam judul</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="keyword-desc">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Keyword dalam deskripsi</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="keyword-density">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Kepadatan keyword (1-3%)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="content-length">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Panjang konten (min. 300 kata)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Kolom Checklist Kanan -->
+                            <div class="space-y-3">
+                                <div class="flex items-center" id="seo-title-length">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Panjang judul (50-60 karakter)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="seo-desc-length">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Panjang deskripsi (120-160 karakter)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="header-presence">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Heading (H2, H3) dengan keyword</span>
+                                </div>
+
+                                <div class="flex items-center" id="image-alt">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Alt text pada gambar</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="url-friendly">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">URL yang SEO friendly</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
@@ -244,14 +404,10 @@
                         <p class="mt-2 text-sm text-gray-500">Apakah Anda yakin ingin menghapus gambar ini? Tindakan ini tidak dapat dibatalkan.</p>
                     </div>
                 </div>
-            </div>
-            <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-3 rounded-b-lg">
-                <button type="button" id="cancelDeleteBtn" class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                    Batal
-                </button>
-                <button type="button" id="confirmDeleteBtn" class="inline-flex justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
-                    Ya, Hapus Gambar
-                </button>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" id="cancelDeleteImage" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">Batal</button>
+                    <button type="button" id="confirmDeleteImage" class="px-4 py-2 border border-transparent rounded-md text-white bg-red-600 hover:bg-red-700">Hapus Gambar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -261,13 +417,29 @@
 
 @push('scripts')
 <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<style>
+    /* Toggle Switch */
+    .toggle-checkbox:checked {
+        right: 0;
+        transform: translateX(100%);
+        border-color: #3b82f6;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+        background-color: #3b82f6;
+    }
+    .toggle-label, .toggle-checkbox {
+        transition: all 0.3s ease-in-out;
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // TinyMCE initialization - fallback to basic if API key not set
+        let editor;
+
         if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
             tinymce.init({
                 selector: '#content',
-                height: 600,
+                height: 500,
                 menubar: true,
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
@@ -371,13 +543,19 @@
                 remove_script_host: false,
                 convert_urls: true,
                 extended_valid_elements: 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]',
-                setup: function(editor) {
+                setup: function(ed) {
+                    editor = ed;
+                    // Event listener for content changes to update TOC
+                    editor.on('Change', function() {
+                        updateTableOfContents();
+                    });
+                    
                     // Keydown handler untuk menekan tab
                     editor.on('keydown', function(e) {
                         if (e.keyCode === 9) { // Tab key
                             if (e.shiftKey) {
                                 editor.execCommand('Outdent');
-                            } else {
+            } else {
                                 editor.execCommand('Indent');
                             }
                             e.preventDefault();
@@ -432,43 +610,141 @@
         } else {
             // Fallback to basic editor if no API key
             const textarea = document.getElementById('content');
-            textarea.style.minHeight = '400px';
+            textarea.style.minHeight = '500px';
             textarea.classList.add('p-3');
+            
+            // Use textarea for TOC updates
+            textarea.addEventListener('input', function() {
+                updateTableOfContents();
+            });
         }
 
-        // Character counter for description
-        const descriptionField = document.getElementById('description');
-        const counter = document.getElementById('descriptionCounter');
+        // Toggle handler for TOC mode
+        const tocModeToggle = document.getElementById('toc_mode');
+        const tocModeText = document.getElementById('toc_mode_text');
+        const tocAutoContainer = document.getElementById('toc_auto_container');
         
-        function updateCharacterCount() {
-            const count = descriptionField.value.length;
-            counter.textContent = count;
-            
-            if (count > 255) {
-                counter.classList.add('text-red-500');
+        tocModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Mode Auto
+                tocModeText.textContent = 'Otomatis';
+                tocAutoContainer.classList.remove('hidden');
             } else {
-                counter.classList.remove('text-red-500');
+                // Mode Manual
+                tocAutoContainer.classList.add('hidden');
             }
-        }
-        
-        descriptionField.addEventListener('input', function() {
-            updatePreview();
-            updateCharacterCount();
         });
         
-        // Initial count
-        updateCharacterCount();
-        
-        // Preview functionality
+        // Function to update the TOC automatically
+        function updateTableOfContents() {
+            const tocPreview = document.getElementById('toc_preview');
+            if (!tocPreview) return;
+            
+            let content = '';
+            
+            if (window.tinymce && tinymce.get('content')) {
+                content = tinymce.get('content').getContent();
+            } else {
+                content = document.getElementById('content').value;
+            }
+            
+            // Parse the content to find headings
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const h2Elements = Array.from(doc.querySelectorAll('h2'));
+            const h3Elements = Array.from(doc.querySelectorAll('h3'));
+            
+            if (h2Elements.length === 0 && h3Elements.length === 0) {
+                tocPreview.innerHTML = '<div class="text-gray-500 italic text-xs">Tidak ada heading yang ditemukan. Tambahkan heading H2 atau H3 ke konten untuk membuat TOC.</div>';
+                return;
+            }
+            
+            // Create TOC structure
+            let tocHtml = '<ul class="list-disc pl-5 space-y-1">';
+            let contentChanged = false;
+            
+            // Process H2 headings first
+            h2Elements.forEach((h2, index) => {
+                const headingText = h2.textContent.trim();
+                if (!headingText) return;
+                
+                // Buat ID yang konsisten dari teks heading
+                const headingSlug = headingText.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                const headingId = `h2-${headingSlug}`;
+                
+                // Periksa apakah ID telah berubah
+                if (h2.id !== headingId) {
+                h2.id = headingId;
+                    contentChanged = true;
+                }
+                
+                tocHtml += `<li><a href="#${headingId}" class="text-blue-600 hover:underline">${headingText}</a>`;
+                
+                // Check for H3 headings that follow this H2
+                const nextH2 = h2Elements[index + 1];
+                const h3Subset = h3Elements.filter(h3 => {
+                    if (!nextH2) return h2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_FOLLOWING;
+                    return (h2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_FOLLOWING) && 
+                           (nextH2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_PRECEDING);
+                });
+                
+                if (h3Subset.length > 0) {
+                    tocHtml += '<ul class="pl-4 mt-1 space-y-1">';
+                    h3Subset.forEach((h3, subIndex) => {
+                        const subHeadingText = h3.textContent.trim();
+                        if (!subHeadingText) return;
+                        
+                        // Buat ID yang konsisten untuk sub-heading
+                        const subHeadingSlug = subHeadingText.toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-|-$)/g, '');
+                        const subHeadingId = `h3-${headingSlug}-${subHeadingSlug}`;
+                        
+                        // Periksa apakah ID telah berubah
+                        if (h3.id !== subHeadingId) {
+                        h3.id = subHeadingId;
+                            contentChanged = true;
+                        }
+                        
+                        tocHtml += `<li><a href="#${subHeadingId}" class="text-blue-600 hover:underline">${subHeadingText}</a></li>`;
+                    });
+                    tocHtml += '</ul>';
+                }
+                
+                tocHtml += '</li>';
+            });
+            
+            tocHtml += '</ul>';
+            
+            // Update the preview
+            tocPreview.innerHTML = tocHtml;
+            
+            // Update the actual content in the editor with the ID attributes hanya jika ada perubahan
+            if (contentChanged && window.tinymce && tinymce.get('content')) {
+                // Mencegah loop tak terbatas dengan menonaktifkan event handler sementara
+                tinymce.get('content').off('Change');
+                
+                // Perbarui konten dengan ID yang benar
+                const updatedContent = doc.body.innerHTML;
+                tinymce.get('content').setContent(updatedContent);
+                
+                // Aktifkan kembali event handler setelah penundaan
+                setTimeout(() => {
+                    tinymce.get('content').on('Change', updateTableOfContents);
+                }, 300);
+            }
+        }
+
+        // Slug generator
         const titleInput = document.getElementById('title');
         const slugInput = document.getElementById('slug');
         
-        // Variable untuk melacak apakah user sudah mengedit slug secara manual
-        let slugManuallyChanged = false;
+        // Jika slug dan judul sama, asumsikan bahwa slug belum diubah secara manual
+        let slugManuallyChanged = '{{ $blog->slug }}' !== '{{ \Illuminate\Support\Str::slug($blog->title) }}';
         
         titleInput.addEventListener('input', function() {
-            updatePreview();
-            
             // Hanya update slug otomatis jika belum diubah secara manual
             if (!slugManuallyChanged && titleInput.value) {
                 let slug = this.value.toLowerCase()
@@ -478,14 +754,32 @@
             }
         });
         
-        // Tambahkan event listener untuk menandai slug sudah diubah manual
+        // Tandai jika slug diubah secara manual
         slugInput.addEventListener('input', function() {
             slugManuallyChanged = true;
         });
+
+        // Character counter for description
+        function updateCharacterCount() {
+            const description = document.getElementById('description').value;
+            const counter = document.getElementById('descriptionCounter');
+            if (!counter) return;
+            
+            const count = description.length;
+            counter.textContent = count;
+            
+            if (count > 255) {
+                counter.classList.add('text-red-500');
+            } else {
+                counter.classList.remove('text-red-500');
+            }
+        }
         
-        document.getElementById('refreshPreview').addEventListener('click', updatePreview);
+        // Initial character count update
+        document.getElementById('description')?.addEventListener('input', updateCharacterCount);
+        updateCharacterCount();
         
-        // Form submission handler
+        // Form validation
         const form = document.getElementById('blogForm');
         form.addEventListener('submit', function(e) {
             const description = document.getElementById('description').value;
@@ -499,102 +793,40 @@
             const submitButton = document.activeElement;
             if (submitButton.name === 'save_draft') {
                 document.getElementById('status').value = 'draft';
+            }
+        });
+        
+        // Image preview functions
+        function previewImage() {
+            const preview = document.getElementById('image-preview');
+            const file = document.getElementById('image').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function() {
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
             } else {
-                // If publishing, make sure required fields are filled
-                if (!titleInput.value.trim()) {
-                    e.preventDefault();
-                    alert('Judul blog harus diisi');
-                    titleInput.focus();
-                    return false;
-                }
-                
-                if (!document.getElementById('description').value.trim()) {
-                    e.preventDefault();
-                    alert('Deskripsi singkat harus diisi');
-                    document.getElementById('description').focus();
-                    return false;
-                }
+                preview.src = '';
+                preview.classList.add('hidden');
             }
-        });
+        }
         
-        // Delete image modal
-        const modal = document.getElementById('deleteImageModal');
-        const backdrop = document.getElementById('deleteImageBackdrop');
-        const cancelBtn = document.getElementById('cancelDeleteBtn');
-        const confirmBtn = document.getElementById('confirmDeleteBtn');
-        
-        // Close modal handlers
-        cancelBtn.addEventListener('click', hideDeleteModal);
-        backdrop.addEventListener('click', hideDeleteModal);
-        
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                hideDeleteModal();
+        // Konfirmasi hapus gambar
+        function confirmDeleteImage(button) {
+            if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
+                button.closest('form').submit();
             }
-        });
+        }
+        
+        // Make confirmDeleteImage available globally
+        window.confirmDeleteImage = confirmDeleteImage;
+        
+        // Run initial TOC update
+        setTimeout(updateTableOfContents, 1000);
     });
-    
-    // Update preview 
-    function updatePreview() {
-        const title = document.getElementById('title').value || 'Judul Blog';
-        const description = document.getElementById('description').value || 'Deskripsi singkat akan muncul di sini...';
-        
-        document.getElementById('previewTitle').textContent = title;
-        document.getElementById('previewDescription').textContent = description;
-    }
-
-    // Image preview function
-    function previewImage() {
-        const preview = document.getElementById('image-preview');
-        const previewContainer = document.getElementById('previewImage');
-        const file = document.getElementById('image').files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = function() {
-            preview.src = reader.result;
-            preview.classList.remove('hidden');
-            
-            // Also update the preview in the preview box
-            const previewImg = previewContainer.querySelector('img') || document.createElement('img');
-            previewImg.src = reader.result;
-            previewImg.alt = document.getElementById('image_alt').value || 'Preview';
-            previewImg.className = 'w-full h-32 object-cover rounded';
-            
-            if (!previewContainer.contains(previewImg)) {
-                previewContainer.appendChild(previewImg);
-            }
-            
-            previewContainer.classList.remove('hidden');
-        }
-
-        if (file) {
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = '';
-            preview.classList.add('hidden');
-        }
-    }
-    
-    // Delete image modal
-    let currentDeleteForm;
-    
-    function confirmDeleteImage(button) {
-        currentDeleteForm = button.closest('form');
-        document.getElementById('deleteImageModal').classList.remove('hidden');
-        document.getElementById('confirmDeleteBtn').addEventListener('click', executeDelete);
-    }
-    
-    function executeDelete() {
-        if (currentDeleteForm) {
-            currentDeleteForm.submit();
-        }
-        hideDeleteModal();
-    }
-    
-    function hideDeleteModal() {
-        document.getElementById('deleteImageModal').classList.add('hidden');
-        document.getElementById('confirmDeleteBtn').removeEventListener('click', executeDelete);
-        currentDeleteForm = null;
-    }
 </script>
 @endpush 

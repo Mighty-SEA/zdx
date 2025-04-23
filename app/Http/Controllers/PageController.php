@@ -154,12 +154,12 @@ class PageController extends Controller
         
         // Meningkatkan data SEO khusus untuk halaman tarif
         $seoData['title'] = $seoData['title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express';
-        $seoData['description'] = $seoData['description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.';
+        $seoData['description'] = $seoData['description'] ?? 'Informasi tarif pengiriman barang ZDX Express yang kompetitif dan transparan untuk kebutuhan logistik Anda.';
         $seoData['keywords'] = $seoData['keywords'] ?? 'tarif pengiriman, harga cargo, biaya logistik, ongkos kirim, ekspedisi';
         $seoData['og_title'] = $seoData['og_title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express';
-        $seoData['og_description'] = $seoData['og_description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan.';
+        $seoData['og_description'] = $seoData['og_description'] ?? 'Informasi tarif pengiriman barang ZDX Express yang kompetitif dan transparan.';
         $seoData['twitter_title'] = $seoData['twitter_title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express';
-        $seoData['twitter_description'] = $seoData['twitter_description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan.';
+        $seoData['twitter_description'] = $seoData['twitter_description'] ?? 'Informasi tarif pengiriman barang ZDX Express yang kompetitif dan transparan.';
         $seoData['canonical_url'] = url('/tarif');
         
         // Tambahkan schema.org JSON-LD jika belum ada
@@ -169,7 +169,7 @@ class PageController extends Controller
                 "@context": "https://schema.org",
                 "@type": "WebPage",
                 "name": "Tarif Pengiriman - PT. Zindan Diantar Express",
-                "description": "Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.",
+                "description": "Informasi tarif pengiriman barang ZDX Express yang kompetitif dan transparan untuk kebutuhan logistik Anda.",
                 "url": "'.url('/tarif').'",
                 "mainEntity": {
                     "@type": "Service",
@@ -385,7 +385,7 @@ class PageController extends Controller
         
         // Meningkatkan data SEO khusus untuk halaman tracking
         $seoData['title'] = $seoData['title'] ?? 'Tracking Pengiriman - PT. Zindan Diantar Express';
-        $seoData['description'] = $seoData['description'] ?? 'Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.';
+        $seoData['description'] = $seoData['description'] ?? 'Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Express. Pantau status pengiriman secara real-time.';
         $seoData['keywords'] = $seoData['keywords'] ?? 'lacak pengiriman, tracking zdx, cek resi, status kiriman, cargo tracking';
         $seoData['og_title'] = $seoData['og_title'] ?? 'Tracking Pengiriman - PT. Zindan Diantar Express';
         $seoData['og_description'] = $seoData['og_description'] ?? 'Lacak pengiriman barang Anda dengan mudah. Pantau status pengiriman secara real-time.';
@@ -400,7 +400,7 @@ class PageController extends Controller
                 "@context": "https://schema.org",
                 "@type": "WebPage",
                 "name": "Tracking Pengiriman - PT. Zindan Diantar Express",
-                "description": "Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Cargo. Pantau status pengiriman secara real-time.",
+                "description": "Lacak pengiriman barang Anda dengan mudah melalui layanan tracking ZDX Express. Pantau status pengiriman secara real-time.",
                 "url": "'.url('/tracking').'",
                 "mainEntity": {
                     "@type": "Service",
@@ -561,7 +561,7 @@ class PageController extends Controller
         
         // Ambil data perusahaan dari database
         $companyInfo = new \stdClass();
-        $companyInfo->company_name = \App\Models\Setting::getValue('company_name', 'PT ZDX Cargo Indonesia');
+        $companyInfo->company_name = \App\Models\Setting::getValue('company_name', 'PT ZDX Express Indonesia');
         $companyInfo->company_address = \App\Models\Setting::getValue('company_address', 'Jl. Gatot Subroto No. 123');
         $companyInfo->company_phone = \App\Models\Setting::getValue('company_phone', '021-12345678');
         $companyInfo->company_phone2 = \App\Models\Setting::getValue('company_phone2', '0858 1471 8889');
@@ -594,7 +594,7 @@ class PageController extends Controller
         // Meningkatkan data SEO khusus untuk halaman blog
         $seoData['title'] = $seoData['title'] ?? 'Blog - PT. Zindan Diantar Express';
         $seoData['description'] = $seoData['description'] ?? 'Blog artikel terbaru dari PT. Zindan Diantar Express. Informasi seputar logistik, pengiriman, dan perkembangan industri.';
-        $seoData['keywords'] = $seoData['keywords'] ?? 'blog, artikel, zdx cargo, pengiriman, logistik, cargo, ekspedisi';
+        $seoData['keywords'] = $seoData['keywords'] ?? 'blog, artikel, zdx express, pengiriman, logistik, cargo, ekspedisi';
         $seoData['og_title'] = $seoData['og_title'] ?? 'Blog - PT. Zindan Diantar Express';
         $seoData['og_description'] = $seoData['og_description'] ?? 'Blog artikel terbaru dari PT. Zindan Diantar Express. Informasi seputar logistik, pengiriman, dan perkembangan industri.';
         $seoData['twitter_title'] = $seoData['twitter_title'] ?? 'Blog - PT. Zindan Diantar Express';
@@ -672,9 +672,9 @@ class PageController extends Controller
     public function blogByCategory($category)
     {
         $seoData = $this->getSeoData('blogs');
-        $seoData['title'] = 'Kategori: ' . ucfirst($category) . ' - ZDX Cargo';
-        $seoData['description'] = 'Artikel dan informasi dalam kategori ' . $category . ' dari ZDX Cargo.';
-        $seoData['og_title'] = 'Kategori: ' . ucfirst($category) . ' - ZDX Cargo';
+        $seoData['title'] = 'Kategori: ' . ucfirst($category);
+        $seoData['description'] = 'Artikel dan informasi dalam kategori ' . $category . ' dari ZDX Express.';
+        $seoData['og_title'] = 'Kategori: ' . ucfirst($category) . ' - ZDX Express';
         $seoData['canonical_url'] = url('/blog/category/' . $category);
         
         // Mengambil semua blog berdasarkan kategori
@@ -692,9 +692,9 @@ class PageController extends Controller
     public function blogByTag($tag)
     {
         $seoData = $this->getSeoData('blogs');
-        $seoData['title'] = 'Tag: ' . ucfirst($tag) . ' - ZDX Cargo';
-        $seoData['description'] = 'Artikel dan informasi dengan tag ' . $tag . ' dari ZDX Cargo.';
-        $seoData['og_title'] = 'Tag: ' . ucfirst($tag) . ' - ZDX Cargo';
+        $seoData['title'] = 'Tag: ' . ucfirst($tag) . ' - ZDX Express';
+        $seoData['description'] = 'Artikel dan informasi dengan tag ' . $tag . ' dari ZDX Express.';
+        $seoData['og_title'] = 'Tag: ' . ucfirst($tag) . ' - ZDX Express';
         $seoData['canonical_url'] = url('/blog/tag/' . $tag);
         
         // Mengambil semua blog berdasarkan tag

@@ -20,6 +20,7 @@ class PageSeoSetting extends Model
         'og_image',
         'custom_robots',
         'custom_schema',
-        'uses_global_settings'
+        'uses_global_settings',
+        'focus_keyword'
     ];
 } 
