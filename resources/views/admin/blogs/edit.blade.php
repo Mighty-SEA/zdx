@@ -300,7 +300,7 @@
                                 <i class="fas fa-search text-blue-500 mr-2"></i> Preview di Google:
                             </h4>
                             <div class="p-3 bg-white rounded border border-gray-300">
-                                <h5 id="seo-preview-title" class="text-blue-600 font-medium text-base line-clamp-1">{{ $blog->title }} - ZDX Cargo</h5>
+                                <h5 id="seo-preview-title" class="text-blue-600 font-medium text-base line-clamp-1">{{ $blog->title }}</h5>
                                 <div class="text-green-600 text-xs mt-1">{{ url('/') }}/<span id="seo-preview-slug">{{ $blog->slug }}</span></div>
                                 <p id="seo-preview-desc" class="text-gray-600 text-sm mt-1 line-clamp-2">{{ $blog->description }}</p>
                             </div>

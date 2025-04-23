@@ -250,7 +250,7 @@
                                 <i class="fas fa-search text-blue-500 mr-2"></i> Preview di Google:
                             </h4>
                             <div class="p-3 bg-white rounded border border-gray-300">
-                                <h5 id="seo-preview-title" class="text-blue-600 font-medium text-base line-clamp-1">Preview Judul - ZDX Cargo</h5>
+                                <h5 id="seo-preview-title" class="text-blue-600 font-medium text-base line-clamp-1">Preview Judul</h5>
                                 <div class="text-green-600 text-xs mt-1">{{ url('/') }}/<span id="seo-preview-slug">preview-slug</span></div>
                                 <p id="seo-preview-desc" class="text-gray-600 text-sm mt-1 line-clamp-2">Preview deskripsi akan muncul di sini.</p>
                             </div>
@@ -731,7 +731,7 @@
             const seoTitleInput = document.getElementById('seo_title');
             const seoDescriptionInput = document.getElementById('seo_description');
             
-            const titleForPreview = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
+            const titleForPreview = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title;
             const descForPreview = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : description;
             
             document.getElementById('seo-preview-title').textContent = titleForPreview;
@@ -852,7 +852,7 @@
         function updateSeoAnalysis() {
             // Update preview menggunakan custom SEO title/desc jika ada, atau default
             const title = titleInput.value || 'Preview Judul';
-            const customTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
+            const customTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title;
             const slug = slugInput.value || 'preview-slug';
             const desc = descInput.value || 'Preview deskripsi akan muncul di sini.';
             const customDesc = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : desc;
@@ -969,7 +969,7 @@
             
             // --- Check 6: Panjang judul SEO ---
             // Gunakan custom SEO title jika tersedia
-            const seoTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
+            const seoTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title;
             const titleLength = seoTitle.length;
             let titleLengthStatus = 'none';
             
