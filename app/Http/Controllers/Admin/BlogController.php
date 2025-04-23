@@ -46,6 +46,7 @@ class BlogController extends Controller
             'category' => 'nullable|string|max:100',
             'tags' => 'nullable|string',
             'status' => 'required|in:draft,published',
+            'focus_keyword' => 'nullable|string|max:255',
         ]);
         
         // Periksa jika tombol "Simpan Draft" ditekan
@@ -143,6 +144,7 @@ class BlogController extends Controller
             'category' => 'nullable|max:255',
             'tags' => 'nullable',
             'author' => 'nullable|max:255',
+            'focus_keyword' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -265,6 +267,16 @@ class BlogController extends Controller
     {
         $identifier = 'blog-' . $blog->slug;
         
+        // Mengambil focus keyword dari input form jika tersedia, atau dari kategori/tag
+        $focusKeyword = request('focus_keyword');
+        if (empty($focusKeyword)) {
+            if (!empty($blog->category)) {
+                $focusKeyword = $blog->category;
+            } elseif (!empty($blog->tags) && is_array($blog->tags) && count($blog->tags) > 0) {
+                $focusKeyword = $blog->tags[0];
+            }
+        }
+        
         try {
             PageSeoSetting::updateOrCreate(
                 ['page_identifier' => $identifier],
@@ -277,6 +289,7 @@ class BlogController extends Controller
                     'og_description' => $blog->description,
                     'og_image' => $blog->image ?? null,
                     'canonical_url' => url($blog->slug),
+                    'focus_keyword' => $focusKeyword,
                 ]
             );
         } catch (\Exception $e) {

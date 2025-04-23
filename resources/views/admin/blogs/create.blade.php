@@ -140,6 +140,44 @@
                             <p class="text-gray-500 text-xs mt-1">Pisahkan tag dengan koma</p>
                         </div>
                     </div>
+                    
+                    <!-- SEO RankMath -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="font-medium text-gray-800 mb-4">SEO Optimization</h3>
+                        
+                        <!-- Focus Keyword -->
+                        <div class="mb-4">
+                            <label for="focus_keyword" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-key text-blue-500 mr-1"></i> Focus Keyword
+                            </label>
+                            <input type="text" name="focus_keyword" id="focus_keyword" class="form-input w-full rounded-md" value="{{ old('focus_keyword') }}" placeholder="keyword utama artikel">
+                            <p class="text-gray-500 text-xs mt-1">Kata kunci yang menjadi fokus optimasi SEO artikel ini</p>
+                            
+                            <!-- SEO Preview Section -->
+                            <div class="mt-4 pt-3 border-t border-gray-200">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">SEO Preview:</h4>
+                                <div class="p-3 bg-white rounded border border-gray-300">
+                                    <h5 id="seo-preview-title" class="text-blue-600 font-medium">Preview Judul - ZDX Cargo</h5>
+                                    <div class="text-green-600 text-xs mt-1">{{ url('/') }}/<span id="seo-preview-slug">preview-slug</span></div>
+                                    <p id="seo-preview-desc" class="text-gray-600 text-sm mt-1">Preview deskripsi akan muncul di sini.</p>
+                                    <div class="mt-3 pt-2 border-t border-gray-200 text-sm">
+                                        <div class="flex items-center mb-1" id="keyword-presence">
+                                            <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                            <span class="text-gray-500">Keyword dalam konten</span>
+                                        </div>
+                                        <div class="flex items-center mb-1" id="keyword-title">
+                                            <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                            <span class="text-gray-500">Keyword dalam judul</span>
+                                        </div>
+                                        <div class="flex items-center" id="keyword-desc">
+                                            <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                            <span class="text-gray-500">Keyword dalam deskripsi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Gambar -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -478,5 +516,100 @@
             document.getElementById('previewImage').classList.add('hidden');
         }
     }
+</script>
+
+<!-- RankMath SEO Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dapatkan elemen-elemen yang dibutuhkan
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        const descInput = document.getElementById('description');
+        const contentEditor = document.getElementById('content');
+        const focusKeywordInput = document.getElementById('focus_keyword');
+        
+        // Preview elements
+        const seoPreviewTitle = document.getElementById('seo-preview-title');
+        const seoPreviewSlug = document.getElementById('seo-preview-slug');
+        const seoPreviewDesc = document.getElementById('seo-preview-desc');
+        
+        // SEO Check indicators
+        const keywordPresence = document.getElementById('keyword-presence');
+        const keywordTitle = document.getElementById('keyword-title');
+        const keywordDesc = document.getElementById('keyword-desc');
+        
+        // Event listeners untuk update real-time
+        [titleInput, slugInput, descInput, focusKeywordInput].forEach(input => {
+            input.addEventListener('input', updateSeoAnalysis);
+        });
+        
+        // Listener untuk TinyMCE jika tersedia
+        if (window.tinymce) {
+            tinymce.get('content')?.on('Change', updateSeoAnalysis);
+        }
+        
+        // Update awal
+        updateSeoAnalysis();
+        
+        // Fungsi untuk menganalisis SEO
+        function updateSeoAnalysis() {
+            // Update preview
+            const title = titleInput.value || 'Preview Judul';
+            const slug = slugInput.value || 'preview-slug';
+            const desc = descInput.value || 'Preview deskripsi akan muncul di sini.';
+            const keyword = focusKeywordInput.value?.trim().toLowerCase();
+            
+            seoPreviewTitle.textContent = title + ' - ZDX Cargo';
+            seoPreviewSlug.textContent = slug;
+            seoPreviewDesc.textContent = desc;
+            
+            // Jika tidak ada keyword, reset status
+            if (!keyword) {
+                setIndicatorStatus(keywordPresence, 'none');
+                setIndicatorStatus(keywordTitle, 'none');
+                setIndicatorStatus(keywordDesc, 'none');
+                return;
+            }
+            
+            // Check title contains keyword
+            const titleCheck = title.toLowerCase().includes(keyword);
+            setIndicatorStatus(keywordTitle, titleCheck ? 'good' : 'bad');
+            
+            // Check description contains keyword
+            const descCheck = desc.toLowerCase().includes(keyword);
+            setIndicatorStatus(keywordDesc, descCheck ? 'good' : 'bad');
+            
+            // Check content contains keyword
+            let content = '';
+            if (window.tinymce && tinymce.get('content')) {
+                content = tinymce.get('content').getContent({ format: 'text' }).toLowerCase();
+            } else {
+                content = contentEditor.value.toLowerCase();
+            }
+            
+            const contentCheck = content.includes(keyword);
+            setIndicatorStatus(keywordPresence, contentCheck ? 'good' : 'bad');
+        }
+        
+        // Fungsi untuk mengatur status indikator
+        function setIndicatorStatus(element, status) {
+            // Reset class
+            element.querySelector('i').className = 'fas fa-circle-check mr-2';
+            
+            if (status === 'good') {
+                element.querySelector('i').classList.add('text-green-500');
+                element.querySelector('span').classList.add('text-green-700');
+                element.querySelector('span').classList.remove('text-gray-500', 'text-red-500');
+            } else if (status === 'bad') {
+                element.querySelector('i').classList.add('text-red-500');
+                element.querySelector('span').classList.add('text-red-500');
+                element.querySelector('span').classList.remove('text-gray-500', 'text-green-700');
+            } else {
+                element.querySelector('i').classList.add('text-gray-300');
+                element.querySelector('span').classList.add('text-gray-500');
+                element.querySelector('span').classList.remove('text-green-700', 'text-red-500');
+            }
+        }
+    });
 </script>
 @endpush 

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('custom_robots', 100)->nullable();
             $table->text('custom_schema')->nullable();
             $table->boolean('uses_global_settings')->default(false);
+            $table->string('focus_keyword', 255)->nullable();
             $table->timestamps();
         });
     }
