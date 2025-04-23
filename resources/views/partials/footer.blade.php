@@ -27,7 +27,14 @@
             <!-- Tentang Perusahaan -->
             <div class="transform transition-all duration-500 hover:translate-y-[-5px]">
                 <div class="flex items-center mb-5">
-                    <img id="footer-logo" src="{{ $logoUrl }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 mr-3">
+                    @php
+                        $settings = $settings ?? \Illuminate\Support\Facades\DB::table('settings')->first();
+                    @endphp
+                    @if($settings && !empty($settings->logo_1_path))
+                        <img id="footer-logo" src="{{ asset($settings->logo_1_path) }}?v={{ time() }}" alt="{{ $settings->logo_1_alt ?? ($companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS') }}" class="h-14 mr-3">
+                    @else
+                        <img id="footer-logo" src="{{ $logoUrl }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 mr-3">
+                    @endif
                     <div>
                         <h3 class="text-xl font-bold text-[#FF6000] tracking-wide">{{ $companyInfo->company_name ?? 'PT ZDX CARGO' }}</h3>
                         <p class="text-gray-400 text-xs tracking-wider">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>

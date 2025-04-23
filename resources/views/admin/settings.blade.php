@@ -1,13 +1,16 @@
 @extends('layouts.admin')
 
 @section('title', 'Pengaturan')
-<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
 
 @section('meta')
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+@php
+    $settings = $settings ?? \Illuminate\Support\Facades\DB::table('settings')->first();
+@endphp
+<link rel="icon" type="image/png" href="{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}">
 @endsection
 
 @section('content')
@@ -15,7 +18,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-800">Pengaturan Sistem</h2>
-            <p class="text-gray-600 mt-1">Kelola pengaturan umum aplikasi {{ $companyInfo->company_name ?? 'ZDX Cargo' }}.</p>
+            <p class="text-gray-600 mt-1">Kelola pengaturan umum aplikasi {{ $settings->company_name ?? ($companyInfo->company_name ?? 'ZDX Cargo') }}.</p>
         </div>
     </div>
 
@@ -69,7 +72,25 @@
                         <p class="text-sm text-gray-600">Konfigurasi integrasi Google Analytics untuk Dashboard</p>
                     </div>
                     
-                    <x-analytics-alert />
+                    @if(class_exists('App\View\Components\AnalyticsAlert'))
+                        <x-analytics-alert />
+                    @else
+                        <div class="mb-4 p-4 bg-yellow-50 border border-yellow-100 rounded-lg">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-yellow-800">Google Analytics belum dikonfigurasi</h3>
+                                    <div class="mt-2 text-sm text-yellow-700">
+                                        <p>Untuk melihat data analitik yang akurat, silakan konfigurasi Google Analytics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     
                     <div class="max-w-2xl">
                         <form action="{{ route('admin.settings.analytics') }}" method="POST" enctype="multipart/form-data">
@@ -396,9 +417,12 @@
                                     
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         <!-- Logo 1 -->
+                                        @php
+                                            $logos = \Illuminate\Support\Facades\DB::table('settings')->first();
+                                        @endphp
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img id="logo1-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo1.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo1.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Logo 1" class="w-full h-32 object-contain">
+                                                <img id="logo1-preview" src="{{ $logos && $logos->logo_1_path ? asset($logos->logo_1_path).'?v='.rand() : asset('placeholder-image.png') }}" alt="{{ $logos && $logos->logo_1_alt ? $logos->logo_1_alt : 'Logo 1' }}" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 1 <span class="text-xs text-indigo-600">(Utama)</span></span>
@@ -406,12 +430,17 @@
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
+                                            @if($logos && $logos->logo_1_updated_at)
+                                                <div class="mt-1 text-xs text-gray-500">
+                                                    <i class="fas fa-clock mr-1"></i> {{ \Carbon\Carbon::parse($logos->logo_1_updated_at)->format('d M Y H:i') }}
+                                                </div>
+                                            @endif
                                         </div>
                                         
                                         <!-- Logo 2 -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img id="logo2-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo2.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo2.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Logo 2" class="w-full h-32 object-contain">
+                                                <img id="logo2-preview" src="{{ $logos && $logos->logo_2_path ? asset($logos->logo_2_path).'?v='.rand() : asset('placeholder-image.png') }}" alt="{{ $logos && $logos->logo_2_alt ? $logos->logo_2_alt : 'Logo 2' }}" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 2</span>
@@ -419,12 +448,17 @@
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
+                                            @if($logos && $logos->logo_2_updated_at)
+                                                <div class="mt-1 text-xs text-gray-500">
+                                                    <i class="fas fa-clock mr-1"></i> {{ \Carbon\Carbon::parse($logos->logo_2_updated_at)->format('d M Y H:i') }}
+                                                </div>
+                                            @endif
                                         </div>
                                         
                                         <!-- Logo 3 -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img id="logo3-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/logo3.png') ? \Illuminate\Support\Facades\Storage::url('logos/logo3.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Logo 3" class="w-full h-32 object-contain">
+                                                <img id="logo3-preview" src="{{ $logos && $logos->logo_3_path ? asset($logos->logo_3_path).'?v='.rand() : asset('placeholder-image.png') }}" alt="{{ $logos && $logos->logo_3_alt ? $logos->logo_3_alt : 'Logo 3' }}" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Logo 3</span>
@@ -432,12 +466,17 @@
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
+                                            @if($logos && $logos->logo_3_updated_at)
+                                                <div class="mt-1 text-xs text-gray-500">
+                                                    <i class="fas fa-clock mr-1"></i> {{ \Carbon\Carbon::parse($logos->logo_3_updated_at)->format('d M Y H:i') }}
+                                                </div>
+                                            @endif
                                         </div>
                                         
                                         <!-- Title Logo -->
                                         <div class="border rounded-lg p-2 bg-white">
                                             <div class="aspect-w-1 aspect-h-1">
-                                                <img id="title-logo-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('logos/title-logo.png') ? \Illuminate\Support\Facades\Storage::url('logos/title-logo.png').'?v='.rand() : asset('placeholder-image.png') }}" alt="Title Logo" class="w-full h-32 object-contain">
+                                                <img id="title-logo-preview" src="{{ $logos && $logos->title_logo_path ? asset($logos->title_logo_path).'?v='.rand() : asset('placeholder-image.png') }}" alt="{{ $logos && $logos->title_logo_alt ? $logos->title_logo_alt : 'Title Logo' }}" class="w-full h-32 object-contain">
                                             </div>
                                             <div class="mt-2 flex justify-between items-center">
                                                 <span class="text-sm font-medium text-gray-700">Title Logo <span class="text-xs text-green-600">(Kompress)</span></span>
@@ -445,6 +484,11 @@
                                                     <i class="fas fa-edit mr-1"></i> Ubah
                                                 </button>
                                             </div>
+                                            @if($logos && $logos->title_logo_updated_at)
+                                                <div class="mt-1 text-xs text-gray-500">
+                                                    <i class="fas fa-clock mr-1"></i> {{ \Carbon\Carbon::parse($logos->title_logo_updated_at)->format('d M Y H:i') }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="text-xs text-gray-500 mt-2">
@@ -464,36 +508,13 @@
                                             </button>
                                         </div>
                                         <div class="border rounded-lg p-2">
-                                            @php
-                                                $structureImagePath = null;
-                                                $structureUpdatedAt = null;
-                                                
-                                                // Cek apakah ada data di settings
-                                                $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
-                                                if ($settings && !empty($settings->structure_image_path)) {
-                                                    $structureImagePath = $settings->structure_image_path;
-                                                    $structureUpdatedAt = $settings->structure_image_updated_at;
-                                                }
-                                                
-                                                // Jika tidak ada di settings, gunakan path default
-                                                $displayPath = $structureImagePath 
-                                                    ? asset($structureImagePath) 
-                                                    : (\Illuminate\Support\Facades\Storage::disk('public')->exists('images/struktur.jpg') 
-                                                        ? \Illuminate\Support\Facades\Storage::url('images/struktur.jpg').'?v='.rand() 
-                                                        : asset('placeholder-image.png'));
-                                                
-                                                // Tambahkan timestamp update jika ada
-                                                if ($structureUpdatedAt) {
-                                                    $displayPath .= '?v=' . strtotime($structureUpdatedAt);
-                                                }
-                                            @endphp
-                                            <img id="structure-preview" src="{{ $displayPath }}" alt="Struktur Organisasi" class="w-full h-48 object-contain rounded">
+                                            <img id="structure-preview" src="{{ $logos && $logos->structure_image_path ? asset($logos->structure_image_path).'?v='.rand() : asset('placeholder-image.png') }}" alt="{{ $logos && $logos->structure_image_alt ? $logos->structure_image_alt : 'Struktur Organisasi' }}" class="w-full h-48 object-contain rounded">
                                         </div>
                                         <div class="text-xs text-gray-500 mt-2">
                                             <i class="fas fa-info-circle mr-1"></i> Gambar ini menampilkan struktur organisasi perusahaan pada halaman profil.
-                                            @if($structureUpdatedAt)
+                                            @if($logos && $logos->structure_image_updated_at)
                                                 <div class="mt-1 text-xs text-blue-500">
-                                                    <i class="fas fa-clock mr-1"></i> Terakhir diperbarui: {{ \Carbon\Carbon::parse($structureUpdatedAt)->format('d M Y H:i') }}
+                                                    <i class="fas fa-clock mr-1"></i> Terakhir diperbarui: {{ \Carbon\Carbon::parse($logos->structure_image_updated_at)->format('d M Y H:i') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -512,10 +533,15 @@
                                             </button>
                                         </div>
                                         <div class="border rounded-lg p-2">
-                                            <img id="logistics-preview" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('images/logistics.jpg') ? \Illuminate\Support\Facades\Storage::url('images/logistics.jpg').'?v='.rand() : asset('placeholder-image.png') }}" alt="Operasi Logistik" class="w-full h-48 object-cover rounded">
+                                            <img id="logistics-preview" src="{{ $logos && $logos->logistics_image_path ? asset($logos->logistics_image_path).'?v='.rand() : asset('placeholder-image.png') }}" alt="{{ $logos && $logos->logistics_image_alt ? $logos->logistics_image_alt : 'Operasi Logistik' }}" class="w-full h-48 object-cover rounded">
                                         </div>
                                         <div class="text-xs text-gray-500 mt-2">
                                             <i class="fas fa-info-circle mr-1"></i> Gambar ini ditampilkan di bawah logo pada halaman profil perusahaan.
+                                            @if($logos && $logos->logistics_image_updated_at)
+                                                <div class="mt-1 text-xs text-red-500">
+                                                    <i class="fas fa-clock mr-1"></i> Terakhir diperbarui: {{ \Carbon\Carbon::parse($logos->logistics_image_updated_at)->format('d M Y H:i') }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -1082,945 +1108,462 @@
     </div>
 </div>
 
-@endsection
-
-@push('scripts')
-<script>
-    function previewCompanyLogo(input) {
-        const preview = document.getElementById('company-logo-preview');
-        const placeholder = document.getElementById('company-logo-placeholder');
-        
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-                if (placeholder) {
-                    placeholder.classList.add('hidden');
-                }
-            };
-            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // Fungsi untuk menampilkan/menyembunyikan informasi ZDX API
-    function toggleZdxApiInfo() {
-        const provider = document.getElementById('tracking_provider').value;
-        const zdxApiInfo = document.getElementById('zdx-api-info');
-        
-        if (zdxApiInfo) {
-            if (provider === 'zdx_api') {
-                zdxApiInfo.classList.remove('hidden');
-            } else {
-                zdxApiInfo.classList.add('hidden');
-            }
-        }
-    }
-
-    // Tab navigation
-    document.addEventListener('DOMContentLoaded', function() {
-        // Tambahkan event listener untuk perubahan provider
-        const trackingProviderSelect = document.getElementById('tracking_provider');
-        if (trackingProviderSelect) {
-            trackingProviderSelect.addEventListener('change', toggleZdxApiInfo);
-            // Jalankan satu kali saat halaman dimuat
-            toggleZdxApiInfo();
-        }
-
-        const navLinks = document.querySelectorAll('[id^="nav-"]');
-        const contentSections = document.querySelectorAll('[id^="content-"]');
-        
-        // Cek apakah ada hash di URL atau tab tersimpan di sessionStorage
-        let activeTab = window.location.hash.substring(1) || sessionStorage.getItem('activeSettingsTab') || 'analytics';
-        
-        // Ambil parameter tab dari URL jika ada
-        const urlParams = new URLSearchParams(window.location.search);
-        const tabParam = urlParams.get('tab');
-        
-        // Jika ada parameter tab di URL, gunakan itu untuk mengaktifkan tab perusahaan
-        if (tabParam === 'logos') {
-            activeTab = 'company';
-            setTimeout(() => {
-                // Aktifkan tab Logo & Media
-                activateCompanyTab('tab-logos');
-            }, 100);
-        }
-        
-        // Fungsi untuk mengaktifkan tab
-        function activateTab(tabName) {
-            // Simpan tab aktif ke sessionStorage
-            sessionStorage.setItem('activeSettingsTab', tabName);
-            
-            // Remove active class from all links
-            navLinks.forEach(navLink => {
-                navLink.classList.remove('bg-indigo-50', 'text-indigo-600');
-                navLink.classList.add('text-gray-700', 'hover:bg-gray-50');
-            });
-            
-            // Add active class to selected tab link
-            const activeLink = document.getElementById('nav-' + tabName);
-            if (activeLink) {
-                activeLink.classList.add('bg-indigo-50', 'text-indigo-600');
-                activeLink.classList.remove('text-gray-700', 'hover:bg-gray-50');
-            }
-            
-            // Hide all content sections
-            contentSections.forEach(section => {
-                section.classList.add('hidden');
-            });
-            
-            // Show associated content section
-            const targetContent = document.getElementById('content-' + tabName);
-            if (targetContent) {
-                targetContent.classList.remove('hidden');
-            }
-        }
-        
-        // Aktifkan tab yang sesuai saat halaman dimuat
-        activateTab(activeTab);
-        
-        // Tambahkan event listener untuk klik pada tab
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Ambil nama tab dari atribut href
-                const target = this.getAttribute('href').substring(1);
-                
-                // Aktifkan tab dan perbarui URL hash
-                activateTab(target);
-                window.location.hash = target;
-            });
-        });
-        
-        // Company tab navigation
-        const companyTabs = document.querySelectorAll('[id^="tab-"]');
-        const companyPanels = document.querySelectorAll('.company-panel');
-        
-        // Fungsi untuk mengaktifkan tab perusahaan
-        function activateCompanyTab(tabId) {
-            // Nonaktifkan semua tab
-            companyTabs.forEach(tab => {
-                tab.classList.remove('border-indigo-600', 'text-indigo-600');
-                tab.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
-            });
-            
-            // Aktifkan tab yang dipilih
-            const activeTab = document.getElementById(tabId);
-            if (activeTab) {
-                activeTab.classList.add('border-indigo-600', 'text-indigo-600');
-                activeTab.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
-            }
-            
-            // Sembunyikan semua panel
-            companyPanels.forEach(panel => {
-                panel.classList.add('hidden');
-            });
-            
-            // Tampilkan panel yang sesuai dengan tab
-            const panelId = tabId.replace('tab-', 'panel-');
-            const activePanel = document.getElementById(panelId);
-            if (activePanel) {
-                activePanel.classList.remove('hidden');
-            }
-            
-            // Jika panelnya adalah logos, refresh gambar
-            if (panelId === 'panel-logos') {
-                refreshLogos(true);
-            }
-        }
-        
-        // Tambahkan event listener untuk klik pada tab perusahaan
-        companyTabs.forEach(tab => {
-            tab.addEventListener('click', function(e) {
-                e.preventDefault();
-                activateCompanyTab(this.id);
-            });
-        });
-        
-        // Tracking API Test
-        const testTrackingApiBtn = document.getElementById('test_tracking_api');
-        if (testTrackingApiBtn) {
-            testTrackingApiBtn.addEventListener('click', function() {
-                const trackingNumber = document.getElementById('tracking_test_number').value.trim();
-                const apiUrl = document.getElementById('tracking_api_url').value.trim();
-                const apiKey = document.getElementById('tracking_api_key').value.trim();
-                const provider = document.getElementById('tracking_provider').value;
-                const method = document.getElementById('tracking_request_method').value;
-                const headersText = document.getElementById('tracking_request_headers').value.trim();
-                
-                // Validasi input dasar
-                if (!trackingNumber) {
-                    alert('Silakan masukkan nomor resi untuk testing');
-                    return;
-                }
-                
-                if (!apiUrl) {
-                    alert('URL API harus diisi');
-                    return;
-                }
-                
-                // Tampilkan area hasil dan loading state
-                const resultArea = document.getElementById('tracking_api_test_result');
-                const responseElement = document.getElementById('tracking_test_response');
-                resultArea.classList.remove('hidden');
-                responseElement.textContent = 'Memuat data...';
-                
-                // Siapkan data untuk dikirim ke backend
-                const testData = {
-                    tracking_number: trackingNumber,
-                    api_url: apiUrl,
-                    api_key: apiKey,
-                    provider: provider,
-                    method: method
-                };
-                
-                // Tambahkan headers jika ada
-                if (headersText) {
-                    try {
-                        testData.headers = JSON.parse(headersText);
-                    } catch (e) {
-                        responseElement.textContent = 'Error: Format JSON headers tidak valid. ' + e.message;
-                        return;
-                    }
-                }
-                
-                console.log('Mengirim data testing:', testData);
-                
-                // Kirim request ke endpoint testing
-                fetch('{{ route("admin.settings.tracking.test") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify(testData)
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Response data:', data);
-                    if (data.success) {
-                        responseElement.textContent = JSON.stringify(data.response, null, 2);
-                    } else {
-                        responseElement.textContent = 'Error: ' + data.message + '\n\n' + JSON.stringify(data.response || {}, null, 2);
-                    }
-                    
-                    // Tampilkan detail request jika tersedia
-                    const requestDetails = document.getElementById('tracking_request_details');
-                    const requestUrl = document.getElementById('request_url');
-                    const requestMethod = document.getElementById('request_method');
-                    
-                    if (data.request_url && data.request_method) {
-                        requestUrl.textContent = data.request_url;
-                        requestMethod.textContent = data.request_method;
-                        requestDetails.classList.remove('hidden');
-                    } else {
-                        requestDetails.classList.add('hidden');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error testing API:', error);
-                    responseElement.textContent = 'Error saat melakukan request: ' + error.message;
-                });
-            });
-        }
-        
-        // Show/hide penyedia custom fields based on provider selection
-        const trackingProviderSelect = document.getElementById('tracking_provider');
-        if (trackingProviderSelect) {
-            const toggleCustomFields = function() {
-                const customFields = document.querySelectorAll('.custom-provider-fields');
-                if (trackingProviderSelect.value === 'custom') {
-                    customFields.forEach(field => field.classList.remove('hidden'));
-                } else {
-                    customFields.forEach(field => field.classList.add('hidden'));
-                }
-            };
-            
-            trackingProviderSelect.addEventListener('change', toggleCustomFields);
-            toggleCustomFields(); // Run once on init
-        }
-        
-        // Logo edit buttons
-        const logoEditButtons = document.querySelectorAll('.logo-edit');
-        const logoUploadModal = document.getElementById('logoUploadModal');
-        const logoNumber = document.getElementById('logoNumber');
-        const closeModalButtons = document.querySelectorAll('.close-modal');
-        
-        if (logoEditButtons.length > 0 && logoUploadModal) {
-            logoEditButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const logo = this.getAttribute('data-logo');
-                    logoNumber.value = logo;
-                    logoUploadModal.classList.remove('hidden');
-                });
-            });
-            
-            closeModalButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    logoUploadModal.classList.add('hidden');
-                });
-            });
-        }
-        
-        // Logo preview
-        const logoFile = document.getElementById('logoFile');
-        const logoPreview = document.getElementById('logoPreview');
-        const previewContainer = document.getElementById('previewContainer');
-        
-        if (logoFile && logoPreview) {
-            logoFile.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        logoPreview.src = e.target.result;
-                        previewContainer.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(this.files[0]);
-                }
-            });
-        }
-        
-        // Logistics image edit
-        const changeLogisticsBtn = document.getElementById('changeLogisticsBtn');
-        const logisticsUploadModal = document.getElementById('logisticsUploadModal');
-        const closeLogisticsModalButtons = document.querySelectorAll('.close-logistics-modal');
-        
-        if (changeLogisticsBtn && logisticsUploadModal) {
-            changeLogisticsBtn.addEventListener('click', function() {
-                logisticsUploadModal.classList.remove('hidden');
-            });
-            
-            closeLogisticsModalButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    logisticsUploadModal.classList.add('hidden');
-                });
-            });
-        }
-    });
-</script>
-
-<script>
-    // Fungsi untuk memperbarui gambar logo setelah upload berhasil
-    function refreshLogos(forceRefresh = false) {
-        // Dapatkan semua elemen gambar logo berdasarkan ID
-        const logo1Image = document.getElementById('logo1-preview');
-        const logo2Image = document.getElementById('logo2-preview');
-        const logo3Image = document.getElementById('logo3-preview');
-        const titleLogoImage = document.getElementById('title-logo-preview');
-        const logisticsImage = document.getElementById('logistics-preview');
-        
-        // Tambahkan parameter random ke URL gambar untuk memaksa browser mengambil gambar baru
-        const timestamp = new Date().getTime();
-        
-        if (logo1Image) {
-            const baseUrl = logo1Image.src.split('?')[0];
-            logo1Image.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
-            
-            // Untuk memaksa browser me-reload gambar secara visual
-            if (forceRefresh) {
-                logo1Image.style.opacity = '0.5';
-                setTimeout(() => {
-                    logo1Image.style.opacity = '1';
-                }, 300);
-            }
-        }
-        
-        if (logo2Image) {
-            const baseUrl = logo2Image.src.split('?')[0];
-            logo2Image.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
-            
-            if (forceRefresh) {
-                logo2Image.style.opacity = '0.5';
-                setTimeout(() => {
-                    logo2Image.style.opacity = '1';
-                }, 300);
-            }
-        }
-        
-        if (logo3Image) {
-            const baseUrl = logo3Image.src.split('?')[0];
-            logo3Image.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
-            
-            if (forceRefresh) {
-                logo3Image.style.opacity = '0.5';
-                setTimeout(() => {
-                    logo3Image.style.opacity = '1';
-                }, 300);
-            }
-        }
-        
-        if (titleLogoImage) {
-            const baseUrl = titleLogoImage.src.split('?')[0];
-            titleLogoImage.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
-            
-            if (forceRefresh) {
-                titleLogoImage.style.opacity = '0.5';
-                setTimeout(() => {
-                    titleLogoImage.style.opacity = '1';
-                }, 300);
-            }
-        }
-        
-        if (logisticsImage) {
-            const baseUrl = logisticsImage.src.split('?')[0];
-            logisticsImage.setAttribute('src', baseUrl + '?v=' + timestamp + '&nocache=' + Math.random());
-            
-            if (forceRefresh) {
-                logisticsImage.style.opacity = '0.5';
-                setTimeout(() => {
-                    logisticsImage.style.opacity = '1';
-                }, 300);
-            }
-        }
-    }
-    
-    // Tambahkan event untuk memperbarui gambar setelah modal ditutup
-    document.addEventListener('DOMContentLoaded', function() {
-        // Cek apakah ada pesan sukses untuk upload logo
-        const successMessage = "{{ session('success') }}";
-        if (successMessage && successMessage.includes('Logo berhasil')) {
-            // Tambahkan timeout untuk memastikan halaman sudah sepenuhnya di-load
-            setTimeout(() => {
-                refreshLogos(true);
-            }, 500);
-        }
-        
-        // Tambahkan tombol "Refresh Gambar" ke panel logo
-        const logoPanel = document.getElementById('panel-logos');
-        if (logoPanel) {
-            const refreshBtn = document.createElement('button');
-            refreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Refresh Gambar';
-            refreshBtn.className = 'px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-md hover:bg-gray-700 focus:outline-none focus:ring mt-2';
-            refreshBtn.id = 'refreshLogosBtn';
-            refreshBtn.onclick = function() {
-                refreshLogos(true);
-                alert('Gambar logo diperbarui!');
-            }
-            
-            // Tambahkan tombol ke panel logo jika belum ada
-            if (!document.getElementById('refreshLogosBtn')) {
-                logoPanel.querySelector('.bg-indigo-50').appendChild(refreshBtn);
-            }
-            
-            // Tambahkan tombol Hard Refresh di bagian atas panel Logo & Media
-            const hardRefreshBtn = document.createElement('button');
-            hardRefreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Hard Refresh Gambar';
-            hardRefreshBtn.className = 'px-3 py-1 mt-2 mb-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring';
-            hardRefreshBtn.onclick = function() {
-                // Paksa gambar mereload dari server tanpa cache
-                refreshLogos(true);
-                
-                // Lakukan hard reload pada halaman dengan clear cache
-                const currentUrl = window.location.href.split('?')[0];
-                const newUrl = currentUrl + '?tab=logos&t=' + new Date().getTime() + '&nocache=' + Math.random();
-                window.location.href = newUrl;
-            }
-            
-            // Tambahkan tombol ke bagian atas panel logo
-            if (!document.getElementById('hardRefreshBtn')) {
-                const logosPanelTopArea = logoPanel.querySelector('.bg-indigo-50');
-                if (logosPanelTopArea) {
-                    // Tambahkan tombol di awal panel
-                    const hardRefreshContainer = document.createElement('div');
-                    hardRefreshContainer.className = 'flex justify-end mb-2';
-                    hardRefreshContainer.appendChild(hardRefreshBtn);
-                    
-                    // Tempatkan container di awal panel
-                    logosPanelTopArea.insertBefore(hardRefreshContainer, logosPanelTopArea.firstChild);
-                    hardRefreshBtn.id = 'hardRefreshBtn';
-                }
-            }
-        }
-        
-        // Tambahkan event untuk merefresh gambar ketika form logo disubmit
-        const logoForm = document.querySelector('form[action*="logo.upload"]');
-        if (logoForm) {
-            logoForm.addEventListener('submit', function() {
-                // Tambahkan flag untuk menandai bahwa form telah disubmit
-                sessionStorage.setItem('logoFormSubmitted', 'true');
-            });
-        }
-        
-        // Cek jika form telah disubmit sebelumnya
-        if (sessionStorage.getItem('logoFormSubmitted') === 'true') {
-            // Reset flag
-            sessionStorage.removeItem('logoFormSubmitted');
-            // Refresh gambar
-            setTimeout(() => {
-                refreshLogos(true);
-            }, 500);
-        }
-        
-        // Tambahkan event listener untuk menutup modal yang akan refresh gambar
-        const closeModalBtns = document.querySelectorAll('.close-modal');
-        if (closeModalBtns.length > 0) {
-            closeModalBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Force refresh gambar saat modal ditutup
-                    setTimeout(() => {
-                        refreshLogos(true);
-                    }, 300);
-                });
-            });
-        }
-    });
-</script>
-
-<script>
-    // Fungsi untuk menangani tampilan tab
-    function handleTabNavigation() {
-        // Mendapatkan hash dari URL atau menggunakan default
-        let currentTab = window.location.hash || '#analytics';
-        
-        // Menghapus class active dari semua nav links
-        document.querySelectorAll('[id^="nav-"]').forEach(navItem => {
-            navItem.classList.remove('bg-indigo-50', 'text-indigo-600');
-            navItem.classList.add('text-gray-700', 'hover:bg-gray-50');
-        });
-        
-        // Menambahkan class active ke nav link yang aktif
-        const activeNav = document.getElementById('nav-' + currentTab.substring(1));
-        if (activeNav) {
-            activeNav.classList.add('bg-indigo-50', 'text-indigo-600');
-            activeNav.classList.remove('text-gray-700', 'hover:bg-gray-50');
-        }
-        
-        // Sembunyikan semua content
-        document.querySelectorAll('[id^="content-"]').forEach(content => {
-            content.classList.add('hidden');
-        });
-        
-        // Tampilkan content yang sesuai
-        const activeContent = document.getElementById('content-' + currentTab.substring(1));
-        if (activeContent) {
-            activeContent.classList.remove('hidden');
-        }
-    }
-    
-    // Menangani klik pada nav link
-    document.querySelectorAll('[id^="nav-"]').forEach(navItem => {
-        navItem.addEventListener('click', function(event) {
-            event.preventDefault();
-            const tabId = this.id.replace('nav-', '');
-            window.location.hash = tabId;
-            handleTabNavigation();
-        });
-    });
-    
-    // Menerapkan tab navigasi saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', handleTabNavigation);
-    
-    // Mendeteksi perubahan hash
-    window.addEventListener('hashchange', handleTabNavigation);
-
-    // Handle "content-company" subtabs
-    const tabGeneral = document.getElementById('tab-general');
-    const tabLogos = document.getElementById('tab-logos');
-    const tabAbout = document.getElementById('tab-about');
-    const tabMission = document.getElementById('tab-mission');
-    
-    const panelGeneral = document.getElementById('panel-general');
-    const panelLogos = document.getElementById('panel-logos');
-    const panelAbout = document.getElementById('panel-about');
-    const panelMission = document.getElementById('panel-mission');
-    
-    // Fungsi untuk mengaktifkan tab
-    function activateCompanyTab(tab, panel) {
-            // Reset semua tab
-            [tabGeneral, tabLogos, tabAbout, tabMission].forEach(t => {
-                if (t) t.classList.remove('border-indigo-600', 'text-indigo-600', 'active');
-                if (t) t.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
-            });
-            
-            // Reset semua panel
-            document.querySelectorAll('.company-panel').forEach(p => {
-                p.classList.add('hidden');
-            });
-            
-            // Aktifkan tab yang dipilih
-            if (tab) {
-                tab.classList.add('border-indigo-600', 'text-indigo-600', 'active');
-                tab.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
-            }
-            
-            // Tampilkan panel yang sesuai
-            if (panel) {
-                panel.classList.remove('hidden');
-            }
-        }
-        
-        // Tambahkan event listener untuk tab
-        if (tabGeneral) {
-            tabGeneral.addEventListener('click', function(e) {
-                e.preventDefault();
-                activateCompanyTab(tabGeneral, panelGeneral);
-            });
-        }
-        
-        if (tabLogos) {
-            tabLogos.addEventListener('click', function(e) {
-                e.preventDefault();
-                activateCompanyTab(tabLogos, panelLogos);
-            });
-        }
-        
-        if (tabAbout) {
-            tabAbout.addEventListener('click', function(e) {
-                e.preventDefault();
-                activateCompanyTab(tabAbout, panelAbout);
-            });
-        }
-        
-        if (tabMission) {
-            tabMission.addEventListener('click', function(e) {
-                e.preventDefault();
-                activateCompanyTab(tabMission, panelMission);
-            });
-        }
-        
-        // Check session message for update status
-        const updateSuccessMessage = "{{ session('update_success') }}";
-        const updateErrorMessage = "{{ session('update_error') }}";
-        
-        if (updateSuccessMessage || updateErrorMessage) {
-            // Redirect to update tab if there are update messages
-            window.location.hash = 'update';
-            handleTabNavigation();
-        }
-    </script>
-  @endpush
-</script>
-
 <!-- Modal Upload Logo -->
-<div id="logoUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Upload Logo Perusahaan</h3>
-            <button type="button" class="close-modal text-gray-500 hover:text-gray-700" onclick="hideLogoModal()">
-                <i class="fas fa-times"></i>
+<div id="logoModal" class="fixed inset-0 z-50 hidden overflow-auto bg-gray-800 bg-opacity-75">
+    <div class="relative p-6 mx-auto my-10 max-w-xl bg-white rounded-lg shadow-xl">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b">
+            <h3 class="text-xl font-semibold text-gray-900">Upload Logo <span id="logoNumberText"></span></h3>
+            <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeLogoModal()">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
         </div>
         
-        <form action="{{ route('admin.logo.upload') }}" method="POST" enctype="multipart/form-data" id="logoUploadForm">
+        <form action="{{ route('admin.company-media.logo.upload') }}" method="POST" enctype="multipart/form-data" id="logoForm">
             @csrf
-            <input type="hidden" name="logo_number" id="logoNumber" value="1">
+            <input type="hidden" name="logo_number" id="logoNumber" value="">
             
             <div class="mb-4">
-                <label for="logoFile" class="block text-sm font-medium text-gray-700 mb-1">
-                    File Logo
-                </label>
-                <input type="file" name="logo_file" id="logoFile" accept="image/*" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, GIF. Ukuran maksimal 2MB.</p>
-            </div>
-            
-            <div id="previewContainer" class="mb-4 hidden">
-                <p class="text-sm font-medium text-gray-700 mb-1">Preview</p>
-                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
-                    <img id="logoPreview" src="#" alt="Logo Preview" class="max-h-40 mx-auto">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="logo-dropzone">
+                    <div id="logo-preview-container" class="mb-3 hidden">
+                        <img id="logo-preview" src="" alt="Preview" class="mx-auto h-32 object-contain rounded">
+                    </div>
+                    <label for="logo_file" class="cursor-pointer inline-flex flex-col items-center">
+                        <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                        <span class="text-sm text-gray-600">Klik untuk upload logo</span>
+                        <span class="text-xs text-gray-500 mt-1">PNG, JPG, GIF (maks. 2MB)</span>
+                        <input type="file" name="logo_file" id="logo_file" class="hidden" accept="image/*" required onchange="previewLogoImage(this)">
+                    </label>
                 </div>
             </div>
             
-            <div class="flex justify-end space-x-3">
-                <button type="button" class="close-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="hideLogoModal()">
-                    Batal
-                </button>
-                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">
-                    Upload Logo
-                </button>
+            <div class="mb-4">
+                <label for="logo_alt" class="block text-sm font-medium text-gray-700 mb-1">Alt Text (Deskripsi Logo)</label>
+                <input type="text" name="logo_alt" id="logo_alt" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Logo ZDX Cargo">
+                <p class="text-xs text-gray-500 mt-1">Deskripsi untuk aksesibilitas dan SEO</p>
+            </div>
+            
+            <div class="mb-4">
+                <label for="logo_name" class="block text-sm font-medium text-gray-700 mb-1">Nama File (opsional)</label>
+                <input type="text" name="logo_name" id="logo_name" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Biarkan kosong untuk penamaan otomatis">
+                <p class="text-xs text-gray-500 mt-1">Nama ini akan digunakan sebagai bagian dari nama file</p>
+            </div>
+            
+            <div class="flex justify-between mt-6">
+                <button type="button" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="closeLogoModal()">Batal</button>
+                <div class="flex space-x-2">
+                    <button type="button" id="deleteLogo" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 hidden" onclick="deleteMedia('logo')">Hapus</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Upload</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Upload Struktur Organisasi -->
+<div id="structureModal" class="fixed inset-0 z-50 hidden overflow-auto bg-gray-800 bg-opacity-75">
+    <div class="relative p-6 mx-auto my-10 max-w-xl bg-white rounded-lg shadow-xl">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b">
+            <h3 class="text-xl font-semibold text-gray-900">Upload Struktur Organisasi</h3>
+            <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeStructureModal()">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <form action="{{ route('admin.company-media.structure.upload') }}" method="POST" enctype="multipart/form-data" id="structureForm">
+            @csrf
+            
+            <div class="mb-4">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="structure-dropzone">
+                    <div id="structure-preview-container" class="mb-3 hidden">
+                        <img id="structure-modal-preview" src="" alt="Preview" class="mx-auto h-40 object-contain rounded">
+                    </div>
+                    <label for="structure_file" class="cursor-pointer inline-flex flex-col items-center">
+                        <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                        <span class="text-sm text-gray-600">Klik untuk upload gambar struktur</span>
+                        <span class="text-xs text-gray-500 mt-1">PNG, JPG (maks. 2MB)</span>
+                        <input type="file" name="structure_file" id="structure_file" class="hidden" accept="image/*" required onchange="previewStructureImage(this)">
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="structure_alt" class="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+                <input type="text" name="structure_alt" id="structure_alt" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Struktur Organisasi ZDX Cargo">
+                <p class="text-xs text-gray-500 mt-1">Deskripsi untuk aksesibilitas dan SEO</p>
+            </div>
+            
+            <div class="mb-4">
+                <label for="structure_name" class="block text-sm font-medium text-gray-700 mb-1">Nama File (opsional)</label>
+                <input type="text" name="structure_name" id="structure_name" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Biarkan kosong untuk penamaan otomatis">
+                <p class="text-xs text-gray-500 mt-1">Nama ini akan digunakan sebagai bagian dari nama file</p>
+            </div>
+            
+            <div class="flex justify-between mt-6">
+                <button type="button" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="closeStructureModal()">Batal</button>
+                <div class="flex space-x-2">
+                    <button type="button" id="deleteStructure" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 hidden" onclick="deleteMedia('structure_image')">Hapus</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Upload</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal Upload Gambar Logistik -->
-<div id="logisticsUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Upload Gambar Logistik</h3>
-            <button type="button" class="close-logistics-modal text-gray-500 hover:text-gray-700" onclick="hideLogisticsModal()">
-                <i class="fas fa-times"></i>
+<div id="logisticsModal" class="fixed inset-0 z-50 hidden overflow-auto bg-gray-800 bg-opacity-75">
+    <div class="relative p-6 mx-auto my-10 max-w-xl bg-white rounded-lg shadow-xl">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b">
+            <h3 class="text-xl font-semibold text-gray-900">Upload Gambar Logistik</h3>
+            <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeLogisticsModal()">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
         </div>
         
-        <form action="{{ route('admin.logistics.upload') }}" method="POST" enctype="multipart/form-data" id="logisticsUploadForm">
+        <form action="{{ route('admin.company-media.logistics.upload') }}" method="POST" enctype="multipart/form-data" id="logisticsForm">
             @csrf
-            <div class="mb-4">
-                <label for="logisticsFile" class="block text-sm font-medium text-gray-700 mb-1">
-                    File Gambar
-                </label>
-                <input type="file" name="logistics_file" id="logisticsFile" accept="image/*" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, JPG. Ukuran maksimal 2MB.</p>
-            </div>
             
-            <div id="logisticsPreviewContainer" class="mb-4 hidden">
-                <p class="text-sm font-medium text-gray-700 mb-1">Preview</p>
-                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
-                    <img id="logisticsPreview" src="#" alt="Logistik Preview" class="max-h-40 mx-auto">
+            <div class="mb-4">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="logistics-dropzone">
+                    <div id="logistics-preview-container" class="mb-3 hidden">
+                        <img id="logistics-modal-preview" src="" alt="Preview" class="mx-auto h-40 object-cover rounded">
+                    </div>
+                    <label for="logistics_file" class="cursor-pointer inline-flex flex-col items-center">
+                        <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                        <span class="text-sm text-gray-600">Klik untuk upload gambar logistik</span>
+                        <span class="text-xs text-gray-500 mt-1">PNG, JPG (maks. 2MB)</span>
+                        <input type="file" name="logistics_file" id="logistics_file" class="hidden" accept="image/*" required onchange="previewLogisticsImage(this)">
+                    </label>
                 </div>
             </div>
             
-            <div class="flex justify-end space-x-3">
-                <button type="button" class="close-logistics-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="hideLogisticsModal()">
-                    Batal
-                </button>
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
-                    Upload Gambar
-                </button>
-            </div>
-        </form>
-    </div>
-</div> 
-
-<!-- Modal Upload Gambar Struktur Organisasi -->
-<div id="structureUploadModal" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Upload Struktur Organisasi</h3>
-            <button type="button" class="close-structure-modal text-gray-500 hover:text-gray-700" onclick="hideStructureModal()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <form action="{{ route('admin.structure.upload') }}" method="POST" enctype="multipart/form-data" id="structureUploadForm">
-            @csrf
             <div class="mb-4">
-                <label for="structureFile" class="block text-sm font-medium text-gray-700 mb-1">
-                    File Gambar
-                </label>
-                <input type="file" name="structure_file" id="structureFile" accept="image/*" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPEG, PNG, JPG. Ukuran maksimal 2MB.</p>
+                <label for="logistics_alt" class="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+                <input type="text" name="logistics_alt" id="logistics_alt" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Operasi Logistik ZDX Cargo">
+                <p class="text-xs text-gray-500 mt-1">Deskripsi untuk aksesibilitas dan SEO</p>
             </div>
             
-            <div id="structurePreviewContainer" class="mb-4 hidden">
-                <p class="text-sm font-medium text-gray-700 mb-1">Preview</p>
-                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
-                    <img id="structurePreview" src="#" alt="Struktur Organisasi Preview" class="max-h-40 mx-auto">
+            <div class="mb-4">
+                <label for="logistics_name" class="block text-sm font-medium text-gray-700 mb-1">Nama File (opsional)</label>
+                <input type="text" name="logistics_name" id="logistics_name" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Biarkan kosong untuk penamaan otomatis">
+                <p class="text-xs text-gray-500 mt-1">Nama ini akan digunakan sebagai bagian dari nama file</p>
+            </div>
+            
+            <div class="flex justify-between mt-6">
+                <button type="button" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="closeLogisticsModal()">Batal</button>
+                <div class="flex space-x-2">
+                    <button type="button" id="deleteLogistics" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 hidden" onclick="deleteMedia('logistics_image')">Hapus</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Upload</button>
                 </div>
-            </div>
-            
-            <div class="flex justify-end space-x-3">
-                <button type="button" class="close-structure-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50" onclick="hideStructureModal()">
-                    Batal
-                </button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
-                    Upload Gambar
-                </button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Form Delete Media -->
+<form id="deleteMediaForm" action="{{ route('admin.company-media.delete') }}" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="media_type" id="deleteMediaType" value="">
+</form>
+
 @push('scripts')
 <script>
-// Fungsi untuk menampilkan modal upload logo
-function showLogoModal(logoNumber) {
-    const logoUploadModal = document.getElementById('logoUploadModal');
-    const logoNumberInput = document.getElementById('logoNumber');
-    
-    if (logoUploadModal && logoNumberInput) {
-        logoNumberInput.value = logoNumber;
-        logoUploadModal.classList.remove('hidden');
-        
-        // Reset form dan preview jika ada
-        const form = document.getElementById('logoUploadForm');
-        const previewContainer = document.getElementById('previewContainer');
-        if (form) form.reset();
-        if (previewContainer) previewContainer.classList.add('hidden');
-    }
-}
-
-// Fungsi untuk menampilkan modal upload struktur organisasi
-function showStructureModal() {
-    const structureUploadModal = document.getElementById('structureUploadModal');
-    
-    if (structureUploadModal) {
-        structureUploadModal.classList.remove('hidden');
-        
-        // Reset form dan preview jika ada
-        const form = document.getElementById('structureUploadForm');
-        const previewContainer = document.getElementById('structurePreviewContainer');
-        if (form) form.reset();
-        if (previewContainer) previewContainer.classList.add('hidden');
-    }
-}
-
-// Fungsi untuk menampilkan modal upload logistik
-function showLogisticsModal() {
-    const logisticsUploadModal = document.getElementById('logisticsUploadModal');
-    
-    if (logisticsUploadModal) {
-        logisticsUploadModal.classList.remove('hidden');
-        
-        // Reset form dan preview jika ada
-        const form = document.getElementById('logisticsUploadForm');
-        const previewContainer = document.getElementById('logisticsPreviewContainer');
-        if (form) form.reset();
-        if (previewContainer) previewContainer.classList.add('hidden');
-    }
-}
-
-// Fungsi untuk menyembunyikan modal upload logo
-function hideLogoModal() {
-    const logoUploadModal = document.getElementById('logoUploadModal');
-    
-    if (logoUploadModal) {
-        logoUploadModal.classList.add('hidden');
-        
-        // Reset form dan preview
-        const form = document.getElementById('logoUploadForm');
-        const previewContainer = document.getElementById('previewContainer');
-        if (form) form.reset();
-        if (previewContainer) previewContainer.classList.add('hidden');
-    }
-}
-
-// Fungsi untuk menyembunyikan modal upload struktur organisasi
-function hideStructureModal() {
-    const structureUploadModal = document.getElementById('structureUploadModal');
-    
-    if (structureUploadModal) {
-        structureUploadModal.classList.add('hidden');
-        
-        // Reset form dan preview
-        const form = document.getElementById('structureUploadForm');
-        const previewContainer = document.getElementById('structurePreviewContainer');
-        if (form) form.reset();
-        if (previewContainer) previewContainer.classList.add('hidden');
-    }
-}
-
-// Fungsi untuk menyembunyikan modal upload logistik
-function hideLogisticsModal() {
-    const logisticsUploadModal = document.getElementById('logisticsUploadModal');
-    
-    if (logisticsUploadModal) {
-        logisticsUploadModal.classList.add('hidden');
-        
-        // Reset form dan preview
-        const form = document.getElementById('logisticsUploadForm');
-        const previewContainer = document.getElementById('logisticsPreviewContainer');
-        if (form) form.reset();
-        if (previewContainer) previewContainer.classList.add('hidden');
-    }
-}
-
-// Fungsi untuk me-refresh tampilan gambar setelah upload sukses
-function refreshImages() {
-    // Ambil semua gambar yang perlu diperbarui dan tambahkan parameter timestamp baru
-    const logo1Preview = document.getElementById('logo1-preview');
-    const logo2Preview = document.getElementById('logo2-preview');
-    const logo3Preview = document.getElementById('logo3-preview');
-    const titleLogoPreview = document.getElementById('title-logo-preview');
-    const structurePreview = document.getElementById('structure-preview');
-    const logisticsPreview = document.getElementById('logistics-preview');
-    
-    const timestamp = new Date().getTime();
-    
-    if (logo1Preview) {
-        const baseUrl = logo1Preview.src.split('?')[0];
-        logo1Preview.src = baseUrl + '?v=' + timestamp;
-    }
-    
-    if (logo2Preview) {
-        const baseUrl = logo2Preview.src.split('?')[0];
-        logo2Preview.src = baseUrl + '?v=' + timestamp;
-    }
-    
-    if (logo3Preview) {
-        const baseUrl = logo3Preview.src.split('?')[0];
-        logo3Preview.src = baseUrl + '?v=' + timestamp;
-    }
-    
-    if (titleLogoPreview) {
-        const baseUrl = titleLogoPreview.src.split('?')[0];
-        titleLogoPreview.src = baseUrl + '?v=' + timestamp;
-    }
-    
-    if (structurePreview) {
-        const baseUrl = structurePreview.src.split('?')[0];
-        structurePreview.src = baseUrl + '?v=' + timestamp;
-    }
-    
-    if (logisticsPreview) {
-        const baseUrl = logisticsPreview.src.split('?')[0];
-        logisticsPreview.src = baseUrl + '?v=' + timestamp;
-    }
-}
-
-// Inisialisasi event handlers saat DOM sudah siap
+// Fungsi-fungsi untuk tab perusahaan
 document.addEventListener('DOMContentLoaded', function() {
-    // Preview untuk file logo
-    const logoFile = document.getElementById('logoFile');
-    const logoPreview = document.getElementById('logoPreview');
-    const previewContainer = document.getElementById('previewContainer');
+    document.getElementById('tab-general').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchCompanyTab('general');
+    });
+
+    document.getElementById('tab-logos').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchCompanyTab('logos');
+    });
+
+    document.getElementById('tab-about').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchCompanyTab('about');
+    });
+
+    document.getElementById('tab-mission').addEventListener('click', function(e) {
+                e.preventDefault();
+        switchCompanyTab('mission');
+    });
+
+    // Navigasi tab utama
+    const navLinks = document.querySelectorAll('[id^="nav-"]');
+    const contentDivs = document.querySelectorAll('[id^="content-"]');
     
-    if (logoFile && logoPreview && previewContainer) {
-        logoFile.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
+    function showContent(targetId) {
+        // Sembunyikan semua konten
+        contentDivs.forEach(function(div) {
+            div.classList.add('hidden');
+        });
+        
+        // Tampilkan konten yang dipilih
+        const targetContent = document.getElementById('content-' + targetId);
+        if (targetContent) {
+            targetContent.classList.remove('hidden');
+        }
+        
+        // Set kelas aktif pada navigasi
+        navLinks.forEach(function(link) {
+            const linkId = link.id.split('-')[1];
+            if (linkId === targetId) {
+                link.classList.remove('text-gray-700', 'hover:bg-gray-50');
+                link.classList.add('text-indigo-600', 'bg-indigo-50');
+            } else {
+                link.classList.remove('text-indigo-600', 'bg-indigo-50');
+                link.classList.add('text-gray-700', 'hover:bg-gray-50');
+            }
+        });
+    }
+    
+    // Tambahkan event listener untuk setiap navigasi
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.id.split('-')[1];
+            showContent(targetId);
+            
+            // Simpan pilihan tab ke localStorage
+            localStorage.setItem('settings_active_tab', targetId);
+            
+            // Update URL dengan hash
+            window.history.replaceState(null, null, '#' + targetId);
+                });
+            });
+    
+    // Periksa hash di URL
+    const hash = window.location.hash.slice(1);
+    if (hash && document.getElementById('nav-' + hash)) {
+        showContent(hash);
+                } else {
+        // Jika tidak ada hash, periksa localStorage
+        const savedTab = localStorage.getItem('settings_active_tab');
+        if (savedTab && document.getElementById('nav-' + savedTab)) {
+            showContent(savedTab);
+        }
+        // Jika tidak ada localStorage, default ke analytics
+    }
+    
+    // Periksa parameter tab di URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+        // Switch ke tab yang spesifik di dalam tab Company
+        if (hash === 'company' && tabParam === 'logos') {
+            switchCompanyTab('logos');
+        }
+    }
+});
+
+// Fungsi untuk switch tab dalam panel Company
+function switchCompanyTab(tab) {
+    // Sembunyikan semua panel
+    document.querySelectorAll('.company-panel').forEach(function(panel) {
+        panel.classList.add('hidden');
+    });
+    
+    // Tampilkan panel yang dipilih
+    document.getElementById('panel-' + tab).classList.remove('hidden');
+    
+    // Update navigasi tab
+    document.querySelectorAll('[id^="tab-"]').forEach(function(tabEl) {
+        tabEl.classList.remove('border-indigo-600', 'text-indigo-600', 'active');
+        tabEl.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+    });
+    
+    document.getElementById('tab-' + tab).classList.add('border-indigo-600', 'text-indigo-600', 'active');
+    document.getElementById('tab-' + tab).classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+}
+
+// Fungsi untuk modal logo
+function showLogoModal(logoNumber) {
+    const modal = document.getElementById('logoModal');
+    const logoNumberInput = document.getElementById('logoNumber');
+    const logoNumberText = document.getElementById('logoNumberText');
+    const deleteBtn = document.getElementById('deleteLogo');
+    
+    if (modal && logoNumberInput) {
+        modal.classList.remove('hidden');
+        logoNumberInput.value = logoNumber;
+        
+        // Set judul modal
+        if (logoNumber === 'title') {
+            logoNumberText.textContent = 'Title';
+            // Cek apakah logo sudah ada atau belum untuk menampilkan tombol hapus
+            const logoImg = document.getElementById('title-logo-preview');
+            if (logoImg && !logoImg.src.includes('placeholder-image.png')) {
+                deleteBtn.classList.remove('hidden');
+                deleteBtn.setAttribute('onclick', `deleteMedia('title_logo')`);
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+        } else {
+            logoNumberText.textContent = logoNumber;
+            // Cek apakah logo sudah ada atau belum untuk menampilkan tombol hapus
+            const logoImg = document.getElementById(`logo${logoNumber}-preview`);
+            if (logoImg && !logoImg.src.includes('placeholder-image.png')) {
+                deleteBtn.classList.remove('hidden');
+                deleteBtn.setAttribute('onclick', `deleteMedia('logo_${logoNumber}')`);
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+        }
+        
+        // Reset form
+        document.getElementById('logoForm').reset();
+        document.getElementById('logo-preview-container').classList.add('hidden');
+    }
+}
+
+function closeLogoModal() {
+    const modal = document.getElementById('logoModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function previewLogoImage(input) {
+    const previewContainer = document.getElementById('logo-preview-container');
+    const preview = document.getElementById('logo-preview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+        
+        // Isi alt text otomatis jika kosong
+        const logoNumber = document.getElementById('logoNumber').value;
+        const altInput = document.getElementById('logo_alt');
+        if (!altInput.value) {
+            if (logoNumber === 'title') {
+                altInput.value = 'Logo Title ZDX Cargo';
+            } else {
+                altInput.value = `Logo ${logoNumber} ZDX Cargo`;
+            }
+        }
+    }
+}
+
+// Fungsi untuk modal struktur organisasi
+function showStructureModal() {
+    const modal = document.getElementById('structureModal');
+    const deleteBtn = document.getElementById('deleteStructure');
+    
+    if (modal) {
+        modal.classList.remove('hidden');
+        
+        // Cek apakah gambar sudah ada untuk menampilkan tombol hapus
+        const structureImg = document.getElementById('structure-preview');
+        if (structureImg && !structureImg.src.includes('placeholder-image.png')) {
+            deleteBtn.classList.remove('hidden');
+        } else {
+            deleteBtn.classList.add('hidden');
+        }
+        
+        // Reset form
+        document.getElementById('structureForm').reset();
+        document.getElementById('structure-preview-container').classList.add('hidden');
+    }
+}
+
+function closeStructureModal() {
+    const modal = document.getElementById('structureModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function previewStructureImage(input) {
+    const previewContainer = document.getElementById('structure-preview-container');
+    const preview = document.getElementById('structure-modal-preview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+        
+        // Isi alt text otomatis jika kosong
+        const altInput = document.getElementById('structure_alt');
+        if (!altInput.value) {
+            altInput.value = 'Struktur Organisasi ZDX Cargo';
+        }
+    }
+}
+
+// Fungsi untuk modal logistik
+function showLogisticsModal() {
+    const modal = document.getElementById('logisticsModal');
+    const deleteBtn = document.getElementById('deleteLogistics');
+    
+    if (modal) {
+        modal.classList.remove('hidden');
+        
+        // Cek apakah gambar sudah ada untuk menampilkan tombol hapus
+        const logisticsImg = document.getElementById('logistics-preview');
+        if (logisticsImg && !logisticsImg.src.includes('placeholder-image.png')) {
+            deleteBtn.classList.remove('hidden');
+        } else {
+            deleteBtn.classList.add('hidden');
+        }
+        
+        // Reset form
+        document.getElementById('logisticsForm').reset();
+        document.getElementById('logistics-preview-container').classList.add('hidden');
+    }
+}
+
+function closeLogisticsModal() {
+    const modal = document.getElementById('logisticsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function previewLogisticsImage(input) {
+    const previewContainer = document.getElementById('logistics-preview-container');
+    const preview = document.getElementById('logistics-modal-preview');
+    
+    if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    logoPreview.src = e.target.result;
+            preview.src = e.target.result;
                     previewContainer.classList.remove('hidden');
                 };
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-    }
-    
-    // Preview untuk file struktur organisasi
-    const structureFile = document.getElementById('structureFile');
-    const structurePreview = document.getElementById('structurePreview');
-    const structurePreviewContainer = document.getElementById('structurePreviewContainer');
-    
-    if (structureFile && structurePreview && structurePreviewContainer) {
-        structureFile.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    structurePreview.src = e.target.result;
-                    structurePreviewContainer.classList.remove('hidden');
-                };
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-    }
-    
-    // Preview untuk file logistik
-    const logisticsFile = document.getElementById('logisticsFile');
-    const logisticsPreview = document.getElementById('logisticsPreview');
-    const logisticsPreviewContainer = document.getElementById('logisticsPreviewContainer');
-    
-    if (logisticsFile && logisticsPreview && logisticsPreviewContainer) {
-        logisticsFile.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    logisticsPreview.src = e.target.result;
-                    logisticsPreviewContainer.classList.remove('hidden');
-                };
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-    }
-    
-    // Tambahkan event listener untuk refresh gambar setelah form disubmit
-    ['logoUploadForm', 'structureUploadForm', 'logisticsUploadForm'].forEach(formId => {
-        const form = document.getElementById(formId);
-        if (form) {
-            form.addEventListener('submit', function() {
-                setTimeout(refreshImages, 3000); // Refresh images after 3 seconds
-            });
+        reader.readAsDataURL(input.files[0]);
+        
+        // Isi alt text otomatis jika kosong
+        const altInput = document.getElementById('logistics_alt');
+        if (!altInput.value) {
+            altInput.value = 'Operasi Logistik ZDX Cargo';
         }
-    });
-});
+    }
+}
+
+// Fungsi untuk menghapus media
+function deleteMedia(mediaType) {
+    if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
+        const form = document.getElementById('deleteMediaForm');
+        const mediaTypeInput = document.getElementById('deleteMediaType');
+        
+        if (form && mediaTypeInput) {
+            mediaTypeInput.value = mediaType;
+            form.submit();
+        }
+    }
+}
 </script>
 @endpush

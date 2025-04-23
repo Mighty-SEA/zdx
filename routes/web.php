@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\HomeContentController;
 use App\Http\Controllers\Admin\ProfileContentController;
 use App\Http\Controllers\Admin\CommodityController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\CompanyMediaController;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\StructureController;
@@ -161,10 +162,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::put('/profile-content/{id}', [ProfileContentController::class, 'update'])->name('profile-content.update');
     Route::post('/profile-content/order', [ProfileContentController::class, 'updateOrder'])->name('profile-content.order');
 
-    // Rute untuk upload logo dan struktur organisasi
-    Route::post('/logo/upload', [StructureController::class, 'uploadLogo'])->name('logo.upload');
-    Route::post('/structure/upload', [StructureController::class, 'uploadStructure'])->name('structure.upload');
-    Route::post('/logistics/upload', [StructureController::class, 'uploadLogistics'])->name('logistics.upload');
+    // Rute untuk upload media perusahaan
+    Route::post('/company-media/logo/upload', [CompanyMediaController::class, 'uploadLogo'])->name('company-media.logo.upload');
+    Route::post('/company-media/structure/upload', [CompanyMediaController::class, 'uploadStructure'])->name('company-media.structure.upload');
+    Route::post('/company-media/logistics/upload', [CompanyMediaController::class, 'uploadLogistics'])->name('company-media.logistics.upload');
+    Route::post('/company-media/delete', [CompanyMediaController::class, 'deleteMedia'])->name('company-media.delete');
 
     // Admin Blog
     Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');

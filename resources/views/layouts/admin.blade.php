@@ -7,7 +7,10 @@
     <title>@yield('title', 'Dashboard') - ZDX  Admin</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
+    @php
+        $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+    @endphp
+    <link rel="icon" type="image/png" href="{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}">
     
     <!-- Meta Tags Dasar -->
     <meta name="description" content="ZDX  - Admin Panel">
@@ -47,7 +50,7 @@
             <div class="px-6 py-4 flex items-center h-16">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center">
                     <div class="flex-shrink-0 mr-2">
-                        <img id="admin-sidebar-logo" src="{{ !empty($companyInfo->company_logo) ? asset('storage/'.$companyInfo->company_logo) : asset('asset/logo.png') }}" alt="ZDX" class="logo-image" onerror="this.src='{{ asset('asset/logo.png') }}';">
+                        <img id="admin-sidebar-logo" src="{{ !empty($settings->logo_1_path) ? asset($settings->logo_1_path) : asset('asset/logo.png') }}" alt="ZDX" class="logo-image" onerror="this.src='{{ asset('asset/logo.png') }}';">
                     </div>
                     <span class="text-xl font-bold text-gray-800 ml-1">Admin</span>
                 </a>

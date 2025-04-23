@@ -117,14 +117,25 @@
                     <div class="flex flex-col gap-4">
                         <!-- Logo Perusahaan tanpa frame -->
                         <div class="relative">
-                            <img src="{{ $logoUrl }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
+                            @php
+                                $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+                            @endphp
+                            @if($settings && !empty($settings->logo_1_path))
+                                <img src="{{ asset($settings->logo_1_path) }}?v={{ time() }}" alt="{{ $settings->logo_1_alt ?? 'ZDX Express Logo' }}" class="w-full rounded-lg object-contain h-50 mb-10">
+                            @else
+                                <img src="{{ $logoUrl }}" alt="ZDX Express Logo" class="w-full rounded-lg object-contain h-50 mb-10">
+                            @endif
                         </div>
                         
                         <!-- Gambar Pengiriman Logistik -->
                         <div class="relative">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] rounded-lg blur"></div>
                             <div class="relative bg-white p-2 rounded-lg">
-                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('images/logistics.jpg') ? \Illuminate\Support\Facades\Storage::url('images/logistics.jpg').'?v='.time() : asset('asset/logo2.png') }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-contain">
+                                @if($settings && !empty($settings->logistics_image_path))
+                                    <img src="{{ asset($settings->logistics_image_path) }}?v={{ time() }}" alt="{{ $settings->logistics_image_alt ?? 'Logistics Operations' }}" class="rounded-lg w-full h-96 object-contain">
+                                @else
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists('images/logistics.jpg') ? \Illuminate\Support\Facades\Storage::url('images/logistics.jpg').'?v='.time() : asset('asset/logo2.png') }}" alt="Logistics Operations" class="rounded-lg w-full h-96 object-contain">
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -180,7 +191,12 @@
                 <div class="max-w-6xl mx-auto text-center">
                     <h2 class="text-3xl font-bold text-gray-900 mb-10">Struktur Organisasi</h2>
                     <div class="bg-white p-6 rounded-lg shadow-lg">
-                        @if(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->org_structure_path))
+                        @php
+                            $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+                        @endphp
+                        @if($settings && !empty($settings->structure_image_path))
+                            <img src="{{ asset($settings->structure_image_path) }}?v={{ time() }}" alt="{{ $settings->structure_image_alt ?? 'Struktur Organisasi PT. Zindan Diantar Express' }}" class="w-full rounded-lg">
+                        @elseif(isset($contents['about']) && count($contents['about']) > 0 && !empty($contents['about'][0]->org_structure_path))
                             <img src="{{ asset($contents['about'][0]->org_structure_path) }}?v={{ time() }}" alt="Struktur Organisasi PT. Zindan Diantar Express" class="w-full rounded-lg">
                         @else
                             <img src="{{ asset('asset/struktur.jpg') }}?v={{ time() }}" alt="Struktur Organisasi PT. Zindan Diantar Express" class="w-full rounded-lg">

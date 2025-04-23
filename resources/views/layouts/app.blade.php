@@ -6,7 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl }}" sizes="32x32">
+    @php
+        $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+    @endphp
+    <link rel="icon" type="image/png" href="{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : ($logoUrl ?? asset('asset/logo.png')) }}" sizes="32x32">
     
     <!-- SEO Metadata -->
     @hasSection('meta_tags')

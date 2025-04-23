@@ -6,7 +6,14 @@
                 <a href="/" class="flex items-center space-x-3 group">
                     <!-- Logo tanpa frame -->
                     <div class="relative">
-                        <img id="header-logo" src="{{ $logoUrl }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                        @php
+                            $settings = $settings ?? \Illuminate\Support\Facades\DB::table('settings')->first();
+                        @endphp
+                        @if($settings && !empty($settings->logo_1_path))
+                            <img id="header-logo" src="{{ asset($settings->logo_1_path) }}?v={{ time() }}" alt="{{ $settings->logo_1_alt ?? ($companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS') }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                        @else
+                            <img id="header-logo" src="{{ $logoUrl }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                        @endif
                     </div>
                     
                     <!-- Teks logo (tampilkan pada mobile dan desktop) -->
