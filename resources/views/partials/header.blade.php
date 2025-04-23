@@ -2,28 +2,36 @@
 <nav class="bg-white shadow-lg fixed w-full z-50 transition-all duration-300" id="mainNav">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center h-20">
+            <!-- Logo dan Brand -->
             <div class="flex items-center">
-                <a href="/" class="flex items-center space-x-3 group">
-                    <!-- Logo tanpa frame -->
-                    <div class="relative">
-                        <img id="header-logo" src="{{ $logoUrl }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-12 w-auto transform transition-all duration-300 group-hover:scale-105">
+                <a href="/" class="flex items-center space-x-3">
+                    <!-- Logo tanpa efek hover -->
+                    <div class="relative overflow-hidden">
+                        @php
+                            $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+                        @endphp
+                        @if($settings && !empty($settings->logo_1_path))
+                            <img id="header-logo" src="{{ asset($settings->logo_1_path) }}?v={{ time() }}" alt="{{ $settings->logo_1_alt ?? ($companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS') }}" class="h-14 w-auto">
+                        @else
+                            <img id="header-logo" src="{{ asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 w-auto">
+                        @endif
                     </div>
                     
-                    <!-- Teks logo (tampilkan pada mobile dan desktop) -->
-                    <div class="block">
-                        <div class="relative overflow-hidden">
-                            <p class="text-[#FF6000] font-bold tracking-wide text-sm sm:text-base md:text-lg group-hover:translate-y-0 transition-all duration-300">
+                    <!-- Brand Text dengan animasi garis hanya pada nama perusahaan -->
+                    <div class="block ml-2">
+                        <div class="relative group">
+                            <p class="text-[#FF6000] font-bold tracking-wide text-lg group-hover:text-[#FF8C00] transition-colors duration-300">
                                 {{ $companyInfo->company_name ?? 'PT ZDX CARGO' }}
                             </p>
-                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] group-hover:w-full transition-all duration-500 delay-100"></div>
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] group-hover:w-full transition-all duration-500"></div>
                         </div>
-                        <p class="text-gray-500 text-xs tracking-wider italic hidden sm:block">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>
+                        <p class="text-gray-500 text-xs tracking-wider hidden sm:block transition-colors duration-300">{{ $companyInfo->company_slogan ?? 'Solusi Tepat Pengiriman Cepat' }}</p>
                     </div>
                 </a>
             </div>
             
             <!-- Desktop Menu - hanya tampil pada layar large (lg) ke atas -->
-            <div class="hidden lg:flex items-center space-x-1 lg:space-x-4">
+            <div class="hidden lg:flex items-center space-x-4">
                 <a href="/" class="menu-item px-3 py-2 rounded-md text-gray-800 hover:text-[#FF6000] transition-all duration-300 {{ request()->is('/') ? 'active-menu-item' : '' }} flex items-center gap-1 font-medium">
                     <i class="fas fa-home text-sm"></i>
                     <span>Home</span>
@@ -59,16 +67,17 @@
                         <a href="/blog" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('blog') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                             <i class="fas fa-newspaper mr-2 text-sm"></i>Blog
                         </a>
+                        <a href="/contact" class="block px-4 py-3 text-sm text-gray-700 hover:bg-[#FFF0E6] hover:text-[#FF6000] transition-colors {{ request()->is('contact') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
+                            <i class="fas fa-headset mr-2 text-sm"></i>Hubungi Kami
+                        </a>
                     </div>
                 </div>
-                <a href="/contact" class="ml-2 px-4 py-2 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white rounded-md shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 font-medium">
-                    <i class="fas fa-headset text-sm"></i>
-                    <span>Hubungi Kami</span>
-                </a>
-                <a href="/admin" class="ml-2 px-4 py-2 border border-[#FF6000] text-[#FF6000] rounded-md shadow-sm hover:shadow-md hover:bg-[#FFF0E6] transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 font-medium">
-                    <i class="fas fa-sign-in-alt text-sm"></i>
-                    <span>Login</span>
-                </a>
+                <div class="flex items-center ml-2">
+                    <a href="/admin" class="px-4 py-2 border border-[#FF6000] text-[#FF6000] rounded-md shadow-sm hover:shadow-md hover:bg-[#FFF0E6] transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 font-medium">
+                        <i class="fas fa-sign-in-alt text-sm"></i>
+                        <span>Login</span>
+                    </a>
+                </div>
             </div>
             
             <!-- Mobile & Tablet Menu Button - tampil pada layar di bawah large (lg) -->
@@ -115,15 +124,14 @@
                     <a href="/blog" class="px-4 py-3 pl-8 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('blog') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
                         <i class="fas fa-newspaper w-5 text-center"></i><span>Blog</span>
                     </a>
+                    <a href="/contact" class="px-4 py-3 pl-8 text-gray-800 hover:bg-[#FFF0E6] hover:text-[#FF6000] rounded-md flex items-center space-x-3 transition-colors {{ request()->is('contact') ? 'bg-[#FFF0E6] text-[#FF6000] font-semibold' : '' }}">
+                        <i class="fas fa-headset w-5 text-center"></i><span>Hubungi Kami</span>
+                    </a>
                 </div>
                 
-                <!-- Button yang lebih menarik untuk mobile & tablet -->
-                <div class="grid grid-cols-1 gap-3 mt-4 px-4">
-                    <a href="/contact" class="px-4 py-3 bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:shadow-md transition-all duration-300">
-                        <i class="fas fa-headset"></i><span>Hubungi Kami</span>
-                    </a>
-                    
-                    <a href="/admin" class="px-4 py-3 border border-[#FF6000] text-[#FF6000] bg-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:bg-[#FFF0E6] transition-colors">
+                <!-- Button untuk login di mobile & tablet -->
+                <div class="px-4 mt-4">
+                    <a href="/admin" class="w-full px-4 py-3 border border-[#FF6000] text-[#FF6000] bg-white rounded-md flex items-center justify-center space-x-2 shadow-sm hover:bg-[#FFF0E6] transition-colors">
                         <i class="fas fa-sign-in-alt"></i><span>Login</span>
                     </a>
                 </div>
