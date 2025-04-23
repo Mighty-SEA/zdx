@@ -644,10 +644,13 @@ document.addEventListener('DOMContentLoaded', function() {
         slidesPerView: 1,
         spaceBetween: 20,
         loop: true,
+        speed: 5000,
         autoplay: {
-            delay: 3000,
+            delay: 0,
             disableOnInteraction: false,
         },
+        allowTouchMove: false,
+        cssMode: false,
         breakpoints: {
             640: {
                 slidesPerView: 2,

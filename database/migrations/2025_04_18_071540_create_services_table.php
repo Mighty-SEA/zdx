@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('image_name')->nullable();
             $table->string('image_alt')->nullable();
+            $table->string('icon')->nullable();
+            $table->boolean('featured')->default(false);
+            $table->integer('sort_order')->default(0);
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();
         });

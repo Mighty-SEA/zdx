@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('rates', function (Blueprint $table) {
             $table->id();
@@ -17,11 +20,15 @@ return new class extends Migration
             $table->decimal('harga_satuan', 10, 2);
             $table->integer('minimal_kg');
             $table->string('estimasi');
+            $table->integer('views')->default(0);
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('rates');
     }

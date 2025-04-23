@@ -16,13 +16,14 @@ return new class extends Migration
             $table->string('page_identifier', 50)->unique();
             $table->string('page_name', 100);
             $table->string('title', 100)->nullable();
-            $table->string('description', 255)->nullable();
+            $table->text('description')->nullable();
             $table->string('keywords', 255)->nullable();
             $table->string('og_title', 100)->nullable();
-            $table->string('og_description', 255)->nullable();
+            $table->text('og_description')->nullable();
             $table->string('og_image', 255)->nullable();
             $table->string('custom_robots', 100)->nullable();
             $table->text('custom_schema')->nullable();
+            $table->boolean('uses_global_settings')->default(false);
             $table->timestamps();
         });
     }

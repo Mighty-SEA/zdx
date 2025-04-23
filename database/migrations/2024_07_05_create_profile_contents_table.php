@@ -17,6 +17,25 @@ return new class extends Migration
             $table->string('section')->comment('about, vision, mission, service, etc');
             $table->string('title')->nullable();
             $table->longText('content');
+            
+            // Org Structure
+            $table->string('org_structure_path')->nullable();
+            
+            // Company info
+            $table->string('company_name')->nullable();
+            $table->string('company_slogan')->nullable();
+            $table->text('company_description')->nullable();
+            
+            // Contact info
+            $table->string('contact_phone')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->text('contact_address')->nullable();
+            $table->string('contact_maps_link')->nullable();
+            $table->string('contact_facebook')->nullable();
+            $table->string('contact_instagram')->nullable();
+            $table->string('contact_twitter')->nullable();
+            $table->string('contact_youtube')->nullable();
+            
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

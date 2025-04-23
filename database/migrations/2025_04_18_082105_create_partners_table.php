@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('partners', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['customer', 'partner']);
+            $table->string('type', 50);
             $table->string('name');
             $table->string('company')->nullable();
             $table->string('industry')->nullable();

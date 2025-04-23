@@ -17,13 +17,15 @@ return new class extends Migration
             $table->string('section_name');
             $table->string('section_key')->unique();
             $table->string('title')->nullable();
-            $table->string('subtitle')->nullable();
+            $table->text('subtitle')->nullable();
             $table->text('content')->nullable();
             $table->string('image_path')->nullable();
             $table->string('button_text')->nullable();
             $table->string('button_url')->nullable();
+            $table->text('metadata')->nullable()->comment('JSON untuk menyimpan data tambahan seperti statistik atau informasi khusus lainnya');
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->boolean('use_rich_editor')->default(false)->comment('Menandakan apakah bagian ini menggunakan TinyMCE');
             $table->timestamps();
         });
 
@@ -54,11 +56,12 @@ return new class extends Migration
                 'button_url' => '/tracking',
                 'order' => 1,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
             [
                 'section_name' => 'Statistik',
                 'section_key' => 'stats',
-                'content' => json_encode([
+                'metadata' => json_encode([
                     [
                         'number' => '10000',
                         'label' => 'Partner',
@@ -82,6 +85,7 @@ return new class extends Migration
                 ]),
                 'order' => 2,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
             [
                 'section_name' => 'Layanan',
@@ -90,6 +94,7 @@ return new class extends Migration
                 'subtitle' => 'Kami menyediakan berbagai layanan pengiriman yang dirancang untuk memenuhi kebutuhan logistik Anda',
                 'order' => 3,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
             [
                 'section_name' => 'Keunggulan',
@@ -98,6 +103,7 @@ return new class extends Migration
                 'subtitle' => 'Keunggulan layanan kami yang memberikan nilai tambah untuk pengiriman Anda',
                 'order' => 4,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
             [
                 'section_name' => 'Testimonial',
@@ -106,6 +112,7 @@ return new class extends Migration
                 'subtitle' => 'Pengalaman pelanggan kami yang telah menggunakan layanan ZDX Express',
                 'order' => 5,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
             [
                 'section_name' => 'Partner',
@@ -114,6 +121,7 @@ return new class extends Migration
                 'subtitle' => 'Perusahaan dan brand yang telah mempercayakan pengiriman mereka kepada kami',
                 'order' => 6,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
             [
                 'section_name' => 'CTA',
@@ -124,6 +132,7 @@ return new class extends Migration
                 'button_url' => '/kontak',
                 'order' => 7,
                 'is_active' => true,
+                'use_rich_editor' => false,
             ],
         ];
 
