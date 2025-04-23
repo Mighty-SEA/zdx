@@ -66,6 +66,21 @@
                         @enderror
                     </div>
 
+                    <!-- Table of Contents -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-sm font-medium text-gray-700">Table of Contents</label>
+                            <span class="text-xs text-gray-600">Otomatis dari heading (H2, H3)</span>
+                                </div>
+                        <div id="toc_auto_container" class="bg-gray-50 border border-gray-200 rounded-md p-3">
+                            <div class="text-sm text-gray-700">TOC akan dibuat otomatis dari heading (H2, H3) dalam konten.</div>
+                            <div id="toc_preview" class="mt-2 text-sm">
+                                <div class="text-gray-500 italic text-xs">Preview akan muncul setelah konten artikel ditulis dengan heading.</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="toc_mode" value="auto">
+                    </div>
+
                     <!-- Konten dengan tinggi statis -->
                     <div>
                         <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten <span class="text-red-500">*</span></label>
@@ -402,9 +417,25 @@
 
 @push('scripts')
 <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<style>
+    /* Toggle Switch */
+    .toggle-checkbox:checked {
+        right: 0;
+        transform: translateX(100%);
+        border-color: #3b82f6;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+        background-color: #3b82f6;
+    }
+    .toggle-label, .toggle-checkbox {
+        transition: all 0.3s ease-in-out;
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // TinyMCE initialization - fallback to basic if API key not set
+        let editor;
+
         if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
             tinymce.init({
                 selector: '#content',
@@ -413,26 +444,327 @@
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
+                    'codesample', 'quickbars', 'template', 'pagebreak', 'nonbreaking',
+                    'paste', 'print', 'visualchars', 'save', 'directionality', 'autoresize'
                 ],
                 toolbar: 'undo redo | blocks | formatselect | ' +
-                        'bold italic forecolor backcolor | ' +
+                        'bold italic forecolor backcolor emoticons | ' +
                         'alignleft aligncenter alignright alignjustify | ' +
-                        'bullist numlist outdent indent | link image media table | ' +
-                        'removeformat help',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                        'bullist numlist outdent indent | link image media table codesample | ' +
+                        'visualblocks fullscreen preview | ' +
+                        'pagebreak nonbreaking | removeformat help',
+                formats: {
+                    h1: { block: 'h1', wrapper: false },
+                    h2: { block: 'h2', wrapper: false },
+                    h3: { block: 'h3', wrapper: false },
+                    h4: { block: 'h4', wrapper: false },
+                },
+                style_formats: [
+                    { title: 'Headings', items: [
+                        { title: 'Heading 1', format: 'h1' },
+                        { title: 'Heading 2', format: 'h2' },
+                        { title: 'Heading 3', format: 'h3' },
+                        { title: 'Heading 4', format: 'h4' },
+                        { title: 'Heading 5', format: 'h5' },
+                        { title: 'Heading 6', format: 'h6' }
+                    ]},
+                    { title: 'Inline', items: [
+                        { title: 'Bold', format: 'bold' },
+                        { title: 'Italic', format: 'italic' },
+                        { title: 'Underline', format: 'underline' },
+                        { title: 'Strikethrough', format: 'strikethrough' },
+                        { title: 'Code', format: 'code' }
+                    ]},
+                    { title: 'Blocks', items: [
+                        { title: 'Paragraph', format: 'p' },
+                        { title: 'Blockquote', format: 'blockquote' },
+                        { title: 'Div', format: 'div' },
+                        { title: 'Pre', format: 'pre' }
+                    ]}
+                ],
+                toolbar_mode: 'sliding',
+                toolbar_sticky: true,
+                content_style: `
+                    body { 
+                        font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; 
+                        font-size: 16px; 
+                        line-height: 1.6; 
+                        padding: 20px;
+                    }
+                    h1 {
+                        font-size: 2.25rem;
+                        font-weight: 700;
+                        margin-top: 2.5rem;
+                        margin-bottom: 1.25rem;
+                        color: #1f2937;
+                    }
+                    img { 
+                        max-width: 100%; 
+                        height: auto;
+                        border-radius: 4px;
+                    }
+                    pre {
+                        background-color: #f5f5f5;
+                        padding: 12px;
+                        border-radius: 4px;
+                        overflow-x: auto;
+                    }
+                    blockquote {
+                        background-color: #f9f9f9;
+                        padding: 10px 20px;
+                        border-left: 4px solid #ccc;
+                        margin: 15px 0;
+                    }
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+                    table td, table th {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                    }
+                `,
+                branding: false,
+                promotion: false,
+                images_upload_url: '{{ route("admin.tinymce.upload") }}',
+                automatic_uploads: true,
+                file_picker_types: 'image',
+                image_class_list: [
+                    {title: 'Responsive', value: 'img-fluid'},
+                    {title: 'Left Aligned', value: 'float-left me-3 mb-3'},
+                    {title: 'Right Aligned', value: 'float-right ms-3 mb-3'},
+                    {title: 'Centered', value: 'mx-auto d-block'},
+                    {title: 'No margins', value: 'mb-0'}
+                ],
+                image_caption: true,
+                image_advtab: true,
+                relative_urls: false,
+                remove_script_host: false,
+                convert_urls: true,
+                extended_valid_elements: 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]',
+                setup: function(ed) {
+                    editor = ed;
+                    // Event listener for content changes to update TOC
+                    editor.on('Change', function() {
+                        updateTableOfContents();
+                    });
+                    
+                    // Keydown handler untuk menekan tab
+                    editor.on('keydown', function(e) {
+                        if (e.keyCode === 9) { // Tab key
+                            if (e.shiftKey) {
+                                editor.execCommand('Outdent');
+            } else {
+                                editor.execCommand('Indent');
+                            }
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                },
+                templates: [
+                    {
+                        title: 'Callout Box',
+                        description: 'Creates a callout box with a title',
+                        content: '<div style="background-color: #f8f9fa; border-left: 4px solid #0d6efd; padding: 15px; margin-bottom: 20px;">' +
+                                '<h3 style="margin-top: 0; color: #0d6efd;">Judul Callout</h3>' +
+                                '<p>Teks callout Anda di sini...</p>' +
+                                '</div>'
+                    },
+                    {
+                        title: 'Info Box',
+                        description: 'Creates an info box',
+                        content: '<div style="background-color: #e8f4f8; border-radius: 5px; padding: 15px; margin-bottom: 20px;">' +
+                                '<h4 style="color: #0c5460;"><strong>Info Penting</strong></h4>' +
+                                '<p>Info Anda di sini...</p>' +
+                                '</div>'
+                    },
+                    {
+                        title: 'Tabel Perbandingan',
+                        description: 'Membuat tabel perbandingan sederhana',
+                        content: '<table style="width:100%; border-collapse: collapse;">' +
+                                '<thead>' +
+                                '<tr style="background-color: #f8f9fa;">' +
+                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Fitur</th>' +
+                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Opsi A</th>' +
+                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Opsi B</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+                                '<tr>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Fitur 1</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '</tr>' +
+                                '<tr style="background-color: #f8f9fa;">' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Fitur 2</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
+                                '</tr>' +
+                                '</tbody>' +
+                                '</table>'
+                    }
+                ]
             });
         } else {
             // Fallback to basic editor if no API key
             const textarea = document.getElementById('content');
             textarea.style.minHeight = '500px';
             textarea.classList.add('p-3');
+            
+            // Use textarea for TOC updates
+            textarea.addEventListener('input', function() {
+                updateTableOfContents();
+            });
         }
+
+        // Toggle handler for TOC mode
+        const tocModeToggle = document.getElementById('toc_mode');
+        const tocModeText = document.getElementById('toc_mode_text');
+        const tocAutoContainer = document.getElementById('toc_auto_container');
+        
+        tocModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Mode Auto
+                tocModeText.textContent = 'Otomatis';
+                tocAutoContainer.classList.remove('hidden');
+            } else {
+                // Mode Manual
+                tocAutoContainer.classList.add('hidden');
+            }
+        });
+        
+        // Function to update the TOC automatically
+        function updateTableOfContents() {
+            const tocPreview = document.getElementById('toc_preview');
+            if (!tocPreview) return;
+            
+            let content = '';
+            
+            if (window.tinymce && tinymce.get('content')) {
+                content = tinymce.get('content').getContent();
+            } else {
+                content = document.getElementById('content').value;
+            }
+            
+            // Parse the content to find headings
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const h2Elements = Array.from(doc.querySelectorAll('h2'));
+            const h3Elements = Array.from(doc.querySelectorAll('h3'));
+            
+            if (h2Elements.length === 0 && h3Elements.length === 0) {
+                tocPreview.innerHTML = '<div class="text-gray-500 italic text-xs">Tidak ada heading yang ditemukan. Tambahkan heading H2 atau H3 ke konten untuk membuat TOC.</div>';
+                return;
+            }
+            
+            // Create TOC structure
+            let tocHtml = '<ul class="list-disc pl-5 space-y-1">';
+            let contentChanged = false;
+            
+            // Process H2 headings first
+            h2Elements.forEach((h2, index) => {
+                const headingText = h2.textContent.trim();
+                if (!headingText) return;
+                
+                // Buat ID yang konsisten dari teks heading
+                const headingSlug = headingText.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                const headingId = `h2-${headingSlug}`;
+                
+                // Periksa apakah ID telah berubah
+                if (h2.id !== headingId) {
+                h2.id = headingId;
+                    contentChanged = true;
+                }
+                
+                tocHtml += `<li><a href="#${headingId}" class="text-blue-600 hover:underline">${headingText}</a>`;
+                
+                // Check for H3 headings that follow this H2
+                const nextH2 = h2Elements[index + 1];
+                const h3Subset = h3Elements.filter(h3 => {
+                    if (!nextH2) return h2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_FOLLOWING;
+                    return (h2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_FOLLOWING) && 
+                           (nextH2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_PRECEDING);
+                });
+                
+                if (h3Subset.length > 0) {
+                    tocHtml += '<ul class="pl-4 mt-1 space-y-1">';
+                    h3Subset.forEach((h3, subIndex) => {
+                        const subHeadingText = h3.textContent.trim();
+                        if (!subHeadingText) return;
+                        
+                        // Buat ID yang konsisten untuk sub-heading
+                        const subHeadingSlug = subHeadingText.toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-|-$)/g, '');
+                        const subHeadingId = `h3-${headingSlug}-${subHeadingSlug}`;
+                        
+                        // Periksa apakah ID telah berubah
+                        if (h3.id !== subHeadingId) {
+                        h3.id = subHeadingId;
+                            contentChanged = true;
+                        }
+                        
+                        tocHtml += `<li><a href="#${subHeadingId}" class="text-blue-600 hover:underline">${subHeadingText}</a></li>`;
+                    });
+                    tocHtml += '</ul>';
+                }
+                
+                tocHtml += '</li>';
+            });
+            
+            tocHtml += '</ul>';
+            
+            // Update the preview
+            tocPreview.innerHTML = tocHtml;
+            
+            // Update the actual content in the editor with the ID attributes hanya jika ada perubahan
+            if (contentChanged && window.tinymce && tinymce.get('content')) {
+                // Mencegah loop tak terbatas dengan menonaktifkan event handler sementara
+                tinymce.get('content').off('Change');
+                
+                // Perbarui konten dengan ID yang benar
+                const updatedContent = doc.body.innerHTML;
+                tinymce.get('content').setContent(updatedContent);
+                
+                // Aktifkan kembali event handler setelah penundaan
+                setTimeout(() => {
+                    tinymce.get('content').on('Change', updateTableOfContents);
+                }, 300);
+            }
+        }
+
+        // Slug generator
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        
+        // Jika slug dan judul sama, asumsikan bahwa slug belum diubah secara manual
+        let slugManuallyChanged = '{{ $blog->slug }}' !== '{{ \Illuminate\Support\Str::slug($blog->title) }}';
+        
+        titleInput.addEventListener('input', function() {
+            // Hanya update slug otomatis jika belum diubah secara manual
+            if (!slugManuallyChanged && titleInput.value) {
+                let slug = this.value.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                slugInput.value = slug;
+            }
+        });
+        
+        // Tandai jika slug diubah secara manual
+        slugInput.addEventListener('input', function() {
+            slugManuallyChanged = true;
+        });
 
         // Character counter for description
         function updateCharacterCount() {
             const description = document.getElementById('description').value;
             const counter = document.getElementById('descriptionCounter');
+            if (!counter) return;
+            
             const count = description.length;
             counter.textContent = count;
             
@@ -443,10 +775,28 @@
             }
         }
         
+        // Initial character count update
+        document.getElementById('description')?.addEventListener('input', updateCharacterCount);
         updateCharacterCount();
-        document.getElementById('description').addEventListener('input', updateCharacterCount);
         
-        // Image preview function
+        // Form validation
+        const form = document.getElementById('blogForm');
+        form.addEventListener('submit', function(e) {
+            const description = document.getElementById('description').value;
+            if (description.length > 255) {
+                e.preventDefault();
+                alert('Deskripsi tidak boleh lebih dari 255 karakter.');
+                return false;
+            }
+            
+            // Set status based on button clicked
+            const submitButton = document.activeElement;
+            if (submitButton.name === 'save_draft') {
+                document.getElementById('status').value = 'draft';
+            }
+        });
+        
+        // Image preview functions
         function previewImage() {
             const preview = document.getElementById('image-preview');
             const file = document.getElementById('image').files[0];
@@ -465,470 +815,18 @@
             }
         }
         
-        // Confirm image delete
-        window.confirmDeleteImage = function(btn) {
-            document.getElementById('deleteImageModal').classList.remove('hidden');
-            
-            // Set the form to be submitted when confirmed
-            const form = btn.closest('form');
-            document.getElementById('confirmDeleteImage').onclick = function() {
-                form.submit();
-            };
-            
-            document.getElementById('cancelDeleteImage').onclick = function() {
-                document.getElementById('deleteImageModal').classList.add('hidden');
-            };
-            
-            document.getElementById('deleteImageBackdrop').onclick = function() {
-                document.getElementById('deleteImageModal').classList.add('hidden');
-            };
-        };
-        
-        // SEO Preview
-        function updateSeoPreview() {
-            const title = document.getElementById('title').value || 'Preview Judul';
-            const slug = document.getElementById('slug').value || 'preview-slug';
-            const description = document.getElementById('description').value || 'Preview deskripsi akan muncul di sini.';
-            
-            // Update elemen preview Google
-            const seoTitleInput = document.getElementById('seo_title');
-            const seoDescriptionInput = document.getElementById('seo_description');
-            
-            const titleForPreview = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
-            const descForPreview = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : description;
-            
-            document.getElementById('seo-preview-title').textContent = titleForPreview;
-            document.getElementById('seo-preview-slug').textContent = slug;
-            document.getElementById('seo-preview-desc').textContent = descForPreview;
-        }
-        
-        // Event listeners
-        document.getElementById('title').addEventListener('input', updateSeoPreview);
-        document.getElementById('slug').addEventListener('input', updateSeoPreview);
-        document.getElementById('description').addEventListener('input', updateSeoPreview);
-        
-        // Update karakter metadata dasar dan preview Google
-        if (document.getElementById('seo_title')) {
-            document.getElementById('seo_title').addEventListener('input', function() {
-                document.getElementById('seoTitleCount').textContent = this.value.length;
-                updateSeoPreview();
-            });
-            document.getElementById('seo_title').dispatchEvent(new Event('input'));
-        }
-        
-        if (document.getElementById('seo_description')) {
-            document.getElementById('seo_description').addEventListener('input', function() {
-                document.getElementById('seoDescriptionCount').textContent = this.value.length;
-                updateSeoPreview();
-            });
-            document.getElementById('seo_description').dispatchEvent(new Event('input'));
-        }
-        
-        // Initial SEO preview update
-        updateSeoPreview();
-    });
-</script>
-<!-- RankMath SEO Script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Dapatkan elemen-elemen yang dibutuhkan
-        const titleInput = document.getElementById('title');
-        const slugInput = document.getElementById('slug');
-        const descInput = document.getElementById('description');
-        const contentEditor = document.getElementById('content');
-        const focusKeywordInput = document.getElementById('focus_keyword');
-        const imageAltInput = document.getElementById('image_alt');
-        const imageInput = document.getElementById('image');
-        
-        // Metadata dasar elements
-        const seoTitleInput = document.getElementById('seo_title');
-        const seoDescriptionInput = document.getElementById('seo_description');
-        const seoKeywordsInput = document.getElementById('seo_keywords');
-        const seoTitleCount = document.getElementById('seoTitleCount');
-        const seoDescriptionCount = document.getElementById('seoDescriptionCount');
-        
-        // Preview elements
-        const seoPreviewTitle = document.getElementById('seo-preview-title');
-        const seoPreviewSlug = document.getElementById('seo-preview-slug');
-        const seoPreviewDesc = document.getElementById('seo-preview-desc');
-        const seoScoreElement = document.getElementById('seo-score');
-        const seoTipsElement = document.getElementById('seo-tips');
-        
-        // SEO Check indicators
-        const keywordPresence = document.getElementById('keyword-presence');
-        const keywordTitle = document.getElementById('keyword-title');
-        const keywordDesc = document.getElementById('keyword-desc');
-        const keywordDensity = document.getElementById('keyword-density');
-        const contentLength = document.getElementById('content-length');
-        const seoTitleLength = document.getElementById('seo-title-length');
-        const seoDescLength = document.getElementById('seo-desc-length');
-        const headerPresence = document.getElementById('header-presence');
-        const imageAlt = document.getElementById('image-alt');
-        const urlFriendly = document.getElementById('url-friendly');
-        
-        // Event listeners untuk update real-time
-        [titleInput, slugInput, descInput, focusKeywordInput, imageAltInput, 
-         seoTitleInput, seoDescriptionInput, seoKeywordsInput].forEach(input => {
-            if (input) {
-                input.addEventListener('input', updateSeoAnalysis);
-            }
-        });
-        
-        // Update karakter metadata dasar
-        if (seoTitleInput) {
-            seoTitleInput.addEventListener('input', function() {
-                seoTitleCount.textContent = this.value.length;
-            });
-            seoTitleInput.dispatchEvent(new Event('input'));
-        }
-        
-        if (seoDescriptionInput) {
-            seoDescriptionInput.addEventListener('input', function() {
-                seoDescriptionCount.textContent = this.value.length;
-            });
-            seoDescriptionInput.dispatchEvent(new Event('input'));
-        }
-        
-        if (imageInput) {
-            imageInput.addEventListener('change', updateSeoAnalysis);
-        }
-        
-        // Listener untuk TinyMCE jika tersedia
-        if (window.tinymce) {
-            tinymce.on('AddEditor', function(e) {
-                e.editor.on('Change', updateSeoAnalysis);
-                e.editor.on('Keyup', updateSeoAnalysis);
-            });
-            
-            if (tinymce.get('content')) {
-                tinymce.get('content').on('Change', updateSeoAnalysis);
-                tinymce.get('content').on('Keyup', updateSeoAnalysis);
+        // Konfirmasi hapus gambar
+        function confirmDeleteImage(button) {
+            if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
+                button.closest('form').submit();
             }
         }
         
-        // Update awal
-        setTimeout(updateSeoAnalysis, 1000); // Sedikit delay untuk memastikan TinyMCE sudah terinisialisasi
+        // Make confirmDeleteImage available globally
+        window.confirmDeleteImage = confirmDeleteImage;
         
-        // Fungsi untuk menganalisis SEO
-        function updateSeoAnalysis() {
-            // Update preview menggunakan custom SEO title/desc jika ada, atau default
-            const title = titleInput.value || 'Preview Judul';
-            const customTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
-            const slug = slugInput.value || 'preview-slug';
-            const desc = descInput.value || 'Preview deskripsi akan muncul di sini.';
-            const customDesc = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : desc;
-            const keyword = focusKeywordInput.value?.trim().toLowerCase();
-            
-            seoPreviewTitle.textContent = customTitle;
-            seoPreviewSlug.textContent = slug;
-            seoPreviewDesc.textContent = customDesc;
-            
-            // Jika tidak ada keyword, reset status
-            if (!keyword) {
-                resetAllIndicators();
-                seoScoreElement.textContent = '0%';
-                seoTipsElement.textContent = 'Masukkan focus keyword untuk mulai analisis SEO.';
-                return;
-            }
-            
-            // Mulai analisis dengan semua indikator diatur ke 'none'
-            resetAllIndicators();
-            
-            // Dapatkan konten dari TinyMCE atau textarea biasa
-            let content = '';
-            let contentHtml = '';
-            if (window.tinymce && tinymce.get('content')) {
-                content = tinymce.get('content').getContent({ format: 'text' }).toLowerCase();
-                contentHtml = tinymce.get('content').getContent();
-            } else {
-                content = contentEditor.value.toLowerCase();
-                contentHtml = contentEditor.value;
-            }
-            
-            // Array untuk menyimpan tips
-            let tips = [];
-            
-            // Array untuk menyimpan skor per kriteria
-            let scores = {
-                total: 0,
-                maxPossible: 0
-            };
-            
-            // --- Check 1: Keyword dalam judul ---
-            // Cek dalam custom title jika ada, otherwise cek di title normal
-            const titleToCheck = seoTitleInput && seoTitleInput.value ? seoTitleInput.value.toLowerCase() : title.toLowerCase();
-            const titleCheck = titleToCheck.includes(keyword);
-            setIndicatorStatus(keywordTitle, titleCheck ? 'good' : 'bad');
-            if (!titleCheck) {
-                tips.push('Tambahkan keyword utama ke judul artikel.');
-            }
-            scores.total += titleCheck ? 10 : 0;
-            scores.maxPossible += 10;
-            
-            // --- Check 2: Keyword dalam deskripsi ---
-            // Cek dalam custom description jika ada, otherwise cek di description normal
-            const descToCheck = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value.toLowerCase() : desc.toLowerCase();
-            const descCheck = descToCheck.includes(keyword);
-            setIndicatorStatus(keywordDesc, descCheck ? 'good' : 'bad');
-            if (!descCheck) {
-                tips.push('Tambahkan keyword utama ke deskripsi artikel.');
-            }
-            scores.total += descCheck ? 10 : 0;
-            scores.maxPossible += 10;
-            
-            // --- Check 3: Keyword dalam konten ---
-            const contentCheck = content.includes(keyword);
-            setIndicatorStatus(keywordPresence, contentCheck ? 'good' : 'bad');
-            if (!contentCheck) {
-                tips.push('Pastikan keyword utama muncul di dalam konten artikel.');
-            }
-            scores.total += contentCheck ? 10 : 0;
-            scores.maxPossible += 10;
-            
-            // --- Check 4: Kepadatan keyword (1-3%) ---
-            const wordCount = content.split(/\s+/).length;
-            const keywordCount = (content.match(new RegExp(keyword, 'gi')) || []).length;
-            const density = (keywordCount / wordCount) * 100;
-            
-            let densityStatus = 'none';
-            if (keywordCount > 0) {
-                if (density >= 1 && density <= 3) {
-                    densityStatus = 'good';
-                    scores.total += 10;
-                } else if (density > 0 && density < 1) {
-                    densityStatus = 'warning';
-                    scores.total += 5;
-                    tips.push('Kepadatan keyword kurang dari 1%, tambahkan lebih banyak penggunaan keyword.');
-                } else if (density > 3) {
-                    densityStatus = 'bad';
-                    tips.push('Kepadatan keyword terlalu tinggi (>3%), kurangi penggunaan keyword.');
-                }
-            } else {
-                densityStatus = 'bad';
-                tips.push('Keyword utama tidak ditemukan dalam konten.');
-            }
-            
-            setIndicatorStatus(keywordDensity, densityStatus);
-            scores.maxPossible += 10;
-            
-            // --- Check 5: Panjang konten ---
-            let contentLengthStatus = 'none';
-            if (wordCount >= 300) {
-                contentLengthStatus = 'good';
-                scores.total += 10;
-            } else if (wordCount >= 200) {
-                contentLengthStatus = 'warning';
-                scores.total += 5;
-                tips.push(`Artikel terlalu pendek (${wordCount} kata). Idealnya minimal 300 kata.`);
-            } else {
-                contentLengthStatus = 'bad';
-                tips.push(`Artikel terlalu pendek (${wordCount} kata). Tambahkan lebih banyak konten.`);
-            }
-            
-            setIndicatorStatus(contentLength, contentLengthStatus);
-            scores.maxPossible += 10;
-            
-            // --- Check 6: Panjang judul SEO ---
-            // Gunakan custom SEO title jika tersedia
-            const seoTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
-            const titleLength = seoTitle.length;
-            let titleLengthStatus = 'none';
-            
-            if (titleLength >= 50 && titleLength <= 60) {
-                titleLengthStatus = 'good';
-                scores.total += 10;
-            } else if ((titleLength >= 40 && titleLength < 50) || (titleLength > 60 && titleLength <= 70)) {
-                titleLengthStatus = 'warning';
-                scores.total += 5;
-                tips.push(`Panjang judul (${titleLength} karakter) kurang ideal. Target: 50-60 karakter.`);
-            } else {
-                titleLengthStatus = 'bad';
-                tips.push(`Panjang judul (${titleLength} karakter) tidak optimal. Target: 50-60 karakter.`);
-            }
-            
-            setIndicatorStatus(seoTitleLength, titleLengthStatus);
-            scores.maxPossible += 10;
-            
-            // --- Check 7: Panjang deskripsi ---
-            // Gunakan custom SEO description jika tersedia
-            const seoDesc = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : desc;
-            const descLength = seoDesc.length;
-            let descLengthStatus = 'none';
-            
-            if (descLength >= 120 && descLength <= 160) {
-                descLengthStatus = 'good';
-                scores.total += 10;
-            } else if ((descLength >= 100 && descLength < 120) || (descLength > 160 && descLength <= 180)) {
-                descLengthStatus = 'warning';
-                scores.total += 5;
-                tips.push(`Panjang deskripsi (${descLength} karakter) kurang ideal. Target: 120-160 karakter.`);
-            } else {
-                descLengthStatus = 'bad';
-                tips.push(`Panjang deskripsi (${descLength} karakter) tidak optimal. Target: 120-160 karakter.`);
-            }
-            
-            setIndicatorStatus(seoDescLength, descLengthStatus);
-            scores.maxPossible += 10;
-            
-            // --- Check 8: Heading (H2, H3) dengan keyword ---
-            // Parse HTML untuk mencari heading
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(contentHtml, 'text/html');
-            const h2Elements = Array.from(doc.querySelectorAll('h2'));
-            const h3Elements = Array.from(doc.querySelectorAll('h3'));
-            const headings = [...h2Elements, ...h3Elements];
-            
-            let headingWithKeyword = false;
-            for (const heading of headings) {
-                if (heading.textContent.toLowerCase().includes(keyword)) {
-                    headingWithKeyword = true;
-                    break;
-                }
-            }
-            
-            setIndicatorStatus(headerPresence, headingWithKeyword ? 'good' : 'bad');
-            if (!headingWithKeyword) {
-                tips.push('Tambahkan keyword utama di salah satu heading (H2 atau H3).');
-            }
-            scores.total += headingWithKeyword ? 10 : 0;
-            scores.maxPossible += 10;
-            
-            // --- Check 9: Alt text pada gambar ---
-            const altText = imageAltInput ? imageAltInput.value : '';
-            const hasImage = imageInput && imageInput.files.length > 0;
-            
-            let imageAltStatus = 'none';
-            if (hasImage) {
-                if (altText && altText.trim() !== '') {
-                    if (altText.toLowerCase().includes(keyword)) {
-                        imageAltStatus = 'good';
-                        scores.total += 10;
-                    } else {
-                        imageAltStatus = 'warning';
-                        scores.total += 5;
-                        tips.push('Alt text pada gambar tidak mengandung keyword utama.');
-                    }
-                } else {
-                    imageAltStatus = 'bad';
-                    tips.push('Anda memiliki gambar tapi tidak ada alt text. Tambahkan alt text dengan keyword.');
-                }
-            } else {
-                // Periksa gambar di konten
-                const contentImages = doc.querySelectorAll('img');
-                if (contentImages.length > 0) {
-                    let imagesWithAlt = 0;
-                    let imagesWithKeywordAlt = 0;
-                    
-                    contentImages.forEach(img => {
-                        const alt = img.getAttribute('alt');
-                        if (alt && alt.trim() !== '') {
-                            imagesWithAlt++;
-                            if (alt.toLowerCase().includes(keyword)) {
-                                imagesWithKeywordAlt++;
-                            }
-                        }
-                    });
-                    
-                    if (imagesWithKeywordAlt > 0) {
-                        imageAltStatus = 'good';
-                        scores.total += 10;
-                    } else if (imagesWithAlt > 0) {
-                        imageAltStatus = 'warning';
-                        scores.total += 5;
-                        tips.push('Gambar dalam konten tidak memiliki alt text dengan keyword utama.');
-                    } else {
-                        imageAltStatus = 'bad';
-                        tips.push('Gambar dalam konten tidak memiliki alt text. Tambahkan alt text dengan keyword.');
-                    }
-                } else {
-                    // Tidak ada gambar
-                    imageAltStatus = 'warning';
-                    tips.push('Tidak ada gambar di artikel. Pertimbangkan untuk menambahkan gambar dengan alt text.');
-                    scores.total += 5;
-                }
-            }
-            
-            setIndicatorStatus(imageAlt, imageAltStatus);
-            scores.maxPossible += 10;
-            
-            // --- Check 10: URL SEO friendly ---
-            const slugValueClean = slug.replace(/[^a-z0-9-]/g, '');
-            const isUrlFriendly = slugValueClean === slug && slug.includes(keyword.replace(/\s+/g, '-'));
-            
-            setIndicatorStatus(urlFriendly, isUrlFriendly ? 'good' : 'warning');
-            if (!isUrlFriendly) {
-                tips.push('URL tidak mengandung keyword utama atau mengandung karakter yang tidak SEO friendly.');
-            }
-            scores.total += isUrlFriendly ? 10 : 5;
-            scores.maxPossible += 10;
-            
-            // Hitung skor total
-            const finalScore = Math.round((scores.total / scores.maxPossible) * 100);
-            
-            // Update UI skor
-            seoScoreElement.textContent = `${finalScore}%`;
-            
-            // Update kelas warna skor
-            if (finalScore >= 80) {
-                seoScoreElement.className = 'text-sm bg-green-100 text-green-800 py-1 px-2 rounded-full';
-            } else if (finalScore >= 50) {
-                seoScoreElement.className = 'text-sm bg-yellow-100 text-yellow-800 py-1 px-2 rounded-full';
-            } else {
-                seoScoreElement.className = 'text-sm bg-red-100 text-red-800 py-1 px-2 rounded-full';
-            }
-            
-            // Tampilkan tips (maksimal 3)
-            if (tips.length > 0) {
-                seoTipsElement.innerHTML = tips.slice(0, 3).map(tip => `<div class="mb-1">• ${tip}</div>`).join('') + 
-                    (tips.length > 3 ? `<div class="mt-2 text-blue-500">+${tips.length - 3} tip lainnya...</div>` : '');
-            } else {
-                seoTipsElement.textContent = 'Bagus! Artikel Anda telah teroptimasi dengan baik untuk SEO.';
-            }
-        }
-        
-        // Fungsi untuk reset indikator
-        function resetAllIndicators() {
-            const indicators = [
-                keywordPresence, keywordTitle, keywordDesc, keywordDensity,
-                contentLength, seoTitleLength, seoDescLength, headerPresence,
-                imageAlt, urlFriendly
-            ];
-            
-            indicators.forEach(indicator => {
-                if (indicator) {
-                    setIndicatorStatus(indicator, 'none');
-                }
-            });
-        }
-        
-        // Fungsi untuk set status indikator
-        function setIndicatorStatus(element, status) {
-            if (!element) return;
-            
-            // Reset class
-            element.querySelector('i').className = 'fas fa-circle-check mr-2';
-            
-            if (status === 'good') {
-                element.querySelector('i').classList.add('text-green-500');
-                element.querySelector('span').classList.add('text-green-700');
-                element.querySelector('span').classList.remove('text-gray-500', 'text-red-500', 'text-yellow-500');
-            } else if (status === 'warning') {
-                element.querySelector('i').className = 'fas fa-exclamation-circle text-yellow-500 mr-2';
-                element.querySelector('span').classList.add('text-yellow-700');
-                element.querySelector('span').classList.remove('text-gray-500', 'text-red-500', 'text-green-700');
-            } else if (status === 'bad') {
-                element.querySelector('i').className = 'fas fa-times-circle text-red-500 mr-2';
-                element.querySelector('span').classList.add('text-red-500');
-                element.querySelector('span').classList.remove('text-gray-500', 'text-green-700', 'text-yellow-700');
-            } else {
-                element.querySelector('i').classList.add('text-gray-300');
-                element.querySelector('span').classList.add('text-gray-500');
-                element.querySelector('span').classList.remove('text-green-700', 'text-red-500', 'text-yellow-700');
-            }
-        }
-        
-        // Initial SEO update
-        updateSeoAnalysis();
+        // Run initial TOC update
+        setTimeout(updateTableOfContents, 1000);
     });
 </script>
 @endpush 

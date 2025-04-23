@@ -53,16 +53,35 @@
                     </div>
 
                     <!-- Deskripsi Singkat -->
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Singkat <span class="text-red-500">*</span></label>
-                        <textarea name="description" id="description" rows="3" class="form-textarea w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>{{ old('description') }}</textarea>
-                        <div class="flex justify-between">
-                            <p class="text-gray-500 text-xs mt-1">Ringkasan singkat yang akan tampil di halaman daftar blog</p>
-                            <div class="text-xs text-gray-500 mt-1"><span id="descriptionCounter">0</span>/255 karakter</div>
+                    <div class="mb-4">
+                        <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Deskripsi Singkat <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <textarea id="description" name="description" rows="3" class="w-full px-3 py-2 border @error('description') border-red-500 @else border-gray-300 @enderror rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Deskripsi singkat untuk blog ini">{{ old('description') }}</textarea>
+                            <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+                                <span id="descriptionCounter">0</span>/255
+                            </div>
                         </div>
                         @error('description')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
+                        <p class="text-sm text-gray-500 mt-1">Deskripsi singkat tentang blog ini (maksimal 255 karakter).</p>
+                    </div>
+
+                    <!-- TOC (Table of Contents) -->
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-gray-700 text-sm font-medium">Daftar Isi (TOC)</label>
+                            <span class="text-xs text-gray-600">Otomatis dari heading (H2, H3)</span>
+                        </div>
+                        
+                        <!-- Auto TOC preview -->
+                        <div id="toc_auto_container" class="border border-gray-300 rounded-md p-3 bg-gray-50">
+                            <div id="toc_preview" class="text-sm">
+                                <div class="text-gray-500 italic text-xs">Daftar isi otomatis akan muncul di sini setelah Anda menambahkan heading (H2, H3) ke konten.</div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">TOC otomatis akan dibuat dari heading H2 dan H3 di konten Anda.</p>
+                        </div>
+                        <input type="hidden" name="toc_mode" value="auto">
                     </div>
 
                     <!-- Konten dengan tinggi statis -->
@@ -322,9 +341,25 @@
 
 @push('scripts')
 <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<style>
+    /* Toggle Switch */
+    .toggle-checkbox:checked {
+        right: 0;
+        transform: translateX(100%);
+        border-color: #3b82f6;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+        background-color: #3b82f6;
+    }
+    .toggle-label, .toggle-checkbox {
+        transition: all 0.3s ease-in-out;
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // TinyMCE initialization - fallback to basic if API key not set
+        let editor;
+
         if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
             tinymce.init({
                 selector: '#content',
@@ -432,7 +467,13 @@
                 remove_script_host: false,
                 convert_urls: true,
                 extended_valid_elements: 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]',
-                setup: function(editor) {
+                setup: function(ed) {
+                    editor = ed;
+                    // Event listener for content changes to update TOC
+                    editor.on('Change', function() {
+                        updateTableOfContents();
+                    });
+                    
                     // Keydown handler untuk menekan tab
                     editor.on('keydown', function(e) {
                         if (e.keyCode === 9) { // Tab key
@@ -495,6 +536,113 @@
             const textarea = document.getElementById('content');
             textarea.style.minHeight = '500px';
             textarea.classList.add('p-3');
+            
+            // Use textarea for TOC updates
+            textarea.addEventListener('input', function() {
+                updateTableOfContents();
+            });
+        }
+
+        // Function to update the TOC automatically
+        function updateTableOfContents() {
+            const tocPreview = document.getElementById('toc_preview');
+            if (!tocPreview) return;
+            
+            let content = '';
+            
+            if (window.tinymce && tinymce.get('content')) {
+                content = tinymce.get('content').getContent();
+            } else {
+                content = document.getElementById('content').value;
+            }
+            
+            // Parse the content to find headings
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const h2Elements = Array.from(doc.querySelectorAll('h2'));
+            const h3Elements = Array.from(doc.querySelectorAll('h3'));
+            
+            if (h2Elements.length === 0 && h3Elements.length === 0) {
+                tocPreview.innerHTML = '<div class="text-gray-500 italic text-xs">Tidak ada heading yang ditemukan. Tambahkan heading H2 atau H3 ke konten untuk membuat TOC.</div>';
+                return;
+            }
+            
+            // Create TOC structure
+            let tocHtml = '<ul class="list-disc pl-5 space-y-1">';
+            let contentChanged = false;
+            
+            // Process H2 headings first
+            h2Elements.forEach((h2, index) => {
+                const headingText = h2.textContent.trim();
+                if (!headingText) return;
+                
+                // Buat ID yang konsisten dari teks heading
+                const headingSlug = headingText.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                const headingId = `h2-${headingSlug}`;
+                
+                // Periksa apakah ID telah berubah
+                if (h2.id !== headingId) {
+                    h2.id = headingId;
+                    contentChanged = true;
+                }
+                
+                tocHtml += `<li><a href="#${headingId}" class="text-blue-600 hover:underline">${headingText}</a>`;
+                
+                // Check for H3 headings that follow this H2
+                const nextH2 = h2Elements[index + 1];
+                const h3Subset = h3Elements.filter(h3 => {
+                    if (!nextH2) return h2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_FOLLOWING;
+                    return (h2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_FOLLOWING) && 
+                           (nextH2.compareDocumentPosition(h3) & Node.DOCUMENT_POSITION_PRECEDING);
+                });
+                
+                if (h3Subset.length > 0) {
+                    tocHtml += '<ul class="pl-4 mt-1 space-y-1">';
+                    h3Subset.forEach((h3, subIndex) => {
+                        const subHeadingText = h3.textContent.trim();
+                        if (!subHeadingText) return;
+                        
+                        // Buat ID yang konsisten untuk sub-heading
+                        const subHeadingSlug = subHeadingText.toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-|-$)/g, '');
+                        const subHeadingId = `h3-${headingSlug}-${subHeadingSlug}`;
+                        
+                        // Periksa apakah ID telah berubah
+                        if (h3.id !== subHeadingId) {
+                            h3.id = subHeadingId;
+                            contentChanged = true;
+                        }
+                        
+                        tocHtml += `<li><a href="#${subHeadingId}" class="text-blue-600 hover:underline">${subHeadingText}</a></li>`;
+                    });
+                    tocHtml += '</ul>';
+                }
+                
+                tocHtml += '</li>';
+            });
+            
+            tocHtml += '</ul>';
+            
+            // Update the preview
+            tocPreview.innerHTML = tocHtml;
+            
+            // Update the actual content in the editor with the ID attributes hanya jika ada perubahan
+            if (contentChanged && window.tinymce && tinymce.get('content')) {
+                // Mencegah loop tak terbatas dengan menonaktifkan event handler sementara
+                tinymce.get('content').off('Change');
+                
+                // Perbarui konten dengan ID yang benar
+                const updatedContent = doc.body.innerHTML;
+                tinymce.get('content').setContent(updatedContent);
+                
+                // Aktifkan kembali event handler setelah penundaan
+                setTimeout(() => {
+                    tinymce.get('content').on('Change', updateTableOfContents);
+                }, 300);
+            }
         }
 
         // Slug generator
@@ -613,6 +761,7 @@
         // Initial update
         updateSeoPreview();
         updateCharacterCount();
+        setTimeout(updateTableOfContents, 1000); // Initial TOC update
     });
 </script>
 

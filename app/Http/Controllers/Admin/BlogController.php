@@ -47,6 +47,8 @@ class BlogController extends Controller
             'tags' => 'nullable|string',
             'status' => 'required|in:draft,published',
             'focus_keyword' => 'nullable|string|max:255',
+            'toc_mode' => 'nullable|string|in:auto,manual',
+            'toc_manual' => 'nullable|string',
         ]);
         
         // Periksa jika tombol "Simpan Draft" ditekan
@@ -66,6 +68,11 @@ class BlogController extends Controller
         }
         $validated['tags'] = $tags;
         
+        // Set mode TOC jika tidak diisi
+        if (!isset($validated['toc_mode'])) {
+            $validated['toc_mode'] = 'auto';
+        }
+        
         // Set tanggal publikasi jika status published
         if ($validated['status'] === 'published' && !isset($validated['published_at'])) {
             $validated['published_at'] = now();
@@ -83,6 +90,8 @@ class BlogController extends Controller
             $blog->category = $validated['category'];
             $blog->tags = $validated['tags'];
             $blog->author = $validated['author'] ?? (Auth::check() ? Auth::user()->name : 'Admin');
+            $blog->toc_mode = $validated['toc_mode'] ?? 'auto';
+            $blog->toc_manual = $validated['toc_manual'] ?? null;
             
             if ($blog->status == 'published') {
                 $blog->published_at = $validated['published_at'] ?? now();
@@ -145,6 +154,8 @@ class BlogController extends Controller
             'tags' => 'nullable',
             'author' => 'nullable|max:255',
             'focus_keyword' => 'nullable|string|max:255',
+            'toc_mode' => 'nullable|string|in:auto,manual',
+            'toc_manual' => 'nullable|string',
         ]);
 
         try {
@@ -162,6 +173,8 @@ class BlogController extends Controller
             $blog->category = $request->category;
             $blog->tags = $request->tags ? array_map('trim', explode(',', $request->tags)) : null;
             $blog->author = $request->author ?? $blog->author;
+            $blog->toc_mode = $request->toc_mode ?? 'auto';
+            $blog->toc_manual = $request->toc_manual;
             
             // Set published_at jika status berubah ke published
             if ($oldStatus != 'published' && $blog->status == 'published') {

@@ -34,7 +34,7 @@
     }
     
     /* Headings */
-    .prose h1 {
+    .prose h1, .prose [class*="h1"] {
         font-size: 2.25rem;
         font-weight: 700;
         margin-top: 2.5rem;
@@ -43,7 +43,7 @@
         padding-bottom: 0.75rem;
     }
     
-    .prose h2 {
+    .prose h2, .prose [class*="h2"] {
         font-size: 1.8rem;
         font-weight: 700;
         margin-top: 2rem;
@@ -52,7 +52,7 @@
         padding-bottom: 0.5rem;
     }
     
-    .prose h3 {
+    .prose h3, .prose [class*="h3"] {
         font-size: 1.5rem;
         font-weight: 600;
         margin-top: 1.5rem;
@@ -60,7 +60,7 @@
         color: #1f2937;
     }
     
-    .prose h4 {
+    .prose h4, .prose [class*="h4"] {
         font-size: 1.25rem;
         font-weight: 600;
         margin-top: 1.25rem;
@@ -262,6 +262,73 @@
         border: none;
         margin: 1.5rem 0;
     }
+    
+    /* Styling for Table of Contents */
+    .prose-toc ul {
+        list-style-type: none;
+        margin-left: 0;
+        padding-left: 0;
+    }
+    
+    .prose-toc ul ul {
+        margin-left: 1.5rem;
+    }
+    
+    .prose-toc li {
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+    
+    .prose-toc a {
+        color: #4B5563;
+        text-decoration: none;
+        display: inline-block;
+        padding: 0.25rem 0;
+        border-bottom: 1px dotted transparent;
+        transition: all 0.2s;
+    }
+    
+    .prose-toc a:hover {
+        color: #FF6000;
+        border-bottom-color: #FF6000;
+    }
+    
+    .prose-toc a.active {
+        color: #FF6000;
+        font-weight: 600;
+    }
+    
+    /* Tambahan styling untuk TOC */
+    .toc-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .toc-list li {
+        margin-bottom: 8px;
+    }
+    
+    .toc-link {
+        display: flex;
+        align-items: center;
+        color: #4B5563;
+        text-decoration: none;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        padding: 4px 0;
+        border-bottom: 1px dotted transparent;
+        transition: all 0.2s;
+    }
+    
+    .toc-link:hover {
+        color: #FF6000;
+        border-bottom-color: #FF6000;
+    }
+    
+    .toc-link.text-\[\#FF6000\] {
+        font-weight: 600;
+    }
 </style>
 @endsection
 
@@ -304,10 +371,74 @@
             </div>
             @endif
             
+            <!-- Table of Contents -->
+            @php
+            // Mencoba mendeteksi heading menggunakan regex yang lebih luas
+            preg_match_all('/<h([2-3])[^>]*>(.*?)<\/h\1>/is', $blog->content, $matches, PREG_SET_ORDER);
+            $hasHeadings = count($matches) > 0;
+            
+            // Persiapkan array untuk TOC
+            $tocItems = [];
+            $headingIds = [];
+            
+            if ($hasHeadings) {
+                // Loop setiap heading yang ditemukan
+                foreach ($matches as $i => $match) {
+                    $level = $match[1]; // 2 untuk h2, 3 untuk h3
+                    $text = strip_tags($match[2]);
+                    
+                    // Buat slug untuk ID
+                    $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower(trim($text)));
+                    $slug = trim($slug, '-');
+                    $id = "h{$level}-{$slug}";
+                    
+                    // Tambahkan ke ID yang akan diganti dalam konten
+                    $headingIds[] = [
+                        'regex' => '/<h' . $level . '[^>]*>('. preg_quote($match[2], '/') .')<\/h' . $level . '>/is',
+                        'replacement' => '<h' . $level . ' id="' . $id . '">${1}</h' . $level . '>'
+                    ];
+                    
+                    // Tambahkan item ke TOC
+                    $tocItems[] = [
+                        'level' => $level,
+                        'text' => $text,
+                        'id' => $id
+                    ];
+                }
+                
+                // Update konten dengan heading IDs
+                foreach ($headingIds as $item) {
+                    $blog->content = preg_replace($item['regex'], $item['replacement'], $blog->content, 1);
+                }
+            }
+            @endphp
+            
+            @if($hasHeadings)
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm" id="toc-container">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-list-ul mr-2 text-[#FF6000]"></i> Daftar Isi
+                    </h2>
+                    <div class="prose prose-toc max-w-none">
+                        <ul class="toc-list">
+                            @foreach($tocItems as $item)
+                                <li class="{{ $item['level'] == 3 ? 'ml-4' : '' }}">
+                                    <a href="#{{ $item['id'] }}" class="toc-link flex items-center py-1 text-gray-700 hover:text-[#FF6000]">
+                                        <span class="mr-2 text-xs"><i class="fas fa-circle {{ $item['level'] == 3 ? 'text-xs' : '' }}"></i></span>
+                                        {{ $item['text'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
             <!-- Content -->
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden mb-10 shadow-sm">
                 <div class="p-8 md:p-10">
-                    <div class="prose prose-xl prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-ul:my-6 prose-ul:list-disc prose-li:my-2 max-w-none">
+                    <div class="prose prose-xl prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-ul:my-6 prose-ul:list-disc prose-li:my-2 max-w-none" id="blog-content">
                         {!! $blog->content !!}
                     </div>
                 </div>
@@ -440,4 +571,58 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Menambahkan smooth scroll untuk link TOC
+        const tocLinks = document.querySelectorAll('.toc-link');
+        tocLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    // Mendapatkan tinggi viewport
+                    const viewportHeight = window.innerHeight;
+                    // Posisi scroll yang menempatkan elemen di tengah viewport
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - (viewportHeight / 3);
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Highlight TOC item saat scroll
+        const headings = document.querySelectorAll('#blog-content h2, #blog-content h3');
+        if (headings.length > 0) {
+            window.addEventListener('scroll', function() {
+                const scrollPosition = window.scrollY;
+                
+                headings.forEach((heading, index) => {
+                    if (!heading.textContent.trim()) return;
+                    
+                    const offsetTop = heading.offsetTop - 150;
+                    const nextHeading = headings[index + 1];
+                    const offsetBottom = nextHeading ? nextHeading.offsetTop - 150 : Infinity;
+                    
+                    const link = document.querySelector(`.toc-link[href="#${heading.id}"]`);
+                    
+                    if (link) {
+                        if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+                            link.classList.add('text-[#FF6000]', 'font-medium');
+                        } else {
+                            link.classList.remove('text-[#FF6000]', 'font-medium');
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endsection 

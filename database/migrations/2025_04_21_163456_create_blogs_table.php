@@ -25,6 +25,8 @@ return new class extends Migration
             $table->json('tags')->nullable();
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamp('published_at')->nullable();
+            $table->string('toc_mode')->nullable()->default('auto');
+            $table->text('toc_manual')->nullable();
             $table->timestamps();
         });
     }
