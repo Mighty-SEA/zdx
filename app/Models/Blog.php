@@ -21,7 +21,9 @@ class Blog extends Model
         'author',
         'published_at',
         'category',
-        'tags'
+        'tags',
+        'toc_mode',
+        'toc_manual'
     ];
     
     protected $casts = [
