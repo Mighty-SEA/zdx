@@ -143,7 +143,10 @@
                     
                     <!-- SEO RankMath -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="font-medium text-gray-800 mb-4">SEO Optimization</h3>
+                        <h3 class="font-medium text-gray-800 mb-4 flex items-center justify-between">
+                            <span><i class="fas fa-chart-line text-blue-500 mr-1"></i> SEO Optimization</span>
+                            <span class="text-sm bg-gray-200 text-gray-700 py-1 px-2 rounded-full" id="seo-score">0%</span>
+                        </h3>
                         
                         <!-- Focus Keyword -->
                         <div class="mb-4">
@@ -152,29 +155,137 @@
                             </label>
                             <input type="text" name="focus_keyword" id="focus_keyword" class="form-input w-full rounded-md" value="{{ old('focus_keyword') }}" placeholder="keyword utama artikel">
                             <p class="text-gray-500 text-xs mt-1">Kata kunci yang menjadi fokus optimasi SEO artikel ini</p>
+                        </div>
+                        
+                        <!-- Metadata Dasar -->
+                        <div class="mb-4 pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-search text-blue-500 mr-2"></i> Metadata Dasar:
+                            </h4>
                             
-                            <!-- SEO Preview Section -->
-                            <div class="mt-4 pt-3 border-t border-gray-200">
-                                <h4 class="text-sm font-medium text-gray-700 mb-2">SEO Preview:</h4>
-                                <div class="p-3 bg-white rounded border border-gray-300">
-                                    <h5 id="seo-preview-title" class="text-blue-600 font-medium">Preview Judul - ZDX Cargo</h5>
-                                    <div class="text-green-600 text-xs mt-1">{{ url('/') }}/<span id="seo-preview-slug">preview-slug</span></div>
-                                    <p id="seo-preview-desc" class="text-gray-600 text-sm mt-1">Preview deskripsi akan muncul di sini.</p>
-                                    <div class="mt-3 pt-2 border-t border-gray-200 text-sm">
-                                        <div class="flex items-center mb-1" id="keyword-presence">
-                                            <i class="fas fa-circle-check text-gray-300 mr-2"></i>
-                                            <span class="text-gray-500">Keyword dalam konten</span>
-                                        </div>
-                                        <div class="flex items-center mb-1" id="keyword-title">
-                                            <i class="fas fa-circle-check text-gray-300 mr-2"></i>
-                                            <span class="text-gray-500">Keyword dalam judul</span>
-                                        </div>
-                                        <div class="flex items-center" id="keyword-desc">
-                                            <i class="fas fa-circle-check text-gray-300 mr-2"></i>
-                                            <span class="text-gray-500">Keyword dalam deskripsi</span>
-                                        </div>
-                                    </div>
+                            <!-- Title Override -->
+                            <div class="mb-3">
+                                <label for="seo_title" class="block text-xs font-medium text-gray-700 mb-1">
+                                    Title <span class="text-xs text-gray-500">(maks. 60 karakter)</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="seo_title" name="seo_title" value="{{ old('seo_title') }}"
+                                        class="form-input w-full rounded-md text-sm"
+                                        maxlength="100"
+                                        placeholder="Judul untuk mesin pencari (kosongkan untuk gunakan judul artikel)">
+                                    <span class="absolute right-2 bottom-2 text-xs text-gray-500">
+                                        <span id="seoTitleCount">0</span>/60
+                                    </span>
                                 </div>
+                            </div>
+                            
+                            <!-- Meta Description Override -->
+                            <div class="mb-3">
+                                <label for="seo_description" class="block text-xs font-medium text-gray-700 mb-1">
+                                    Meta Description <span class="text-xs text-gray-500">(maks. 160 karakter)</span>
+                                </label>
+                                <div class="relative">
+                                    <textarea id="seo_description" name="seo_description" rows="2"
+                                        class="form-textarea w-full rounded-md text-sm"
+                                        maxlength="255"
+                                        placeholder="Deskripsi singkat untuk mesin pencari (kosongkan untuk gunakan deskripsi artikel)">{{ old('seo_description') }}</textarea>
+                                    <span class="absolute right-2 bottom-2 text-xs text-gray-500">
+                                        <span id="seoDescriptionCount">0</span>/160
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Meta Keywords -->
+                            <div class="mb-3">
+                                <label for="seo_keywords" class="block text-xs font-medium text-gray-700 mb-1">
+                                    Meta Keywords <span class="text-xs text-gray-500">(pisahkan dengan koma)</span>
+                                </label>
+                                <input type="text" id="seo_keywords" name="seo_keywords" value="{{ old('seo_keywords') }}"
+                                    class="form-input w-full rounded-md text-sm"
+                                    placeholder="kata-kunci, seo, artikel, blog">
+                            </div>
+                        </div>
+                        
+                        <!-- SEO Preview Section -->
+                        <div class="mb-4 pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-search text-blue-500 mr-2"></i> Preview di Google:
+                            </h4>
+                            <div class="p-3 bg-white rounded border border-gray-300">
+                                <h5 id="seo-preview-title" class="text-blue-600 font-medium text-base line-clamp-1">Preview Judul - ZDX Cargo</h5>
+                                <div class="text-green-600 text-xs mt-1">{{ url('/') }}/<span id="seo-preview-slug">preview-slug</span></div>
+                                <p id="seo-preview-desc" class="text-gray-600 text-sm mt-1 line-clamp-2">Preview deskripsi akan muncul di sini.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- SEO Analysis -->
+                        <div class="pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                                <i class="fas fa-clipboard-check text-blue-500 mr-2"></i> SEO Checklist:
+                            </h4>
+                            
+                            <div class="space-y-3 text-sm">
+                                <!-- Basic SEO Checks -->
+                                <div class="flex items-center" id="keyword-presence">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Keyword dalam konten</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="keyword-title">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Keyword dalam judul</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="keyword-desc">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Keyword dalam deskripsi</span>
+                                </div>
+                                
+                                <!-- Advanced SEO Checks -->
+                                <div class="flex items-center" id="keyword-density">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Kepadatan keyword (1-3%)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="content-length">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Panjang konten (min. 300 kata)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="seo-title-length">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Panjang judul (50-60 karakter)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="seo-desc-length">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Panjang deskripsi (120-160 karakter)</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="header-presence">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Heading (H2, H3) dengan keyword</span>
+                                </div>
+
+                                <div class="flex items-center" id="image-alt">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">Alt text pada gambar</span>
+                                </div>
+                                
+                                <div class="flex items-center" id="url-friendly">
+                                    <i class="fas fa-circle-check text-gray-300 mr-2"></i>
+                                    <span class="text-gray-500">URL yang SEO friendly</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SEO Tips -->
+                        <div class="mt-4 pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Tips:
+                            </h4>
+                            <div id="seo-tips" class="text-xs text-gray-600 bg-yellow-50 p-3 rounded">
+                                Masukkan focus keyword untuk mulai analisis SEO.
                             </div>
                         </div>
                     </div>
@@ -527,89 +638,397 @@
         const descInput = document.getElementById('description');
         const contentEditor = document.getElementById('content');
         const focusKeywordInput = document.getElementById('focus_keyword');
+        const imageAltInput = document.getElementById('image_alt');
+        const imageInput = document.getElementById('image');
+        
+        // Metadata dasar elements
+        const seoTitleInput = document.getElementById('seo_title');
+        const seoDescriptionInput = document.getElementById('seo_description');
+        const seoKeywordsInput = document.getElementById('seo_keywords');
+        const seoTitleCount = document.getElementById('seoTitleCount');
+        const seoDescriptionCount = document.getElementById('seoDescriptionCount');
         
         // Preview elements
         const seoPreviewTitle = document.getElementById('seo-preview-title');
         const seoPreviewSlug = document.getElementById('seo-preview-slug');
         const seoPreviewDesc = document.getElementById('seo-preview-desc');
+        const seoScoreElement = document.getElementById('seo-score');
+        const seoTipsElement = document.getElementById('seo-tips');
         
         // SEO Check indicators
         const keywordPresence = document.getElementById('keyword-presence');
         const keywordTitle = document.getElementById('keyword-title');
         const keywordDesc = document.getElementById('keyword-desc');
+        const keywordDensity = document.getElementById('keyword-density');
+        const contentLength = document.getElementById('content-length');
+        const seoTitleLength = document.getElementById('seo-title-length');
+        const seoDescLength = document.getElementById('seo-desc-length');
+        const headerPresence = document.getElementById('header-presence');
+        const imageAlt = document.getElementById('image-alt');
+        const urlFriendly = document.getElementById('url-friendly');
         
         // Event listeners untuk update real-time
-        [titleInput, slugInput, descInput, focusKeywordInput].forEach(input => {
-            input.addEventListener('input', updateSeoAnalysis);
+        [titleInput, slugInput, descInput, focusKeywordInput, imageAltInput, 
+         seoTitleInput, seoDescriptionInput, seoKeywordsInput].forEach(input => {
+            if (input) {
+                input.addEventListener('input', updateSeoAnalysis);
+            }
         });
+        
+        // Update karakter metadata dasar
+        if (seoTitleInput) {
+            seoTitleInput.addEventListener('input', function() {
+                seoTitleCount.textContent = this.value.length;
+            });
+            seoTitleInput.dispatchEvent(new Event('input'));
+        }
+        
+        if (seoDescriptionInput) {
+            seoDescriptionInput.addEventListener('input', function() {
+                seoDescriptionCount.textContent = this.value.length;
+            });
+            seoDescriptionInput.dispatchEvent(new Event('input'));
+        }
+        
+        if (imageInput) {
+            imageInput.addEventListener('change', updateSeoAnalysis);
+        }
         
         // Listener untuk TinyMCE jika tersedia
         if (window.tinymce) {
-            tinymce.get('content')?.on('Change', updateSeoAnalysis);
+            tinymce.on('AddEditor', function(e) {
+                e.editor.on('Change', updateSeoAnalysis);
+                e.editor.on('Keyup', updateSeoAnalysis);
+            });
+            
+            if (tinymce.get('content')) {
+                tinymce.get('content').on('Change', updateSeoAnalysis);
+                tinymce.get('content').on('Keyup', updateSeoAnalysis);
+            }
         }
         
         // Update awal
-        updateSeoAnalysis();
+        setTimeout(updateSeoAnalysis, 1000); // Sedikit delay untuk memastikan TinyMCE sudah terinisialisasi
         
         // Fungsi untuk menganalisis SEO
         function updateSeoAnalysis() {
-            // Update preview
+            // Update preview menggunakan custom SEO title/desc jika ada, atau default
             const title = titleInput.value || 'Preview Judul';
+            const customTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
             const slug = slugInput.value || 'preview-slug';
             const desc = descInput.value || 'Preview deskripsi akan muncul di sini.';
+            const customDesc = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : desc;
             const keyword = focusKeywordInput.value?.trim().toLowerCase();
             
-            seoPreviewTitle.textContent = title + ' - ZDX Cargo';
+            seoPreviewTitle.textContent = customTitle;
             seoPreviewSlug.textContent = slug;
-            seoPreviewDesc.textContent = desc;
+            seoPreviewDesc.textContent = customDesc;
             
             // Jika tidak ada keyword, reset status
             if (!keyword) {
-                setIndicatorStatus(keywordPresence, 'none');
-                setIndicatorStatus(keywordTitle, 'none');
-                setIndicatorStatus(keywordDesc, 'none');
+                resetAllIndicators();
+                seoScoreElement.textContent = '0%';
+                seoTipsElement.textContent = 'Masukkan focus keyword untuk mulai analisis SEO.';
                 return;
             }
             
-            // Check title contains keyword
-            const titleCheck = title.toLowerCase().includes(keyword);
-            setIndicatorStatus(keywordTitle, titleCheck ? 'good' : 'bad');
+            // Mulai analisis dengan semua indikator diatur ke 'none'
+            resetAllIndicators();
             
-            // Check description contains keyword
-            const descCheck = desc.toLowerCase().includes(keyword);
-            setIndicatorStatus(keywordDesc, descCheck ? 'good' : 'bad');
-            
-            // Check content contains keyword
+            // Dapatkan konten dari TinyMCE atau textarea biasa
             let content = '';
+            let contentHtml = '';
             if (window.tinymce && tinymce.get('content')) {
                 content = tinymce.get('content').getContent({ format: 'text' }).toLowerCase();
+                contentHtml = tinymce.get('content').getContent();
             } else {
                 content = contentEditor.value.toLowerCase();
+                contentHtml = contentEditor.value;
             }
             
+            // Array untuk menyimpan tips
+            let tips = [];
+            
+            // Array untuk menyimpan skor per kriteria
+            let scores = {
+                total: 0,
+                maxPossible: 0
+            };
+            
+            // --- Check 1: Keyword dalam judul ---
+            // Cek dalam custom title jika ada, otherwise cek di title normal
+            const titleToCheck = seoTitleInput && seoTitleInput.value ? seoTitleInput.value.toLowerCase() : title.toLowerCase();
+            const titleCheck = titleToCheck.includes(keyword);
+            setIndicatorStatus(keywordTitle, titleCheck ? 'good' : 'bad');
+            if (!titleCheck) {
+                tips.push('Tambahkan keyword utama ke judul artikel.');
+            }
+            scores.total += titleCheck ? 10 : 0;
+            scores.maxPossible += 10;
+            
+            // --- Check 2: Keyword dalam deskripsi ---
+            // Cek dalam custom description jika ada, otherwise cek di description normal
+            const descToCheck = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value.toLowerCase() : desc.toLowerCase();
+            const descCheck = descToCheck.includes(keyword);
+            setIndicatorStatus(keywordDesc, descCheck ? 'good' : 'bad');
+            if (!descCheck) {
+                tips.push('Tambahkan keyword utama ke deskripsi artikel.');
+            }
+            scores.total += descCheck ? 10 : 0;
+            scores.maxPossible += 10;
+            
+            // --- Check 3: Keyword dalam konten ---
             const contentCheck = content.includes(keyword);
             setIndicatorStatus(keywordPresence, contentCheck ? 'good' : 'bad');
-        }
-        
-        // Fungsi untuk mengatur status indikator
-        function setIndicatorStatus(element, status) {
-            // Reset class
-            element.querySelector('i').className = 'fas fa-circle-check mr-2';
+            if (!contentCheck) {
+                tips.push('Pastikan keyword utama muncul di dalam konten artikel.');
+            }
+            scores.total += contentCheck ? 10 : 0;
+            scores.maxPossible += 10;
             
-            if (status === 'good') {
-                element.querySelector('i').classList.add('text-green-500');
-                element.querySelector('span').classList.add('text-green-700');
-                element.querySelector('span').classList.remove('text-gray-500', 'text-red-500');
-            } else if (status === 'bad') {
-                element.querySelector('i').classList.add('text-red-500');
-                element.querySelector('span').classList.add('text-red-500');
-                element.querySelector('span').classList.remove('text-gray-500', 'text-green-700');
+            // --- Check 4: Kepadatan keyword (1-3%) ---
+            const wordCount = content.split(/\s+/).length;
+            const keywordCount = (content.match(new RegExp(keyword, 'gi')) || []).length;
+            const density = (keywordCount / wordCount) * 100;
+            
+            let densityStatus = 'none';
+            if (keywordCount > 0) {
+                if (density >= 1 && density <= 3) {
+                    densityStatus = 'good';
+                    scores.total += 10;
+                } else if (density > 0 && density < 1) {
+                    densityStatus = 'warning';
+                    scores.total += 5;
+                    tips.push('Kepadatan keyword kurang dari 1%, tambahkan lebih banyak penggunaan keyword.');
+                } else if (density > 3) {
+                    densityStatus = 'bad';
+                    tips.push('Kepadatan keyword terlalu tinggi (>3%), kurangi penggunaan keyword.');
+                }
             } else {
-                element.querySelector('i').classList.add('text-gray-300');
-                element.querySelector('span').classList.add('text-gray-500');
-                element.querySelector('span').classList.remove('text-green-700', 'text-red-500');
+                densityStatus = 'bad';
+                tips.push('Keyword utama tidak ditemukan dalam konten.');
+            }
+            
+            setIndicatorStatus(keywordDensity, densityStatus);
+            scores.maxPossible += 10;
+            
+            // --- Check 5: Panjang konten ---
+            let contentLengthStatus = 'none';
+            if (wordCount >= 300) {
+                contentLengthStatus = 'good';
+                scores.total += 10;
+            } else if (wordCount >= 200) {
+                contentLengthStatus = 'warning';
+                scores.total += 5;
+                tips.push(`Artikel terlalu pendek (${wordCount} kata). Idealnya minimal 300 kata.`);
+            } else {
+                contentLengthStatus = 'bad';
+                tips.push(`Artikel terlalu pendek (${wordCount} kata). Tambahkan lebih banyak konten.`);
+            }
+            
+            setIndicatorStatus(contentLength, contentLengthStatus);
+            scores.maxPossible += 10;
+            
+            // --- Check 6: Panjang judul SEO ---
+            // Gunakan custom SEO title jika tersedia
+            const seoTitle = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
+            const titleLength = seoTitle.length;
+            let titleLengthStatus = 'none';
+            
+            if (titleLength >= 50 && titleLength <= 60) {
+                titleLengthStatus = 'good';
+                scores.total += 10;
+            } else if ((titleLength >= 40 && titleLength < 50) || (titleLength > 60 && titleLength <= 70)) {
+                titleLengthStatus = 'warning';
+                scores.total += 5;
+                tips.push(`Panjang judul (${titleLength} karakter) kurang ideal. Target: 50-60 karakter.`);
+            } else {
+                titleLengthStatus = 'bad';
+                tips.push(`Panjang judul (${titleLength} karakter) tidak optimal. Target: 50-60 karakter.`);
+            }
+            
+            setIndicatorStatus(seoTitleLength, titleLengthStatus);
+            scores.maxPossible += 10;
+            
+            // --- Check 7: Panjang deskripsi ---
+            // Gunakan custom SEO description jika tersedia
+            const seoDesc = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : desc;
+            const descLength = seoDesc.length;
+            let descLengthStatus = 'none';
+            
+            if (descLength >= 120 && descLength <= 160) {
+                descLengthStatus = 'good';
+                scores.total += 10;
+            } else if ((descLength >= 100 && descLength < 120) || (descLength > 160 && descLength <= 180)) {
+                descLengthStatus = 'warning';
+                scores.total += 5;
+                tips.push(`Panjang deskripsi (${descLength} karakter) kurang ideal. Target: 120-160 karakter.`);
+            } else {
+                descLengthStatus = 'bad';
+                tips.push(`Panjang deskripsi (${descLength} karakter) tidak optimal. Target: 120-160 karakter.`);
+            }
+            
+            setIndicatorStatus(seoDescLength, descLengthStatus);
+            scores.maxPossible += 10;
+            
+            // --- Check 8: Heading (H2, H3) dengan keyword ---
+            // Parse HTML untuk mencari heading
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(contentHtml, 'text/html');
+            const h2Elements = Array.from(doc.querySelectorAll('h2'));
+            const h3Elements = Array.from(doc.querySelectorAll('h3'));
+            const headings = [...h2Elements, ...h3Elements];
+            
+            let headingWithKeyword = false;
+            for (const heading of headings) {
+                if (heading.textContent.toLowerCase().includes(keyword)) {
+                    headingWithKeyword = true;
+                    break;
+                }
+            }
+            
+            setIndicatorStatus(headerPresence, headingWithKeyword ? 'good' : 'bad');
+            if (!headingWithKeyword) {
+                tips.push('Tambahkan keyword utama di salah satu heading (H2 atau H3).');
+            }
+            scores.total += headingWithKeyword ? 10 : 0;
+            scores.maxPossible += 10;
+            
+            // --- Check 9: Alt text pada gambar ---
+            const altText = imageAltInput ? imageAltInput.value : '';
+            const hasImage = imageInput && imageInput.files.length > 0;
+            
+            let imageAltStatus = 'none';
+            if (hasImage) {
+                if (altText && altText.trim() !== '') {
+                    if (altText.toLowerCase().includes(keyword)) {
+                        imageAltStatus = 'good';
+                        scores.total += 10;
+                    } else {
+                        imageAltStatus = 'warning';
+                        scores.total += 5;
+                        tips.push('Alt text pada gambar tidak mengandung keyword utama.');
+                    }
+                } else {
+                    imageAltStatus = 'bad';
+                    tips.push('Anda memiliki gambar tapi tidak ada alt text. Tambahkan alt text dengan keyword.');
+                }
+            } else {
+                // Periksa gambar di konten
+                const contentImages = doc.querySelectorAll('img');
+                if (contentImages.length > 0) {
+                    let imagesWithAlt = 0;
+                    let imagesWithKeywordAlt = 0;
+                    
+                    contentImages.forEach(img => {
+                        const alt = img.getAttribute('alt');
+                        if (alt && alt.trim() !== '') {
+                            imagesWithAlt++;
+                            if (alt.toLowerCase().includes(keyword)) {
+                                imagesWithKeywordAlt++;
+                            }
+                        }
+                    });
+                    
+                    if (imagesWithKeywordAlt > 0) {
+                        imageAltStatus = 'good';
+                        scores.total += 10;
+                    } else if (imagesWithAlt > 0) {
+                        imageAltStatus = 'warning';
+                        scores.total += 5;
+                        tips.push('Gambar dalam konten tidak memiliki alt text dengan keyword utama.');
+                    } else {
+                        imageAltStatus = 'bad';
+                        tips.push('Gambar dalam konten tidak memiliki alt text. Tambahkan alt text dengan keyword.');
+                    }
+                } else {
+                    // Tidak ada gambar
+                    imageAltStatus = 'warning';
+                    tips.push('Tidak ada gambar di artikel. Pertimbangkan untuk menambahkan gambar dengan alt text.');
+                    scores.total += 5;
+                }
+            }
+            
+            setIndicatorStatus(imageAlt, imageAltStatus);
+            scores.maxPossible += 10;
+            
+            // --- Check 10: URL SEO friendly ---
+            const slugValueClean = slug.replace(/[^a-z0-9-]/g, '');
+            const isUrlFriendly = slugValueClean === slug && slug.includes(keyword.replace(/\s+/g, '-'));
+            
+            setIndicatorStatus(urlFriendly, isUrlFriendly ? 'good' : 'warning');
+            if (!isUrlFriendly) {
+                tips.push('URL tidak mengandung keyword utama atau mengandung karakter yang tidak SEO friendly.');
+            }
+            scores.total += isUrlFriendly ? 10 : 5;
+            scores.maxPossible += 10;
+            
+            // Hitung skor total
+            const finalScore = Math.round((scores.total / scores.maxPossible) * 100);
+            
+            // Update UI skor
+            seoScoreElement.textContent = `${finalScore}%`;
+            
+            // Update kelas warna skor
+            if (finalScore >= 80) {
+                seoScoreElement.className = 'text-sm bg-green-100 text-green-800 py-1 px-2 rounded-full';
+            } else if (finalScore >= 50) {
+                seoScoreElement.className = 'text-sm bg-yellow-100 text-yellow-800 py-1 px-2 rounded-full';
+            } else {
+                seoScoreElement.className = 'text-sm bg-red-100 text-red-800 py-1 px-2 rounded-full';
+            }
+            
+            // Tampilkan tips (maksimal 3)
+            if (tips.length > 0) {
+                seoTipsElement.innerHTML = tips.slice(0, 3).map(tip => `<div class="mb-1">• ${tip}</div>`).join('') + 
+                    (tips.length > 3 ? `<div class="mt-2 text-blue-500">+${tips.length - 3} tip lainnya...</div>` : '');
+            } else {
+                seoTipsElement.textContent = 'Bagus! Artikel Anda telah teroptimasi dengan baik untuk SEO.';
             }
         }
+        
+        // Fungsi untuk reset indikator
+        function resetAllIndicators() {
+            const indicators = [
+                keywordPresence, keywordTitle, keywordDesc, keywordDensity,
+                contentLength, seoTitleLength, seoDescLength, headerPresence,
+                imageAlt, urlFriendly
+            ];
+            
+            indicators.forEach(indicator => {
+                if (indicator) {
+                    setIndicatorStatus(indicator, 'none');
+                }
+            });
+        }
+        
+        // Fungsi untuk set status indikator
+        function setIndicatorStatus(element, status) {
+            if (!element) return;
+            
+            // Hapus semua kelas status
+            element.classList.remove('bg-gray-200', 'bg-red-100', 'bg-yellow-100', 'bg-green-100');
+            element.classList.remove('text-gray-500', 'text-red-800', 'text-yellow-800', 'text-green-800');
+            
+            // Tambahkan kelas berdasarkan status
+            switch (status) {
+                case 'none':
+                    element.classList.add('bg-gray-200', 'text-gray-500');
+                    break;
+                case 'bad':
+                    element.classList.add('bg-red-100', 'text-red-800');
+                    break;
+                case 'warning':
+                    element.classList.add('bg-yellow-100', 'text-yellow-800');
+                    break;
+                case 'good':
+                    element.classList.add('bg-green-100', 'text-green-800');
+                    break;
+            }
+        }
+        
+        // Initial SEO update
+        updateSeoAnalysis();
     });
 </script>
 @endpush 

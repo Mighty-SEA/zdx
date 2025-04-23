@@ -277,14 +277,19 @@ class BlogController extends Controller
             }
         }
         
+        // Mengambil metadata dasar dari form jika tersedia
+        $title = request('seo_title') ? request('seo_title') : $blog->title;
+        $description = request('seo_description') ? request('seo_description') : $blog->description;
+        $keywords = request('seo_keywords') ? request('seo_keywords') : 'blog ' . $blog->title . ', artikel, zdx cargo' . ($blog->category ? ', ' . $blog->category : '');
+        
         try {
             PageSeoSetting::updateOrCreate(
                 ['page_identifier' => $identifier],
                 [
                     'page_name' => 'Blog: ' . $blog->title,
-                    'title' => $blog->title . ' - ZDX Cargo',
-                    'description' => $blog->description,
-                    'keywords' => 'blog ' . $blog->title . ', artikel, zdx cargo' . ($blog->category ? ', ' . $blog->category : ''),
+                    'title' => $title,
+                    'description' => $description,
+                    'keywords' => $keywords,
                     'og_title' => $blog->title,
                     'og_description' => $blog->description,
                     'og_image' => $blog->image ?? null,
