@@ -1499,6 +1499,110 @@ function deleteMedia(mediaType) {
         }
     }
 }
+
+// Fungsi Test API Tracking
+document.addEventListener('DOMContentLoaded', function() {
+    const testBtn = document.getElementById('test_tracking_api');
+    if (testBtn) {
+        testBtn.addEventListener('click', function() {
+            const trackingNumber = document.getElementById('tracking_test_number').value.trim();
+            if (!trackingNumber) {
+                alert('Silakan masukkan nomor resi untuk testing');
+                return;
+            }
+            
+            // Ambil nilai-nilai dari form
+            const apiUrl = document.getElementById('tracking_api_url').value;
+            const apiKey = document.getElementById('tracking_api_key').value;
+            const apiSecret = document.getElementById('tracking_api_secret').value;
+            const provider = document.getElementById('tracking_provider').value;
+            const method = document.getElementById('tracking_request_method').value;
+            
+            // Ambil headers dari textarea
+            let headers = {};
+            try {
+                const headersText = document.getElementById('tracking_request_headers').value;
+                if (headersText) {
+                    headers = JSON.parse(headersText);
+                }
+            } catch (error) {
+                alert('Format JSON untuk headers tidak valid');
+                return;
+            }
+            
+            // Tampilkan loading state
+            const originalText = testBtn.innerHTML;
+            testBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Testing...';
+            testBtn.disabled = true;
+            
+            // Kirim request ke endpoint test API tracking
+            fetch('{{ route('admin.settings.tracking.test') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    tracking_number: trackingNumber,
+                    api_url: apiUrl,
+                    api_key: apiKey,
+                    api_secret: apiSecret,
+                    provider: provider,
+                    method: method,
+                    headers: headers
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Reset button state
+                testBtn.innerHTML = originalText;
+                testBtn.disabled = false;
+                
+                // Tampilkan hasil
+                const resultContainer = document.getElementById('tracking_api_test_result');
+                const responseElem = document.getElementById('tracking_test_response');
+                const requestDetails = document.getElementById('tracking_request_details');
+                const requestUrl = document.getElementById('request_url');
+                const requestMethod = document.getElementById('request_method');
+                
+                resultContainer.classList.remove('hidden');
+                
+                // Format JSON response agar lebih mudah dibaca
+                let formattedResponse = '';
+                if (data.success) {
+                    formattedResponse = JSON.stringify(data.response, null, 2);
+                    responseElem.classList.remove('text-red-600');
+                    responseElem.classList.add('text-green-600');
+                } else {
+                    formattedResponse = data.message || 'Terjadi kesalahan saat menguji API';
+                    if (data.response) {
+                        formattedResponse += '\n\nResponse: ' + JSON.stringify(data.response, null, 2);
+                    }
+                    responseElem.classList.remove('text-green-600');
+                    responseElem.classList.add('text-red-600');
+                }
+                
+                responseElem.textContent = formattedResponse;
+                
+                // Tampilkan detail request
+                if (data.request_url || data.request_method) {
+                    requestDetails.classList.remove('hidden');
+                    requestUrl.textContent = data.request_url || apiUrl;
+                    requestMethod.textContent = data.request_method || method;
+                } else {
+                    requestDetails.classList.add('hidden');
+                }
+            })
+            .catch(error => {
+                testBtn.innerHTML = originalText;
+                testBtn.disabled = false;
+                
+                alert('Terjadi kesalahan: ' + error.message);
+                console.error('Error testing tracking API:', error);
+            });
+        });
+    }
+});
 </script>
 
 <!-- TinyMCE -->

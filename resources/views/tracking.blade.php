@@ -83,6 +83,7 @@
                                 >
                             </div>
                             <p class="mt-1 text-sm text-gray-500">Contoh: ZDX12345678</p>
+                            <div id="error-message" class="mt-2 text-red-600 text-sm font-medium hidden"></div>
                         </div>
                         <button
                             type="submit"
@@ -195,10 +196,10 @@
                                 <!-- Timeline Items -->
                                 <div class="ml-10 space-y-6">
                                     @if(isset($trackingData['timeline']) && count($trackingData['timeline']) > 0)
-                                        @foreach($trackingData['timeline'] as $index => $timeline)
+                                        @foreach(array_reverse($trackingData['timeline']) as $index => $timeline)
                                             <div class="relative">
                                                 <div class="absolute -left-10 mt-1 h-6 w-6 rounded-full {{ $index === 0 ? 'bg-[#FF6000]' : 'bg-gray-300' }} flex items-center justify-center">
-                                                    <span class="text-white text-xs">{{ $index + 1 }}</span>
+                                                    <span class="text-white text-xs">{{ count($trackingData['timeline']) - $index }}</span>
                                                 </div>
                                                 <div>
                                                     <p class="font-medium text-gray-800">
@@ -274,16 +275,20 @@
         // Ajax Track Shipment untuk pengalaman yang lebih responsif
         const trackingForm = document.getElementById('tracking-form');
         
-        // Aktifkan untuk ajax tracking jika diinginkan
-        /*
+        // Aktifkan untuk ajax tracking 
         if (trackingForm) {
             trackingForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const trackingNumber = document.getElementById('tracking_number').value.trim();
+                const errorMessage = document.getElementById('error-message');
+                
                 if (!trackingNumber) {
-                    alert('Silakan masukkan nomor resi');
+                    errorMessage.textContent = 'Silakan masukkan nomor resi';
+                    errorMessage.classList.remove('hidden');
                     return;
+                } else {
+                    errorMessage.classList.add('hidden');
                 }
                 
                 // Tampilkan loading
@@ -311,22 +316,25 @@
                     
                     if (data.success) {
                         // Update UI dengan hasil tracking
-                        // Ini harus diimplementasikan untuk memperbarui DOM dengan data tracking
                         // Cara termudah adalah me-reload halaman dengan parameter
                         window.location.href = `{{ url('/tracking') }}?tracking_number=${trackingNumber}`;
                     } else {
-                        alert('Nomor resi tidak ditemukan');
+                        // Tampilkan pesan error
+                        errorMessage.textContent = 'Kode Resi tidak ditemukan';
+                        errorMessage.classList.remove('hidden');
                     }
                 })
                 .catch(error => {
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
-                    alert('Terjadi kesalahan saat melacak pengiriman');
+                    
+                    // Tampilkan pesan error
+                    errorMessage.textContent = 'Kode Resi tidak ditemukan';
+                    errorMessage.classList.remove('hidden');
                     console.error('Error:', error);
                 });
             });
         }
-        */
     });
 </script>
 @endpush 

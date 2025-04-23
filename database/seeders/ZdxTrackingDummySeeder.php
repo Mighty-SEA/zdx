@@ -143,12 +143,12 @@ class ZdxTrackingDummySeeder extends Seeder
             'status_pod' => ''
         ];
         
-        // Status 2: Outgoing
+        // Status 2: Outgoing (4 jam kemudian)
         $timeline[] = [
             'tracking_id' => null,
             'tracking_resi_no' => null,
             'awb_no' => $trackingNo,
-            'created_at' => $startDate->addHours(2)->format('Y-m-d H:i:s'),
+            'created_at' => $startDate->addHours(4)->format('Y-m-d H:i:s'),
             'description' => 'Paket Keluar dari Kantor Cabang Asal',
             'origin_district_code' => 'JK00',
             'tlc_origin' => 'CGK',
@@ -163,12 +163,12 @@ class ZdxTrackingDummySeeder extends Seeder
             'status_pod' => ''
         ];
         
-        // Status 3: Transfer Location
+        // Status 3: Transfer Location (6 jam kemudian)
         $timeline[] = [
             'tracking_id' => null,
             'tracking_resi_no' => null,
             'awb_no' => $trackingNo,
-            'created_at' => $startDate->addHours(3)->format('Y-m-d H:i:s'),
+            'created_at' => $startDate->addHours(6)->format('Y-m-d H:i:s'),
             'description' => 'Paket Menuju ke Kantor Cabang Tujuan',
             'origin_district_code' => 'JK00',
             'tlc_origin' => 'CGK',
@@ -183,7 +183,7 @@ class ZdxTrackingDummySeeder extends Seeder
             'status_pod' => ''
         ];
         
-        // Status 4: Arrival
+        // Status 4: Arrival (12 jam kemudian)
         $timeline[] = [
             'tracking_id' => null,
             'tracking_resi_no' => null,
@@ -195,7 +195,7 @@ class ZdxTrackingDummySeeder extends Seeder
             'tlc_destination' => 'SUB',
             'status' => 'ARRIVAL FACILITIES',
             'customer_name' => null,
-            'city_name' => 'JAKARTA',
+            'city_name' => 'SURABAYA',
             'total_weight' => null,
             'total_colly' => 1,
             'receiver_pod' => '',
@@ -203,19 +203,19 @@ class ZdxTrackingDummySeeder extends Seeder
             'status_pod' => ''
         ];
         
-        // Status 5: With Courier
+        // Status 5: With Courier (8 jam kemudian)
         $timeline[] = [
             'tracking_id' => null,
             'tracking_resi_no' => null,
             'awb_no' => $trackingNo,
-            'created_at' => $startDate->addHours(4)->format('Y-m-d H:i:s'),
+            'created_at' => $startDate->addHours(8)->format('Y-m-d H:i:s'),
             'description' => 'Penjadwalan Pengiriman ke tujuan oleh KURIR',
             'origin_district_code' => 'JK00',
             'tlc_origin' => 'CGK',
             'tlc_destination' => 'SUB',
             'status' => 'WITH COURIER',
             'customer_name' => null,
-            'city_name' => 'JAKARTA',
+            'city_name' => 'SURABAYA',
             'total_weight' => null,
             'total_colly' => 1,
             'receiver_pod' => '',
@@ -223,19 +223,19 @@ class ZdxTrackingDummySeeder extends Seeder
             'status_pod' => ''
         ];
         
-        // Status 6: Delivery Success
+        // Status 6: Delivery Success (6 jam kemudian)
         $timeline[] = [
             'tracking_id' => null,
             'tracking_resi_no' => null,
             'awb_no' => $trackingNo,
-            'created_at' => $startDate->addHours(5)->format('Y-m-d H:i:s'),
+            'created_at' => $startDate->addHours(6)->format('Y-m-d H:i:s'),
             'description' => 'Pengiriman sukses diterima, Penerima : PENERIMA, Hubungan Penerima : PENERIMA LANGSUNG',
             'origin_district_code' => 'JK00',
             'tlc_origin' => 'CGK',
             'tlc_destination' => 'SUB',
             'status' => 'SUCCESS DELIVERY',
             'customer_name' => null,
-            'city_name' => 'JAKARTA',
+            'city_name' => 'SURABAYA',
             'total_weight' => null,
             'total_colly' => 1,
             'receiver_pod' => '',

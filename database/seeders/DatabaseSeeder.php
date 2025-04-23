@@ -35,6 +35,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CommoditySeeder::class);
         
         // Tambahkan ZdxTrackingDummySeeder
-        $this->call(ZdxTrackingDummySeeder::class);
+        // $this->call(ZdxTrackingDummySeeder::class);
     }
 }
