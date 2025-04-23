@@ -60,6 +60,85 @@
     }
     </script>
     @endif
+
+    <!-- Styling untuk konten dari editor TinyMCE -->
+    <style>
+        .wysiwyg-content h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .wysiwyg-content h2 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+        .wysiwyg-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #555;
+        }
+        .wysiwyg-content h4 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        .wysiwyg-content p {
+            margin-bottom: 1rem;
+        }
+        .wysiwyg-content ul, .wysiwyg-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .wysiwyg-content ul {
+            list-style-type: disc;
+        }
+        .wysiwyg-content ol {
+            list-style-type: decimal;
+        }
+        .wysiwyg-content a {
+            color: #FF6000;
+            text-decoration: underline;
+        }
+        .wysiwyg-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .wysiwyg-content table td, .wysiwyg-content table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .wysiwyg-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .wysiwyg-content table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #FF6000;
+            color: white;
+        }
+        .wysiwyg-content blockquote {
+            border-left: 4px solid #FF6000;
+            padding-left: 1rem;
+            font-style: italic;
+            margin: 1rem 0;
+        }
+        .wysiwyg-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -91,7 +170,7 @@
                     <div class="bg-white p-8 rounded-lg shadow-md">
                         @if(isset($contents['about']) && count($contents['about']) > 0)
                             <h2 class="text-3xl font-bold text-[#FF6000] mb-6">{{ $contents['about'][0]->title }}</h2>
-                            <div class="text-lg text-gray-600 leading-relaxed">
+                            <div class="text-lg text-gray-600 leading-relaxed wysiwyg-content">
                                 {!! $contents['about'][0]->content !!}
                             </div>
                         @else
@@ -152,7 +231,7 @@
                     </div>
                     @if(isset($contents['vision']) && count($contents['vision']) > 0)
                         <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">{{ $contents['vision'][0]->title }}</h2>
-                        <div class="text-lg text-gray-600 leading-relaxed">
+                        <div class="text-lg text-gray-600 leading-relaxed wysiwyg-content">
                             {!! $contents['vision'][0]->content !!}
                         </div>
                     @else
@@ -172,7 +251,7 @@
                     </div>
                     @if(isset($contents['mission']) && count($contents['mission']) > 0)
                         <h2 class="text-3xl font-bold text-[#FF6000] border-b border-[#FF6000] border-opacity-20 pb-4 mb-4">{{ $contents['mission'][0]->title }}</h2>
-                        <div class="text-lg text-gray-600 leading-relaxed">
+                        <div class="text-lg text-gray-600 leading-relaxed wysiwyg-content">
                             {!! $contents['mission'][0]->content !!}
                         </div>
                     @else

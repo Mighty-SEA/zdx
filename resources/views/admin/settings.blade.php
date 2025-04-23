@@ -572,20 +572,7 @@
                                             <textarea name="about_content" id="about_content" rows="10" 
                                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200">{{ $aboutContent ? $aboutContent->content : '' }}</textarea>
                                         </div>
-                                        
-                                        <div class="mb-4">
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                Struktur Organisasi
-                                            </label>
-                                            <input type="file" name="org_structure_image" accept="image/*" 
-                                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                                            
-                                            @if($aboutContent && $aboutContent->org_structure_path)
-                                            <div class="mt-3 border p-2 rounded">
-                                                <img src="{{ asset($aboutContent->org_structure_path) }}?v={{ time() }}" alt="Struktur Organisasi" class="max-h-40 max-w-full">
-                                            </div>
-                                            @endif
-                                        </div>
+                                    
                                     </div>
                                 </div>
                                 
@@ -1108,6 +1095,12 @@
     </div>
 </div>
 
+<!-- Form Delete Media -->
+<form id="deleteMediaForm" action="{{ route('admin.company-media.delete') }}" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="media_type" id="deleteMediaType" value="">
+</form>
+
 <!-- Modal Upload Logo -->
 <div id="logoModal" class="fixed inset-0 z-50 hidden overflow-auto bg-gray-800 bg-opacity-75">
     <div class="relative p-6 mx-auto my-10 max-w-xl bg-white rounded-lg shadow-xl">
@@ -1264,12 +1257,7 @@
         </form>
     </div>
 </div>
-
-<!-- Form Delete Media -->
-<form id="deleteMediaForm" action="{{ route('admin.company-media.delete') }}" method="POST" class="hidden">
-    @csrf
-    <input type="hidden" name="media_type" id="deleteMediaType" value="">
-</form>
+@endsection
 
 @push('scripts')
 <script>
@@ -1291,7 +1279,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('tab-mission').addEventListener('click', function(e) {
-                e.preventDefault();
+        e.preventDefault();
         switchCompanyTab('mission');
     });
 
@@ -1336,34 +1324,23 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update URL dengan hash
             window.history.replaceState(null, null, '#' + targetId);
-                });
-            });
+        });
+    });
     
     // Periksa hash di URL
     const hash = window.location.hash.slice(1);
     if (hash && document.getElementById('nav-' + hash)) {
         showContent(hash);
-                } else {
+    } else {
         // Jika tidak ada hash, periksa localStorage
         const savedTab = localStorage.getItem('settings_active_tab');
         if (savedTab && document.getElementById('nav-' + savedTab)) {
             showContent(savedTab);
         }
-        // Jika tidak ada localStorage, default ke analytics
-    }
-    
-    // Periksa parameter tab di URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const tabParam = urlParams.get('tab');
-    if (tabParam) {
-        // Switch ke tab yang spesifik di dalam tab Company
-        if (hash === 'company' && tabParam === 'logos') {
-            switchCompanyTab('logos');
-        }
     }
 });
 
-// Fungsi untuk switch tab dalam panel Company
+// Fungsi untuk beralih tab di bagian perusahaan
 function switchCompanyTab(tab) {
     // Sembunyikan semua panel
     document.querySelectorAll('.company-panel').forEach(function(panel) {
@@ -1373,183 +1350,140 @@ function switchCompanyTab(tab) {
     // Tampilkan panel yang dipilih
     document.getElementById('panel-' + tab).classList.remove('hidden');
     
-    // Update navigasi tab
+    // Ubah status tab
     document.querySelectorAll('[id^="tab-"]').forEach(function(tabEl) {
-        tabEl.classList.remove('border-indigo-600', 'text-indigo-600', 'active');
-        tabEl.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+        const tabId = tabEl.id.split('-')[1];
+        if (tabId === tab) {
+            tabEl.classList.add('border-indigo-600', 'text-indigo-600');
+            tabEl.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+        } else {
+            tabEl.classList.remove('border-indigo-600', 'text-indigo-600');
+            tabEl.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+        }
     });
-    
-    document.getElementById('tab-' + tab).classList.add('border-indigo-600', 'text-indigo-600', 'active');
-    document.getElementById('tab-' + tab).classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
 }
 
-// Fungsi untuk modal logo
-function showLogoModal(logoNumber) {
-    const modal = document.getElementById('logoModal');
-    const logoNumberInput = document.getElementById('logoNumber');
-    const logoNumberText = document.getElementById('logoNumberText');
-    const deleteBtn = document.getElementById('deleteLogo');
-    
-    if (modal && logoNumberInput) {
-        modal.classList.remove('hidden');
-        logoNumberInput.value = logoNumber;
+// Preview untuk logo
+function previewLogoImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
         
-        // Set judul modal
-        if (logoNumber === 'title') {
-            logoNumberText.textContent = 'Title';
-            // Cek apakah logo sudah ada atau belum untuk menampilkan tombol hapus
-            const logoImg = document.getElementById('title-logo-preview');
-            if (logoImg && !logoImg.src.includes('placeholder-image.png')) {
-                deleteBtn.classList.remove('hidden');
-                deleteBtn.setAttribute('onclick', `deleteMedia('title_logo')`);
-            } else {
-                deleteBtn.classList.add('hidden');
-            }
-        } else {
-            logoNumberText.textContent = logoNumber;
-            // Cek apakah logo sudah ada atau belum untuk menampilkan tombol hapus
-            const logoImg = document.getElementById(`logo${logoNumber}-preview`);
-            if (logoImg && !logoImg.src.includes('placeholder-image.png')) {
-                deleteBtn.classList.remove('hidden');
-                deleteBtn.setAttribute('onclick', `deleteMedia('logo_${logoNumber}')`);
-            } else {
-                deleteBtn.classList.add('hidden');
-            }
+        reader.onload = function(e) {
+            document.getElementById('logo-preview').src = e.target.result;
+            document.getElementById('logo-preview-container').classList.remove('hidden');
         }
         
-        // Reset form
-        document.getElementById('logoForm').reset();
-        document.getElementById('logo-preview-container').classList.add('hidden');
+        reader.readAsDataURL(input.files[0]);
     }
+}
+
+// Modal logo
+function showLogoModal(logoNumber) {
+    document.getElementById('logoNumber').value = logoNumber;
+    let logoText = 'Logo ' + logoNumber;
+    
+    if (logoNumber === 'title') {
+        logoText = 'Title Logo';
+    }
+    
+    document.getElementById('logoNumberText').textContent = logoText;
+    document.getElementById('logoModal').classList.remove('hidden');
+    
+    // Reset form
+    document.getElementById('logoForm').reset();
+    document.getElementById('logo-preview-container').classList.add('hidden');
+    
+    // Set nilai alt text default
+    const altInput = document.getElementById('logo_alt');
+    if (altInput) {
+        altInput.value = 'Logo ZDX Cargo';
+        if (logoNumber === 'title') {
+            altInput.value = 'Title Logo ZDX Cargo';
+        }
+    }
+    
+    // Show/hide delete button
+    const logos = document.getElementById('deleteLogo');
+    logos.classList.remove('hidden');
 }
 
 function closeLogoModal() {
-    const modal = document.getElementById('logoModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
+    document.getElementById('logoModal').classList.add('hidden');
 }
 
-function previewLogoImage(input) {
-    const previewContainer = document.getElementById('logo-preview-container');
-    const preview = document.getElementById('logo-preview');
-    
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            previewContainer.classList.remove('hidden');
-        };
-        reader.readAsDataURL(input.files[0]);
-        
-        // Isi alt text otomatis jika kosong
-        const logoNumber = document.getElementById('logoNumber').value;
-        const altInput = document.getElementById('logo_alt');
-        if (!altInput.value) {
-            if (logoNumber === 'title') {
-                altInput.value = 'Logo Title ZDX Cargo';
-            } else {
-                altInput.value = `Logo ${logoNumber} ZDX Cargo`;
-            }
-        }
-    }
-}
-
-// Fungsi untuk modal struktur organisasi
+// Modal struktur organisasi
 function showStructureModal() {
-    const modal = document.getElementById('structureModal');
+    document.getElementById('structureModal').classList.remove('hidden');
+    
+    // Reset form
+    document.getElementById('structureForm').reset();
+    document.getElementById('structure-preview-container').classList.add('hidden');
+    
+    // Set nilai alt text default
+    const altInput = document.getElementById('structure_alt');
+    if (altInput) {
+        altInput.value = 'Struktur Organisasi ZDX Cargo';
+    }
+    
+    // Show delete button if image exists
+    const structureImg = document.getElementById('structure-preview');
     const deleteBtn = document.getElementById('deleteStructure');
     
-    if (modal) {
-        modal.classList.remove('hidden');
-        
-        // Cek apakah gambar sudah ada untuk menampilkan tombol hapus
-        const structureImg = document.getElementById('structure-preview');
-        if (structureImg && !structureImg.src.includes('placeholder-image.png')) {
-            deleteBtn.classList.remove('hidden');
-        } else {
-            deleteBtn.classList.add('hidden');
-        }
-        
-        // Reset form
-        document.getElementById('structureForm').reset();
-        document.getElementById('structure-preview-container').classList.add('hidden');
+    if (structureImg && !structureImg.src.includes('placeholder-image.png')) {
+        deleteBtn.classList.remove('hidden');
+    } else {
+        deleteBtn.classList.add('hidden');
     }
 }
 
 function closeStructureModal() {
-    const modal = document.getElementById('structureModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
+    document.getElementById('structureModal').classList.add('hidden');
 }
 
+// Preview untuk struktur
 function previewStructureImage(input) {
-    const previewContainer = document.getElementById('structure-preview-container');
-    const preview = document.getElementById('structure-modal-preview');
-    
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            previewContainer.classList.remove('hidden');
-        };
-        reader.readAsDataURL(input.files[0]);
         
-        // Isi alt text otomatis jika kosong
-        const altInput = document.getElementById('structure_alt');
-        if (!altInput.value) {
-            altInput.value = 'Struktur Organisasi ZDX Cargo';
+        reader.onload = function(e) {
+            document.getElementById('structure-modal-preview').src = e.target.result;
+            document.getElementById('structure-preview-container').classList.remove('hidden');
         }
+        
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
-// Fungsi untuk modal logistik
+// Modal logistik
 function showLogisticsModal() {
-    const modal = document.getElementById('logisticsModal');
-    const deleteBtn = document.getElementById('deleteLogistics');
+    document.getElementById('logisticsModal').classList.remove('hidden');
     
-    if (modal) {
-        modal.classList.remove('hidden');
-        
-        // Cek apakah gambar sudah ada untuk menampilkan tombol hapus
-        const logisticsImg = document.getElementById('logistics-preview');
-        if (logisticsImg && !logisticsImg.src.includes('placeholder-image.png')) {
-            deleteBtn.classList.remove('hidden');
-        } else {
-            deleteBtn.classList.add('hidden');
-        }
-        
-        // Reset form
-        document.getElementById('logisticsForm').reset();
-        document.getElementById('logistics-preview-container').classList.add('hidden');
+    // Reset form
+    document.getElementById('logisticsForm').reset();
+    document.getElementById('logistics-preview-container').classList.add('hidden');
+    
+    // Set nilai alt text default
+    const altInput = document.getElementById('logistics_alt');
+    if (altInput) {
+        altInput.value = 'Operasi Logistik ZDX Cargo';
     }
 }
 
 function closeLogisticsModal() {
-    const modal = document.getElementById('logisticsModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
+    document.getElementById('logisticsModal').classList.add('hidden');
 }
 
+// Preview untuk logistik
 function previewLogisticsImage(input) {
-    const previewContainer = document.getElementById('logistics-preview-container');
-    const preview = document.getElementById('logistics-modal-preview');
-    
     if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-            preview.src = e.target.result;
-                    previewContainer.classList.remove('hidden');
-                };
-        reader.readAsDataURL(input.files[0]);
+        const reader = new FileReader();
         
-        // Isi alt text otomatis jika kosong
-        const altInput = document.getElementById('logistics_alt');
-        if (!altInput.value) {
-            altInput.value = 'Operasi Logistik ZDX Cargo';
+        reader.onload = function(e) {
+            document.getElementById('logistics-modal-preview').src = e.target.result;
+            document.getElementById('logistics-preview-container').classList.remove('hidden');
         }
+        
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
@@ -1565,5 +1499,63 @@ function deleteMedia(mediaType) {
         }
     }
 }
+</script>
+
+<!-- TinyMCE -->
+<script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inisialisasi TinyMCE untuk about_content
+        if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
+            tinymce.init({
+                selector: '#about_content, #vision_content, #mission_content',
+                height: 500,
+                menubar: true,
+                plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
+                ],
+                toolbar: 'undo redo | styles | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
+                        'bullist numlist outdent indent | link image media table emoticons | removeformat help',
+                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 16px; line-height: 1.6; }',
+                branding: false,
+                promotion: false,
+                image_title: true,
+                automatic_uploads: true,
+                file_picker_types: 'image',
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+
+                    input.onchange = function () {
+                        var file = this.files[0];
+                        var reader = new FileReader();
+                        
+                        reader.onload = function () {
+                            var id = 'blobid' + (new Date()).getTime();
+                            var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                            var base64 = reader.result.split(',')[1];
+                            var blobInfo = blobCache.create(id, file, base64);
+                            blobCache.add(blobInfo);
+                            cb(blobInfo.blobUri(), { title: file.name });
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                }
+            });
+        } else {
+            // Jika tidak ada API key, pastikan textarea terlihat baik
+            ['about_content', 'vision_content', 'mission_content'].forEach(function(id) {
+                const textarea = document.getElementById(id);
+                if (textarea) {
+                    textarea.style.minHeight = '300px';
+                    textarea.style.padding = '10px';
+                }
+            });
+        }
+    });
 </script>
 @endpush
