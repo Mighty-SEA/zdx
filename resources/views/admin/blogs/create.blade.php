@@ -29,7 +29,7 @@
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Kolom Kiri -->
+                <!-- Kolom Kiri - Untuk Info Utama -->
                 <div class="col-span-2 space-y-6">
                     <!-- Judul -->
                     <div>
@@ -56,42 +56,27 @@
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Singkat <span class="text-red-500">*</span></label>
                         <textarea name="description" id="description" rows="3" class="form-textarea w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>{{ old('description') }}</textarea>
-                        <p class="text-gray-500 text-xs mt-1">Ringkasan singkat dari artikel yang akan tampil di halaman daftar blog (maksimal 255 karakter)</p>
+                        <div class="flex justify-between">
+                            <p class="text-gray-500 text-xs mt-1">Ringkasan singkat yang akan tampil di halaman daftar blog</p>
+                            <div class="text-xs text-gray-500 mt-1"><span id="descriptionCounter">0</span>/255 karakter</div>
+                        </div>
                         @error('description')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
-                        <div class="text-xs text-gray-500 mt-1"><span id="descriptionCounter">0</span>/255 karakter</div>
                     </div>
 
-                    <!-- Konten -->
+                    <!-- Konten dengan tinggi statis -->
                     <div>
                         <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten <span class="text-red-500">*</span></label>
-                        <textarea name="content" id="content" rows="12" class="form-textarea w-full rounded-md">{{ old('content') }}</textarea>
+                        <textarea name="content" id="content" class="form-textarea w-full rounded-md" style="height: 500px; min-height: 500px; max-height: 500px;">{{ old('content') }}</textarea>
                         @error('content')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Kolom Kanan -->
+                <!-- Kolom Kanan - Untuk Pengaturan -->
                 <div class="col-span-1 space-y-6">
-                    <!-- Preview -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="font-medium text-gray-800 mb-3 flex items-center justify-between">
-                            <span>Preview</span>
-                            <button type="button" id="refreshPreview" class="text-blue-500 hover:text-blue-700 text-sm">
-                                <i class="fas fa-sync-alt mr-1"></i> Refresh
-                            </button>
-                        </h3>
-                        <div class="border rounded-lg bg-white p-4">
-                            <h2 id="previewTitle" class="text-xl font-bold text-gray-800">Judul Blog</h2>
-                            <div id="previewDescription" class="text-gray-600 mt-2 text-sm">Deskripsi singkat akan muncul di sini...</div>
-                            <div id="previewImage" class="mt-3 hidden">
-                                <img src="" alt="Preview" class="w-full h-32 object-cover rounded">
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Publikasi -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="font-medium text-gray-800 mb-4">Publikasi</h3>
@@ -141,7 +126,41 @@
                         </div>
                     </div>
                     
-                    <!-- SEO RankMath -->
+                    <!-- Gambar -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="font-medium text-gray-800 mb-4">Gambar Blog</h3>
+                        
+                        <div class="mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 transition-all hover:border-blue-400">
+                                <div class="text-center" id="image-preview-container">
+                                    <img id="image-preview" src="" alt="Preview" class="mx-auto mb-2 hidden max-h-40 object-cover rounded">
+                                    <label for="image" class="cursor-pointer flex flex-col items-center justify-center">
+                                        <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
+                                        <span class="text-sm text-gray-500">Klik untuk upload gambar</span>
+                                        <span class="text-xs text-gray-400 mt-1">JPG, PNG, atau GIF (Maks. 2MB)</span>
+                                        <input type="file" name="image" id="image" class="hidden" accept="image/*" onchange="previewImage()">
+                                    </label>
+                                </div>
+                            </div>
+                            @error('image')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="image_alt" class="block text-sm font-medium text-gray-700 mb-1">Teks Alt Gambar</label>
+                            <input type="text" name="image_alt" id="image_alt" class="form-input w-full rounded-md" value="{{ old('image_alt') }}">
+                            <p class="text-gray-500 text-xs mt-1">Deskripsi gambar untuk SEO dan aksesibilitas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bagian SEO Optimization (2 baris) dipindahkan ke bawah -->
+            <div class="mt-8 border-t pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Kolom Kiri - Focus Keyword dan Metadata -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="font-medium text-gray-800 mb-4 flex items-center justify-between">
                             <span><i class="fas fa-chart-line text-blue-500 mr-1"></i> SEO Optimization</span>
@@ -206,7 +225,7 @@
                             </div>
                         </div>
                         
-                        <!-- SEO Preview Section -->
+                        <!-- Preview di Google - dipindahkan ke sini dari kolom kanan -->
                         <div class="mb-4 pt-3 border-t border-gray-200">
                             <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
                                 <i class="fas fa-search text-blue-500 mr-2"></i> Preview di Google:
@@ -218,14 +237,26 @@
                             </div>
                         </div>
                         
-                        <!-- SEO Analysis -->
-                        <div class="pt-3 border-t border-gray-200">
-                            <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                                <i class="fas fa-clipboard-check text-blue-500 mr-2"></i> SEO Checklist:
+                        <!-- SEO Tips -->
+                        <div class="mt-4 pt-3 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Tips:
                             </h4>
-                            
-                            <div class="space-y-3 text-sm">
-                                <!-- Basic SEO Checks -->
+                            <div id="seo-tips" class="text-xs text-gray-600 bg-yellow-50 p-3 rounded">
+                                Masukkan focus keyword untuk mulai analisis SEO.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kolom Kanan - SEO Checklist -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                            <i class="fas fa-clipboard-check text-blue-500 mr-2"></i> SEO Checklist:
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <!-- Kolom Checklist Kiri -->
+                            <div class="space-y-3">
                                 <div class="flex items-center" id="keyword-presence">
                                     <i class="fas fa-circle-check text-gray-300 mr-2"></i>
                                     <span class="text-gray-500">Keyword dalam konten</span>
@@ -241,7 +272,6 @@
                                     <span class="text-gray-500">Keyword dalam deskripsi</span>
                                 </div>
                                 
-                                <!-- Advanced SEO Checks -->
                                 <div class="flex items-center" id="keyword-density">
                                     <i class="fas fa-circle-check text-gray-300 mr-2"></i>
                                     <span class="text-gray-500">Kepadatan keyword (1-3%)</span>
@@ -251,7 +281,10 @@
                                     <i class="fas fa-circle-check text-gray-300 mr-2"></i>
                                     <span class="text-gray-500">Panjang konten (min. 300 kata)</span>
                                 </div>
-                                
+                            </div>
+                            
+                            <!-- Kolom Checklist Kanan -->
+                            <div class="space-y-3">
                                 <div class="flex items-center" id="seo-title-length">
                                     <i class="fas fa-circle-check text-gray-300 mr-2"></i>
                                     <span class="text-gray-500">Panjang judul (50-60 karakter)</span>
@@ -278,45 +311,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- SEO Tips -->
-                        <div class="mt-4 pt-3 border-t border-gray-200">
-                            <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Tips:
-                            </h4>
-                            <div id="seo-tips" class="text-xs text-gray-600 bg-yellow-50 p-3 rounded">
-                                Masukkan focus keyword untuk mulai analisis SEO.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gambar -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="font-medium text-gray-800 mb-4">Gambar Blog</h3>
-                        
-                        <div class="mb-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 transition-all hover:border-blue-400">
-                                <div class="text-center" id="image-preview-container">
-                                    <img id="image-preview" src="" alt="Preview" class="mx-auto mb-2 hidden max-h-40 object-cover rounded">
-                                    <label for="image" class="cursor-pointer flex flex-col items-center justify-center">
-                                        <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
-                                        <span class="text-sm text-gray-500">Klik untuk upload gambar</span>
-                                        <span class="text-xs text-gray-400 mt-1">JPG, PNG, atau GIF (Maks. 2MB)</span>
-                                        <input type="file" name="image" id="image" class="hidden" accept="image/*" onchange="previewImage()">
-                                    </label>
-                                </div>
-                            </div>
-                            @error('image')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        <div>
-                            <label for="image_alt" class="block text-sm font-medium text-gray-700 mb-1">Teks Alt Gambar</label>
-                            <input type="text" name="image_alt" id="image_alt" class="form-input w-full rounded-md" value="{{ old('image_alt') }}">
-                            <p class="text-gray-500 text-xs mt-1">Deskripsi gambar untuk SEO dan aksesibilitas</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -334,7 +328,7 @@
         if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
             tinymce.init({
                 selector: '#content',
-                height: 600,
+                height: 500,
                 menubar: true,
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
@@ -499,7 +493,7 @@
         } else {
             // Fallback to basic editor if no API key
             const textarea = document.getElementById('content');
-            textarea.style.minHeight = '400px';
+            textarea.style.minHeight = '500px';
             textarea.classList.add('p-3');
         }
 
@@ -511,7 +505,7 @@
         let slugManuallyChanged = false;
         
         titleInput.addEventListener('input', function() {
-            updatePreview();
+            updateSeoPreview();
             
             // Hanya update slug otomatis jika belum diubah secara manual
             if (!slugManuallyChanged && titleInput.value) {
@@ -525,10 +519,11 @@
         // Tambahkan event listener untuk menandai slug sudah diubah manual
         slugInput.addEventListener('input', function() {
             slugManuallyChanged = true;
+            updateSeoPreview();
         });
 
         document.getElementById('description').addEventListener('input', function() {
-            updatePreview();
+            updateSeoPreview();
             updateCharacterCount();
         });
         
@@ -578,55 +573,47 @@
             }
         });
         
-        // Refresh preview button
-        document.getElementById('refreshPreview').addEventListener('click', updatePreview);
-        
-        // Initial update
-        updatePreview();
-        updateCharacterCount();
-    });
-
-    // Preview function
-    function updatePreview() {
-        const title = document.getElementById('title').value || 'Judul Blog';
-        const description = document.getElementById('description').value || 'Deskripsi singkat akan muncul di sini...';
-        
-        document.getElementById('previewTitle').textContent = title;
-        document.getElementById('previewDescription').textContent = description;
-    }
-
-    // Image preview function
-    function previewImage() {
-        const preview = document.getElementById('image-preview');
-        const previewContainer = document.getElementById('previewImage');
-        const file = document.getElementById('image').files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = function() {
-            preview.src = reader.result;
-            preview.classList.remove('hidden');
-            previewContainer.classList.remove('hidden');
+        // Fungsi untuk update preview di Google
+        function updateSeoPreview() {
+            const title = document.getElementById('title').value || 'Preview Judul';
+            const slug = document.getElementById('slug').value || 'preview-slug';
+            const description = document.getElementById('description').value || 'Preview deskripsi akan muncul di sini.';
             
-            // Also update the preview in the preview box
-            const previewImg = previewContainer.querySelector('img') || document.createElement('img');
-            previewImg.src = reader.result;
-            previewImg.alt = document.getElementById('image_alt').value || 'Preview';
-            previewImg.className = 'w-full h-32 object-cover rounded';
+            // Update elemen preview Google
+            const seoTitleInput = document.getElementById('seo_title');
+            const seoDescriptionInput = document.getElementById('seo_description');
             
-            if (!previewContainer.contains(previewImg)) {
-                previewContainer.appendChild(previewImg);
+            const titleForPreview = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title + ' - ZDX Cargo';
+            const descForPreview = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : description;
+            
+            document.getElementById('seo-preview-title').textContent = titleForPreview;
+            document.getElementById('seo-preview-slug').textContent = slug;
+            document.getElementById('seo-preview-desc').textContent = descForPreview;
+        }
+
+        // Image preview function
+        function previewImage() {
+            const preview = document.getElementById('image-preview');
+            const file = document.getElementById('image').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function() {
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.classList.add('hidden');
             }
         }
-
-        if (file) {
-            reader.readAsDataURL(file);
-            document.getElementById('previewImage').classList.remove('hidden');
-        } else {
-            preview.src = '';
-            preview.classList.add('hidden');
-            document.getElementById('previewImage').classList.add('hidden');
-        }
-    }
+        
+        // Initial update
+        updateSeoPreview();
+        updateCharacterCount();
+    });
 </script>
 
 <!-- RankMath SEO Script -->
@@ -679,6 +666,7 @@
         if (seoTitleInput) {
             seoTitleInput.addEventListener('input', function() {
                 seoTitleCount.textContent = this.value.length;
+                updateSeoPreview();
             });
             seoTitleInput.dispatchEvent(new Event('input'));
         }
@@ -686,6 +674,7 @@
         if (seoDescriptionInput) {
             seoDescriptionInput.addEventListener('input', function() {
                 seoDescriptionCount.textContent = this.value.length;
+                updateSeoPreview();
             });
             seoDescriptionInput.dispatchEvent(new Event('input'));
         }
