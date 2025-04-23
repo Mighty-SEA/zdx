@@ -558,7 +558,20 @@ class PageController extends Controller
     public function contact()
     {
         $seoData = $this->getSeoData('contact');
-        return view('contact', compact('seoData'));
+        
+        // Ambil data perusahaan dari database
+        $companyInfo = new \stdClass();
+        $companyInfo->company_name = \App\Models\Setting::getValue('company_name', 'PT ZDX Cargo Indonesia');
+        $companyInfo->company_address = \App\Models\Setting::getValue('company_address', 'Jl. Gatot Subroto No. 123');
+        $companyInfo->company_phone = \App\Models\Setting::getValue('company_phone', '021-12345678');
+        $companyInfo->company_phone2 = \App\Models\Setting::getValue('company_phone2', '0858 1471 8889');
+        $companyInfo->company_phone3 = \App\Models\Setting::getValue('company_phone3', '0858 1471 8890');
+        $companyInfo->company_email = \App\Models\Setting::getValue('company_email', 'info@zdxcargo.com');
+        $companyInfo->company_facebook = \App\Models\Setting::getValue('company_facebook', 'https://facebook.com/zdxcargo');
+        $companyInfo->company_instagram = \App\Models\Setting::getValue('company_instagram', 'https://instagram.com/zdxcargo');
+        $companyInfo->company_twitter = \App\Models\Setting::getValue('company_twitter', '');
+        
+        return view('contact', compact('seoData', 'companyInfo'));
     }
     
     /**
