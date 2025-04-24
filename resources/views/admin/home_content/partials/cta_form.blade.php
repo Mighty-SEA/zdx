@@ -114,7 +114,8 @@
                     </div>
                 </div>
             @endif
-            <input type="file" name="image" id="image" class="hidden">
+            <div id="image-preview"></div>
+            <input type="file" name="image" id="image" class="hidden" accept="image/*">
             <label for="image" class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
                 Pilih Gambar
             </label>
@@ -174,6 +175,34 @@
                 benefitsContainer.removeChild(benefitItem);
             });
         });
+        
+        // Preview gambar saat diupload
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('image-preview');
+        
+        if (imageInput && imagePreview) {
+            imageInput.addEventListener('change', function() {
+                imagePreview.innerHTML = '';
+                
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const img = document.createElement('div');
+                        img.className = 'relative group mr-3';
+                        img.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview Image" class="w-20 h-20 object-cover rounded">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 rounded opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="text-white text-xs">Preview</span>
+                            </div>
+                        `;
+                        imagePreview.appendChild(img);
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
     });
 </script>
 @endpush 

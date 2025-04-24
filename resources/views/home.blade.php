@@ -400,7 +400,7 @@ use Illuminate\Support\Str;
                 <div class="relative order-2 md:order-1" data-aos="fade-right">
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl">
                         @if(isset($homeContent) && isset($homeContent['features']) && !empty($homeContent['features']->image_path))
-                            <img src="{{ asset($homeContent['features']->image_path) }}" 
+                            <img src="{{ asset('storage/' . $homeContent['features']->image_path) }}" 
                                  alt="Features Image" 
                                  class="w-full h-auto rounded-2xl transform transition duration-700 hover:scale-105">
                         @else
@@ -594,8 +594,12 @@ use Illuminate\Support\Str;
                                     @php
                                         $ctaMetadata = json_decode($homeContent['cta']->metadata, true);
                                         $imagePath = $ctaMetadata['image_path'] ?? 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80';
+                                        // Jika path tidak dimulai dengan http atau https, tambahkan storage/ prefix
+                                        if ($imagePath && !Str::startsWith($imagePath, ['http://', 'https://'])) {
+                                            $imagePath = 'storage/' . $imagePath;
+                                        }
                                     @endphp
-                                    <img src="{{ $imagePath }}" alt="CTA Image" class="w-full h-auto rounded-lg shadow">
+                                    <img src="{{ asset($imagePath) }}" alt="CTA Image" class="w-full h-auto rounded-lg shadow">
                                 @else
                                     <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Logistics Team" class="w-full h-auto rounded-lg shadow">
                                 @endif

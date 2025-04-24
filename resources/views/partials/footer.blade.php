@@ -63,19 +63,7 @@
                     <li>
                         <a href="/layanan/{{ $service->slug }}" class="group flex items-center text-white hover:text-[#FF6000] transition-all duration-300 p-2 hover:bg-white hover:bg-opacity-5 rounded-md">
                             <div class="w-8 h-8 rounded-md bg-[#FF6000] bg-opacity-10 flex items-center justify-center mr-3 group-hover:bg-[#FF6000] group-hover:text-white transition-all duration-300">
-                                @php
-                                    $icon = 'fa-truck';
-                                    if(Str::contains(strtolower($service->title), ['laut', 'kapal', 'ship'])) {
-                                        $icon = 'fa-ship';
-                                    } elseif(Str::contains(strtolower($service->title), ['udara', 'pesawat', 'plane', 'air'])) {
-                                        $icon = 'fa-plane';
-                                    } elseif(Str::contains(strtolower($service->title), ['gudang', 'warehouse', 'storage'])) {
-                                        $icon = 'fa-warehouse';
-                                    } elseif(Str::contains(strtolower($service->title), ['motor', 'bike'])) {
-                                        $icon = 'fa-motorcycle';
-                                    }
-                                @endphp
-                                <i class="fas {{ $icon }}"></i>
+                                <i class="fas {{ $service->icon ?? 'fa-truck' }}"></i>
                             </div>
                             <span>{{ $service->title }}</span>
                         </a>
