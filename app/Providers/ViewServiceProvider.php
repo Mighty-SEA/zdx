@@ -27,7 +27,7 @@ class ViewServiceProvider extends ServiceProvider
         // Berbagi informasi perusahaan ke semua view
         View::composer('*', function ($view) {
             // Cache data selama 1 jam untuk mengurangi query database
-            $companyInfo = Cache::remember('company_info', 3600, function () {
+            $companyInfo = Cache::remember('company_info', 60, function () {
                 // Ambil data tentang perusahaan dari model Setting
                 $settings = [
                     'company_name' => Setting::getValue('company_name', 'PT ZDX Cargo Indonesia'),
@@ -62,7 +62,7 @@ class ViewServiceProvider extends ServiceProvider
             });
 
             // Juga menyimpan data ProfileContent lama untuk kompatibilitas ke belakang
-            $profileContent = Cache::remember('profile_content', 3600, function () {
+            $profileContent = Cache::remember('profile_content', 60, function () {
                 return ProfileContent::where('section', 'about')
                     ->where('is_active', true)
                     ->first();

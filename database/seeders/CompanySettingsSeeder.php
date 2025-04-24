@@ -29,7 +29,7 @@ class CompanySettingsSeeder extends Seeder
         $this->createSetting('company_phone', '+62 21 2387 1144', 'company');
         $this->createSetting('company_phone_cs1', '+62 858 1471 8888', 'company');
         $this->createSetting('company_phone_cs2', '+62 821 3000 0600', 'company');
-        $this->createSetting('cs_name1', ' CS1 - Putri', 'company');
+        $this->createSetting('cs_name1', 'CS1 - Putri', 'company');
         $this->createSetting('cs_name2', 'CS2 - Amirudin', 'company');
         
         // Social Media
@@ -43,6 +43,17 @@ class CompanySettingsSeeder extends Seeder
         $this->createSetting('company_latitude', '-6.282268', 'company');
         $this->createSetting('company_longitude', '106.960346', 'company');
         
+        // Bersihkan cache agar data langsung tersedia di frontend
+        \Illuminate\Support\Facades\Cache::forget('company_info');
+        \Illuminate\Support\Facades\Cache::forget('profile_content');
+        
+        $this->command->info('Cache company_info dan profile_content telah dibersihkan');
+        
+        // Bersihkan semua cache aplikasi
+        if (app()->environment() !== 'testing') {
+            $this->command->call('optimize:clear');
+            $this->command->info('Semua cache aplikasi telah dibersihkan');
+        }
     }
     
     /**
