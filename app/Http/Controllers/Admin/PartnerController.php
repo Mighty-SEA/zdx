@@ -140,6 +140,25 @@ class PartnerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            // Ambil data partner yang akan dihapus
+            $partner = Partner::findOrFail($id);
+            
+            // Hapus file logo jika ada
+            if ($partner->logo_path) {
+                Storage::disk('public')->delete($partner->logo_path);
+            }
+            
+            // Hapus data partner
+            $partner->delete();
+            
+            return redirect()->route('admin.partners')->with('success', 'Pelanggan / Partner berhasil dihapus!');
+        } catch (\Exception $e) {
+            // Log error
+            \Illuminate\Support\Facades\Log::error('Error deleting partner: ' . $e->getMessage());
+            
+            // Return with error message
+            return redirect()->route('admin.partners')->with('error', 'Terjadi kesalahan saat menghapus data partner: ' . $e->getMessage());
+        }
     }
 }
