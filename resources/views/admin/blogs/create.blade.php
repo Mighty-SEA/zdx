@@ -87,7 +87,8 @@
                     <!-- Konten dengan tinggi statis -->
                     <div>
                         <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten <span class="text-red-500">*</span></label>
-                        <textarea name="content" id="content" class="form-textarea w-full rounded-md" style="height: 500px; min-height: 500px; max-height: 500px;">{{ old('content') }}</textarea>
+                        <!-- Editor TinyMCE dengan tinggi tetap dan scrollbar - ukuran diatur melalui CSS -->
+                        <textarea name="content" id="content" class="form-textarea w-full rounded-md">{{ old('content') }}</textarea>
                         @error('content')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -354,6 +355,40 @@
     .toggle-label, .toggle-checkbox {
         transition: all 0.3s ease-in-out;
     }
+    
+    /* TinyMCE Fixed Height dengan Scrollbar */
+    /* Pengaturan ini akan membuat editor TinyMCE memiliki ukuran statis dengan scrollbar */
+    .tox-tinymce {
+        height: 500px !important;
+    }
+    .tox .tox-edit-area__iframe {
+        height: 100% !important;
+    }
+    .tox .tox-edit-area {
+        overflow-y: hidden !important;
+    }
+    .tox-editor-container {
+        display: flex;
+        flex-direction: column;
+        height: 500px !important;
+    }
+    
+    /* Custom scrollbar for TinyMCE */
+    .tox-edit-area__iframe {
+        scrollbar-width: thin;
+        scrollbar-color: #d1d5db #f3f4f6;
+    }
+    .tox-edit-area__iframe::-webkit-scrollbar {
+        width: 8px;
+    }
+    .tox-edit-area__iframe::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+    .tox-edit-area__iframe::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+        border-radius: 6px;
+        border: 2px solid #f3f4f6;
+    }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -365,12 +400,14 @@
                 selector: '#content',
                 height: 500,
                 menubar: true,
+                resize: false,
+                autoresize_bottom_margin: 0,
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
                     'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
                     'codesample', 'quickbars', 'template', 'pagebreak', 'nonbreaking',
-                    'paste', 'print', 'visualchars', 'save', 'directionality', 'autoresize'
+                    'paste', 'print', 'visualchars', 'save', 'directionality'
                 ],
                 toolbar: 'undo redo | blocks | formatselect | ' +
                         'bold italic forecolor backcolor emoticons | ' +
