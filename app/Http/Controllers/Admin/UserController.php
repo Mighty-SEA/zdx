@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -20,6 +21,14 @@ class UserController extends Controller
     }
 
     /**
+     * Show the create user form.
+     */
+    public function create()
+    {
+        return view('admin.users.create');
+    }
+
+    /**
      * Store a newly created user.
      */
     public function store(Request $request)
@@ -28,21 +37,25 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', Password::defaults()],
-            'active' => ['sometimes', 'boolean']
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'active' => $request->has('active') ? 1 : 0
+            'active' => $request->has('active') ? true : false,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengguna berhasil ditambahkan',
-            'user' => $user
-        ]);
+        return redirect()->route('admin.users')
+            ->with('success', 'Pengguna berhasil ditambahkan!');
+    }
+
+    /**
+     * Show the form for editing the specified user.
+     */
+    public function edit(User $user)
+    {
+        return view('admin.users.edit', compact('user'));
     }
 
     /**
@@ -53,20 +66,16 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'active' => ['sometimes', 'boolean']
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'active' => $request->has('active') ? 1 : 0
+            'active' => $request->has('active') ? true : false,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengguna berhasil diperbarui',
-            'user' => $user
-        ]);
+        return redirect()->route('admin.users')
+            ->with('success', 'Pengguna berhasil diperbarui!');
     }
 
     /**
@@ -75,17 +84,23 @@ class UserController extends Controller
     public function resetPassword(Request $request, User $user)
     {
         $request->validate([
-            'password' => ['required', Password::defaults()]
+            'current_password' => ['required'],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ]);
+
+        // Verifikasi password saat ini
+        if (!Hash::check($request->current_password, $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => ['Password saat ini tidak sesuai.'],
+            ]);
+        }
 
         $user->update([
             'password' => Hash::make($request->password)
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Password pengguna berhasil direset'
-        ]);
+        return redirect()->route('admin.users')
+            ->with('success', 'Password pengguna berhasil direset!');
     }
 
     /**
@@ -95,9 +110,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengguna berhasil dihapus'
-        ]);
+        return redirect()->route('admin.users')
+            ->with('success', 'Pengguna berhasil dihapus!');
     }
 } 

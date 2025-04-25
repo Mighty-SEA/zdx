@@ -10,9 +10,9 @@
             <p class="text-gray-600 mt-1">Kelola pengguna dan akun administrator</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <button type="button" id="addUserBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
+            <a href="{{ route('admin.users.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
                 <i class="fas fa-user-plus mr-2"></i> Tambah Pengguna
-            </button>
+            </a>
         </div>
     </div>
 
@@ -37,6 +37,21 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Berhasil!</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+        @endif
         
         <!-- Users Table -->
         <div class="overflow-x-auto bg-white rounded-lg border border-gray-200">
@@ -107,15 +122,16 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex space-x-2">
-                                <button class="text-indigo-600 hover:text-indigo-900 edit-user-btn" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}" data-active="{{ $user->active ? 1 : 0 }}" title="Edit">
+                                <a href="{{ route('admin.users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Edit">
                                     <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="text-yellow-600 hover:text-yellow-900 reset-password-btn" data-id="{{ $user->id }}" title="Reset Password">
-                                    <i class="fas fa-key"></i>
-                                </button>
-                                <button class="text-red-600 hover:text-red-900 delete-user-btn" data-id="{{ $user->id }}" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                </a>
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Anda yakin ingin menghapus pengguna ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -153,7 +169,7 @@
             </button>
         </div>
         
-        <form id="userForm" class="p-6">
+        <form id="userForm" class="p-6" method="POST" action="{{ route('admin.users.store') }}">
             @csrf
             <input type="hidden" id="userId" name="userId" value="">
             <input type="hidden" id="formMethod" name="_method" value="POST">
@@ -211,7 +227,7 @@
             </button>
         </div>
         
-        <form id="resetPasswordForm" class="p-6">
+        <form id="resetPasswordForm" class="p-6" method="POST">
             @csrf
             <input type="hidden" id="resetUserId" name="userId" value="">
             
@@ -254,14 +270,20 @@
         <div class="p-6">
             <p class="text-gray-700 mb-6">Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.</p>
             
-            <div class="flex justify-end space-x-3">
-                <button type="button" id="cancelDeleteUser" class="bg-white border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200">
-                    Batal
-                </button>
-                <button type="button" id="confirmDeleteUser" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
-                    <i class="fas fa-trash mr-2"></i> Hapus Pengguna
-                </button>
-            </div>
+            <form id="deleteUserForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" id="deleteUserId" name="userId" value="">
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelDeleteUser" class="bg-white border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                        Batal
+                    </button>
+                    <button type="button" id="confirmDeleteUser" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
+                        <i class="fas fa-trash mr-2"></i> Hapus Pengguna
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -271,58 +293,203 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Pastikan token CSRF tersedia
+        let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) {
+            console.error('CSRF token tidak ditemukan!');
+            // Tambahkan CSRF token jika tidak ada
+            let metaTag = document.createElement('meta');
+            metaTag.setAttribute('name', 'csrf-token');
+            metaTag.setAttribute('content', '{{ csrf_token() }}');
+            document.head.appendChild(metaTag);
+            csrfToken = '{{ csrf_token() }}';
+            console.log('CSRF token ditambahkan secara manual');
+        }
+
         // Toggle select all checkboxes
         const selectAllCheckbox = document.getElementById('selectAllUsers');
         const userCheckboxes = document.querySelectorAll('.userCheckbox');
         
-        selectAllCheckbox.addEventListener('change', function() {
+        selectAllCheckbox?.addEventListener('change', function() {
             userCheckboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
             });
         });
         
-        // Modal functionality
+        // Modal functionality - Add/Edit User
         const addUserBtn = document.getElementById('addUserBtn');
         const addUserModal = document.getElementById('addUserModal');
         const closeAddUserModal = document.getElementById('closeAddUserModal');
         const cancelAddUser = document.getElementById('cancelAddUser');
+        const userForm = document.getElementById('userForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitBtnText = document.getElementById('submitBtnText');
         
-        function openModal() {
+        function openAddUserModal() {
+            console.log('Membuka modal tambah pengguna');
+            // Reset form for new user
+            userForm.reset();
+            document.getElementById('userId').value = '';
+            userForm.action = '{{ route("admin.users.store") }}';
+            document.getElementById('formMethod').value = 'POST';
+            document.getElementById('passwordContainer').style.display = 'block';
+            modalTitle.textContent = 'Tambah Pengguna Baru';
+            submitBtnText.textContent = 'Tambah Pengguna';
+            
+            // Show modal
             addUserModal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
         }
         
-        function closeModal() {
+        function closeAddUserModal() {
+            console.log('Menutup modal tambah/edit pengguna');
             addUserModal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
         
-        addUserBtn.addEventListener('click', openModal);
-        closeAddUserModal.addEventListener('click', closeModal);
-        cancelAddUser.addEventListener('click', closeModal);
+        addUserBtn?.addEventListener('click', openAddUserModal);
+        closeAddUserModal?.addEventListener('click', closeAddUserModal);
+        cancelAddUser?.addEventListener('click', closeAddUserModal);
         
         // Close modal when clicking outside
-        addUserModal.addEventListener('click', function(e) {
+        addUserModal?.addEventListener('click', function(e) {
             if (e.target === addUserModal) {
-                closeModal();
+                closeAddUserModal();
             }
         });
         
-        // Form submission (simulate for now)
-        const addUserForm = document.getElementById('addUserForm');
-        addUserForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Reset Password modal functionality
+        const resetPasswordModal = document.getElementById('resetPasswordModal');
+        const closeResetPasswordModal = document.getElementById('closeResetPasswordModal');
+        const cancelResetPassword = document.getElementById('cancelResetPassword');
+        const resetPasswordForm = document.getElementById('resetPasswordForm');
+        const resetPasswordBtns = document.querySelectorAll('.reset-password-btn');
+        
+        function openResetPasswordModal(userId) {
+            console.log('Membuka modal reset password untuk user ID:', userId);
+            const resetUserId = document.getElementById('resetUserId');
+            resetUserId.value = userId;
             
-            // Here you would typically make an API call to create the user
-            alert('Pengguna baru berhasil ditambahkan!');
-            closeModal();
+            // Set form action
+            resetPasswordForm.action = `/admin/users/${userId}/reset-password`;
+            resetPasswordForm.reset();
+            
+            resetPasswordModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+        
+        function closeResetPasswordModal() {
+            console.log('Menutup modal reset password');
+            resetPasswordModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+        
+        resetPasswordBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const userId = this.getAttribute('data-id');
+                console.log('Klik tombol reset password untuk user ID:', userId);
+                openResetPasswordModal(userId);
+            });
+        });
+        
+        closeResetPasswordModal?.addEventListener('click', closeResetPasswordModal);
+        cancelResetPassword?.addEventListener('click', closeResetPasswordModal);
+        
+        resetPasswordModal?.addEventListener('click', function(e) {
+            if (e.target === resetPasswordModal) {
+                closeResetPasswordModal();
+            }
+        });
+        
+        // Delete User modal functionality
+        const deleteUserModal = document.getElementById('deleteUserModal');
+        const closeDeleteUserModal = document.getElementById('closeDeleteUserModal');
+        const cancelDeleteUser = document.getElementById('cancelDeleteUser');
+        const confirmDeleteUser = document.getElementById('confirmDeleteUser');
+        const deleteUserBtns = document.querySelectorAll('.delete-user-btn');
+        const deleteUserForm = document.getElementById('deleteUserForm');
+        const deleteUserId = document.getElementById('deleteUserId');
+        
+        function openDeleteUserModal(userId) {
+            console.log('Membuka modal hapus pengguna untuk user ID:', userId);
+            deleteUserId.value = userId;
+            deleteUserForm.action = `/admin/users/${userId}`;
+            
+            deleteUserModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+        
+        function closeDeleteUserModal() {
+            console.log('Menutup modal hapus pengguna');
+            deleteUserModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+        
+        deleteUserBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const userId = this.getAttribute('data-id');
+                console.log('Klik tombol hapus untuk user ID:', userId);
+                openDeleteUserModal(userId);
+            });
+        });
+        
+        closeDeleteUserModal?.addEventListener('click', closeDeleteUserModal);
+        cancelDeleteUser?.addEventListener('click', closeDeleteUserModal);
+        
+        deleteUserModal?.addEventListener('click', function(e) {
+            if (e.target === deleteUserModal) {
+                closeDeleteUserModal();
+            }
+        });
+        
+        // Edit User functionality
+        const editUserBtns = document.querySelectorAll('.edit-user-btn');
+        
+        function openEditUserModal(userId, userName, userEmail, userActive) {
+            console.log('Membuka modal edit pengguna untuk user ID:', userId);
+            // Set form for editing
+            document.getElementById('userId').value = userId;
+            document.getElementById('userName').value = userName;
+            document.getElementById('userEmail').value = userEmail;
+            document.getElementById('userActive').checked = userActive === '1';
+            document.getElementById('formMethod').value = 'PUT';
+            userForm.action = `/admin/users/${userId}`;
+            document.getElementById('passwordContainer').style.display = 'none'; // Hide password field when editing
+            
+            modalTitle.textContent = 'Edit Pengguna';
+            submitBtnText.textContent = 'Simpan Perubahan';
+            
+            // Show modal
+            addUserModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+        
+        editUserBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const userId = this.getAttribute('data-id');
+                const userName = this.getAttribute('data-name');
+                const userEmail = this.getAttribute('data-email');
+                const userActive = this.getAttribute('data-active');
+                
+                console.log('Klik tombol edit untuk user ID:', userId);
+                openEditUserModal(userId, userName, userEmail, userActive);
+            });
+        });
+        
+        // Kirim formulir hapus pengguna
+        confirmDeleteUser?.addEventListener('click', function() {
+            console.log('Mengirim formulir hapus pengguna');
+            deleteUserForm.submit();
         });
         
         // Filtering logic
         const statusFilter = document.getElementById('statusFilter');
         const searchInput = document.getElementById('searchUsers');
         
-        // Add filter functionality (simplified for demo)
+        // Add filter functionality
         function applyFilters() {
             const statusValue = statusFilter.value.toLowerCase();
             const searchValue = searchInput.value.toLowerCase();
@@ -349,8 +516,8 @@
             });
         }
         
-        statusFilter.addEventListener('change', applyFilters);
-        searchInput.addEventListener('input', applyFilters);
+        statusFilter?.addEventListener('change', applyFilters);
+        searchInput?.addEventListener('input', applyFilters);
     });
     
     function togglePasswordVisibility(inputId) {
