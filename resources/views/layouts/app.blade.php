@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- AOS Animation Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- CSS Footer -->
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/css/landing.css', 'resources/js/app.js'])
     @stack('styles')
@@ -145,5 +147,7 @@
             }
         });
     </script>
+    <!-- JS Footer -->
+    <script src="{{ asset('js/footer.js') }}"></script>
 </body>
 </html> 
