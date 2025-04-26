@@ -57,9 +57,9 @@ function formatPhoneNumber($phoneNumber) {
 }
 
 // Get raw phone number for WhatsApp
-$whatsappPhone = preg_replace('/[^0-9]/', '', $companyInfo->company_phone ?? '');
+$whatsappPhone = preg_replace('/[^0-9]/', '', $companyInfo->company_phone_cs1 ?? '');
 // Get formatted phone for display
-$displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
+$displayPhone = formatPhoneNumber($companyInfo->company_phone_cs1 ?? '');
 @endphp
 @endsection
 

@@ -351,6 +351,17 @@
 .fadeInUp {
     animation: fadeInUp 0.3s ease forwards;
 }
+
+/* Media query untuk perangkat mobile */
+@media (max-width: 768px) {
+    #whatsapp-button {
+        bottom: 90px !important;
+    }
+    
+    #whatsapp-popup {
+        bottom: 85px !important;
+    }
+}
 </style>
 
 <script>

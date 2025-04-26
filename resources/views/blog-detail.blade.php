@@ -512,7 +512,7 @@
         <!-- Right Sidebar -->
         <div class="w-full md:w-1/3">
             <!-- Quick Contact -->
-            <div class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+            <div id="contact-card" class="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Hubungi Kami</h3>
                 <div class="space-y-4 mb-8">
                     <a href="tel:+{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
@@ -523,7 +523,7 @@
                         <i class="fas fa-envelope w-6 text-[#FF6000]"></i>
                         <span>{{ $companyInfo->contact_email ?? 'info@example.com' }}</span>
                     </a>
-                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->contact_phone ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone_cs1 ?? '628123456789') }}" class="flex items-center text-gray-700 hover:text-[#FF6000] text-lg">
                         <i class="fab fa-whatsapp w-6 text-[#FF6000]"></i>
                         <span>WhatsApp</span>
                     </a>
@@ -533,9 +533,8 @@
                 </a>
             </div>
             
-            
             <!-- Recent Posts -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
+            <div id="recent-posts-card" class="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">Artikel Terbaru</h3>
                 <div class="space-y-4">
                     @if($recentBlogs->count() > 0)
@@ -568,9 +567,43 @@
                 </div>
             </div>
             
+            <!-- Butuh Jasa Pengiriman? -->
+            <div id="pengiriman-card" class="bg-gradient-to-br from-white to-orange-50 rounded-xl border border-gray-200 p-8 shadow-md overflow-hidden relative sticky top-24 hidden md:block">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-100 rounded-full opacity-50"></div>
+                <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-orange-100 rounded-full opacity-50"></div>
+                
+                <h3 class="text-xl font-bold text-gray-900 mb-4 relative">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#FF6000] to-[#FF8C00]">Butuh Jasa Pengiriman?</span>
+                </h3>
+                
+                <p class="text-gray-700 mb-6 relative font-medium">Solusi logistik terpercaya untuk kebutuhan bisnis Anda dengan jangkauan luas dan harga bersaing!</p>
+                
+                <div class="relative">
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone_cs1 ?? '628123456789') }}" class="block w-full bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-center text-white px-4 py-4 rounded-lg hover:shadow-lg transition-all transform hover:-translate-y-1 font-medium text-lg flex items-center justify-center">
+                        <i class="fab fa-whatsapp mr-2"></i> Hubungi Sekarang
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- CTA Mobile Sticky (tampil hanya di mobile) -->
+<div id="mobile-cta-sticky" class="w-full bg-gradient-to-r from-[#FF6000] to-[#FF8C00] p-4 z-40 shadow-lg md:hidden sticky bottom-0 left-0 mt-10">
+    <div class="flex items-center justify-between">
+        <div>
+            <h3 class="text-lg font-bold text-white flex items-center">
+                <span class="mr-1">Butuh</span>
+                <span id="rotating-text" class="inline-block min-w-[150px]">Jasa Pengiriman?</span>
+            </h3>
+            <p class="text-sm text-orange-50 hidden sm:block">Solusi logistik terpercaya dengan jangkauan luas</p>
+        </div>
+        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companyInfo->company_phone_cs1 ?? '628123456789') }}" class="px-4 py-2 bg-white text-[#FF6000] font-medium rounded-lg transition duration-300 flex items-center">
+            <i class="fab fa-whatsapp mr-2"></i> Hubungi
+        </a>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -622,6 +655,40 @@
                     }
                 });
             });
+        }
+        
+        // Animasi teks berganti pada CTA
+        const rotatingText = document.getElementById('rotating-text');
+        if (rotatingText) {
+            const phrases = [
+                "Jasa Pengiriman?",
+                "Ekspedisi Cepat?",
+                "Logistik Andal?",
+                "Kirim Barang?",
+                "Cargo Express?",
+                "Pengiriman Aman?"
+            ];
+            
+            let currentIndex = 0;
+            
+            // CSS untuk animasi
+            rotatingText.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+            
+            setInterval(() => {
+                // Mulai animasi fade out
+                rotatingText.style.opacity = "0";
+                rotatingText.style.transform = "translateY(10px)";
+                
+                setTimeout(() => {
+                    // Ganti teks
+                    currentIndex = (currentIndex + 1) % phrases.length;
+                    rotatingText.textContent = phrases[currentIndex];
+                    
+                    // Mulai animasi fade in
+                    rotatingText.style.opacity = "1";
+                    rotatingText.style.transform = "translateY(0)";
+                }, 500);
+            }, 3000); // Ganti teks setiap 3 detik
         }
     });
 </script>
