@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-1">Ubah artikel blog Anda</p>
             </div>
             <div class="mt-4 md:mt-0">
-                <a href="{{ route('admin.blogs') }}" class="btn-secondary">
+                <a href="{{ route('admin.blogs.index') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Kembali
                 </a>
             </div>
@@ -483,7 +483,7 @@
 
             <!-- Form Actions -->
             <div class="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
-                <a href="{{ route('admin.blogs') }}" class="btn-secondary">Batal</a>
+                <a href="{{ route('admin.blogs.index') }}" class="btn-secondary">Batal</a>
                 <button type="submit" name="save_draft" value="1" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <i class="fas fa-save mr-1"></i> Simpan Draft
                 </button>

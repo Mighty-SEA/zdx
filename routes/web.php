@@ -171,14 +171,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/company-media/delete', [CompanyMediaController::class, 'deleteMedia'])->name('company-media.delete');
 
     // Admin Blog
-    Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
-    Route::get('/blogs/create', [BlogController::class, 'create'])->name('blogs.create');
-    Route::post('/blogs', [BlogController::class, 'store'])->name('blogs.store');
-    Route::get('/blogs/{id}/edit', [BlogController::class, 'edit'])->name('blogs.edit');
-    Route::put('/blogs/{id}', [BlogController::class, 'update'])->name('blogs.update');
-    Route::delete('/blogs/{id}', [BlogController::class, 'destroy'])->name('blogs.destroy');
-    Route::delete('/blogs/{id}/image', [BlogController::class, 'deleteImage'])->name('blogs.delete-image');
-    Route::post('/upload/tinymce', [BlogController::class, 'uploadTinyMCE'])->name('tinymce.upload');
+    Route::prefix('blogs')->name('blogs.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\BlogController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\BlogController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\BlogController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\BlogController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\BlogController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('destroy');
+        Route::get('/trash', [\App\Http\Controllers\Admin\BlogController::class, 'trash'])->name('trash');
+        Route::post('/{id}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('restore');
+    });
 });
 
 // Daftar rute yang harus dikecualikan dari penanganan blog

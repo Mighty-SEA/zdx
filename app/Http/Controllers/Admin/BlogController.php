@@ -118,7 +118,7 @@ class BlogController extends Controller
                 $this->updateBlogSeo($blog);
             }
 
-            return redirect()->route('admin.blogs')->with('success', $blog->status == 'published' ? 'Blog berhasil dipublikasikan' : 'Draft blog berhasil disimpan');
+            return redirect()->route('admin.blogs.index')->with('success', $blog->status == 'published' ? 'Blog berhasil dipublikasikan' : 'Draft blog berhasil disimpan');
         } catch (\Exception $e) {
             Log::error('Error saat menyimpan blog: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -289,7 +289,7 @@ class BlogController extends Controller
             }
 
             $message = $blog->status == 'published' ? 'Blog berhasil diperbarui dan dipublikasikan' : 'Draft blog berhasil disimpan';
-            return redirect()->route('admin.blogs')->with('success', $message);
+            return redirect()->route('admin.blogs.index')->with('success', $message);
         } catch (\Exception $e) {
             Log::error('Error saat mengupdate blog ID ' . $id . ': ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -308,27 +308,31 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::findOrFail($id);
-            
-            // Hapus gambar jika ada
-            if ($blog->image) {
-                // Ekstrak path relatif dari URL
-                $path = str_replace('/storage/', '', $blog->image);
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
-            
-            // Hapus pengaturan SEO terkait
-            $identifier = 'blog-' . $blog->slug;
-            PageSeoSetting::where('page_identifier', $identifier)->delete();
-            
-            $blog->delete();
-
-            return redirect()->route('admin.blogs')->with('success', 'Blog berhasil dihapus');
+            $blog->delete(); // Soft delete
+            return redirect()->route('admin.blogs.index')->with('success', 'Blog berhasil dipindahkan ke sampah');
         } catch (\Exception $e) {
             Log::error('Error saat menghapus blog: ' . $e->getMessage());
-            return redirect()->route('admin.blogs')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->route('admin.blogs.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Tampilkan daftar blog yang sudah dihapus (sampah)
+     */
+    public function trash()
+    {
+        $blogs = Blog::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        return view('admin.blogs.trash', compact('blogs'));
+    }
+
+    /**
+     * Restore blog dari sampah
+     */
+    public function restore($id)
+    {
+        $blog = Blog::onlyTrashed()->findOrFail($id);
+        $blog->restore();
+        return redirect()->route('admin.blogs.trash')->with('success', 'Blog berhasil direstore');
     }
     
     /**

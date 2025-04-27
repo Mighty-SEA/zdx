@@ -11,7 +11,7 @@
                 <p class="text-gray-600 mt-1">Buat artikel blog baru untuk ditampilkan di website Anda</p>
             </div>
             <div class="mt-4 md:mt-0">
-                <a href="{{ route('admin.blogs') }}" class="btn-secondary">
+                <a href="{{ route('admin.blogs.index') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Kembali
                 </a>
             </div>

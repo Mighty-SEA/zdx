@@ -15,6 +15,9 @@
                 <a href="{{ route('admin.blogs.create') }}" class="btn-primary">
                     <i class="fas fa-plus mr-2"></i> Tambah Blog
                 </a>
+                <a href="{{ route('admin.blogs.trash') }}" class="btn-secondary ml-2">
+                    <i class="fas fa-trash mr-2"></i> Sampah
+                </a>
             </div>
         </div>
     </div>

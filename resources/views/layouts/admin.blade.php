@@ -107,7 +107,7 @@
                             <span>Layanan</span>
                         </a>
                         
-                        <a href="{{ route('admin.blogs') }}" class="sidebar-link {{ request()->routeIs('admin.blogs*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.blogs.index') }}" class="sidebar-link {{ request()->routeIs('admin.blogs*') ? 'active' : '' }}">
                             <i class="fas fa-newspaper text-lg w-5 text-center"></i>
                             <span>Blog</span>
                         </a>
