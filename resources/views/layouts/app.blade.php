@@ -145,5 +145,28 @@
             }
         });
     </script>
+
+    <!-- Event snippet for Purchase conversion page -->
+    <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+          'send_to': 'AW-17029364315/q7EXCO_fzrwaENv0nbg_',
+          'value': 1.0,
+          'currency': 'IDR',
+          'transaction_id': '',
+          'event_callback': callback
+      });
+      return false;
+    }
+    // Panggil otomatis saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+      gtag_report_conversion();
+    });
+    </script>
 </body>
 </html> 
