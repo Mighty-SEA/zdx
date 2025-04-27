@@ -162,14 +162,14 @@ class BlogController extends Controller
             // Simpan slug dan status lama untuk referensi
             $oldSlug = $blog->slug;
             $oldStatus = $blog->status;
-
+            $oldImage = $blog->image;
+            
+            // Update dasar
             $blog->title = $request->title;
             $blog->slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->title);
             $blog->description = $request->description;
             $blog->content = $request->content;
             $blog->status = $request->has('save_draft') ? 'draft' : $request->status;
-            $blog->image_alt = $request->image_alt;
-            $blog->image_name = $request->image_name;
             $blog->category = $request->category;
             $blog->tags = $request->tags ? array_map('trim', explode(',', $request->tags)) : null;
             $blog->author = $request->author ?? $blog->author;
@@ -181,14 +181,76 @@ class BlogController extends Controller
                 $blog->published_at = now();
             }
 
-            // Cek apakah penghapusan gambar diminta
-            if ($request->has('delete_image') && $request->delete_image == '1') {
+            // Periksa upload gambar baru terlebih dahulu
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                
+                // Validasi tambahan untuk gambar
+                if (!$image->isValid()) {
+                    throw new \Exception("File gambar tidak valid");
+                }
+                
+                $imageName = time() . '_' . ($request->image_alt ? Str::slug($request->image_alt) : $image->getClientOriginalName());
+                
+                try {
+                    // Hapus gambar lama jika ada
+                    if ($oldImage) {
+                        try {
+                            $oldPath = str_replace('/storage/', '', $oldImage);
+                            if (Storage::disk('public')->exists($oldPath)) {
+                                Storage::disk('public')->delete($oldPath);
+                                Log::info("Gambar lama berhasil dihapus setelah upload gambar baru: $oldPath");
+                            }
+                        } catch (\Exception $e) {
+                            Log::warning("Gagal menghapus gambar lama setelah upload gambar baru: " . $e->getMessage());
+                            // Lanjutkan proses meskipun gagal menghapus gambar lama
+                        }
+                    }
+
+                    // Simpan gambar ke storage publik
+                    $path = Storage::disk('public')->putFileAs(
+                        'blogs', 
+                        $image, 
+                        $imageName
+                    );
+                    
+                    // Pastikan file berhasil disimpan
+                    if (!Storage::disk('public')->exists($path)) {
+                        throw new \Exception("Gagal menyimpan gambar baru");
+                    }
+                    
+                    Log::info("Gambar baru berhasil disimpan: $path");
+                    
+                    // Perbarui properti gambar
+                    $blog->image = Storage::url($path);
+                    $blog->image_alt = $request->image_alt;
+                    $blog->image_name = $request->image_name;
+                    
+                } catch (\Exception $e) {
+                    Log::error("Gagal memproses gambar baru: " . $e->getMessage());
+                    
+                    // Gagal upload gambar baru, tetap gunakan gambar lama
+                    $blog->image = $oldImage;
+                    
+                    throw new \Exception("Gagal mengupload gambar: " . $e->getMessage());
+                }
+            } 
+            // Jika tidak ada upload gambar baru, periksa flag delete_image
+            else if ($request->has('delete_image') && $request->delete_image == '1') {
                 // Hapus gambar lama jika ada
                 if ($blog->image) {
-                    // Ekstrak path relatif dari URL
-                    $oldPath = str_replace('/storage/', '', $blog->image);
-                    if (Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
+                    try {
+                        // Ekstrak path relatif dari URL
+                        $oldPath = str_replace('/storage/', '', $blog->image);
+                        if (Storage::disk('public')->exists($oldPath)) {
+                            Storage::disk('public')->delete($oldPath);
+                            Log::info("Gambar lama berhasil dihapus: $oldPath");
+                        } else {
+                            Log::warning("Gambar lama tidak ditemukan: $oldPath");
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Gagal menghapus gambar lama: " . $e->getMessage());
+                        // Lanjutkan proses meskipun gagal menghapus gambar lama
                     }
                 }
                 
@@ -197,31 +259,22 @@ class BlogController extends Controller
                 $blog->image_alt = null;
                 $blog->image_name = null;
             }
-            else if ($request->hasFile('image')) {
-                // Hapus gambar lama jika ada
-                if ($blog->image) {
-                    // Ekstrak path relatif dari URL
-                    $oldPath = str_replace('/storage/', '', $blog->image);
-                    if (Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
-                    }
+            // Jika tidak ada file yang diupload dan tidak ada perintah hapus gambar, simpan data alt text
+            else {
+                if ($request->has('image_alt')) {
+                    $blog->image_alt = $request->image_alt;
                 }
-
-                // Upload gambar baru
-                $image = $request->file('image');
-                $imageName = time() . '_' . ($request->image_alt ? Str::slug($request->image_alt) : $image->getClientOriginalName());
-                
-                // Simpan gambar ke storage publik
-                $path = Storage::disk('public')->putFileAs(
-                    'blogs', 
-                    $image, 
-                    $imageName
-                );
-                
-                $blog->image = Storage::url($path);
+                if ($request->has('image_name')) {
+                    $blog->image_name = $request->image_name;
+                }
             }
 
-            $blog->save();
+            // Simpan perubahan
+            if (!$blog->save()) {
+                throw new \Exception("Gagal menyimpan data blog");
+            }
+            
+            Log::info("Blog ID $id berhasil diupdate");
 
             // Jika status berubah dari draft ke published atau slug berubah
             if (($oldStatus != 'published' && $blog->status == 'published') || 
@@ -238,8 +291,13 @@ class BlogController extends Controller
             $message = $blog->status == 'published' ? 'Blog berhasil diperbarui dan dipublikasikan' : 'Draft blog berhasil disimpan';
             return redirect()->route('admin.blogs')->with('success', $message);
         } catch (\Exception $e) {
-            Log::error('Error saat mengupdate blog: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            Log::error('Error saat mengupdate blog ID ' . $id . ': ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
+            // Jika terjadi error, tambahkan informasi detail untuk debugging
+            $errorMessage = 'Terjadi kesalahan: ' . $e->getMessage();
+            
+            return redirect()->back()->withInput()->with('error', $errorMessage);
         }
     }
 
@@ -320,31 +378,53 @@ class BlogController extends Controller
      */
     public function deleteImage($id)
     {
-        $blog = Blog::findOrFail($id);
-        
-        // Hapus gambar jika ada
-        if ($blog->image) {
-            // Ekstrak path relatif dari URL
-            $path = str_replace('/storage/', '', $blog->image);
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
+        try {
+            $blog = Blog::findOrFail($id);
+            
+            // Hapus gambar jika ada
+            if ($blog->image) {
+                // Ekstrak path relatif dari URL
+                $path = str_replace('/storage/', '', $blog->image);
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                    Log::info("Gambar blog ID $id berhasil dihapus");
+                }
+                
+                // Hapus referensi gambar dari database
+                $blog->image = null;
+                $blog->image_alt = null;
+                $blog->image_name = null;
+                $blog->save();
+                
+                // Perbarui SEO jika perlu
+                if ($blog->status == 'published') {
+                    $this->updateBlogSeo($blog);
+                }
+                
+                // Cek apakah permintaan mengharapkan JSON
+                if (request()->expectsJson() || request()->ajax()) {
+                    return response()->json(['success' => true, 'message' => 'Gambar berhasil dihapus']);
+                }
+                
+                // Untuk permintaan form biasa, redirect kembali ke halaman edit dengan nama route yang benar
+                return redirect()->route('admin.blogs.edit', $id)->with('success', 'Gambar berhasil dihapus');
             }
             
-            // Hapus referensi gambar dari database
-            $blog->image = null;
-            $blog->image_alt = null;
-            $blog->image_name = null;
-            $blog->save();
-            
-            // Perbarui SEO jika perlu
-            if ($blog->status == 'published') {
-                $this->updateBlogSeo($blog);
+            // Jika tidak ada gambar
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Tidak ada gambar untuk dihapus'], 404);
             }
             
-            return response()->json(['success' => true, 'message' => 'Gambar berhasil dihapus']);
+            return redirect()->route('admin.blogs.edit', $id)->with('info', 'Tidak ada gambar untuk dihapus');
+        } catch (\Exception $e) {
+            Log::error('Error saat menghapus gambar blog: ' . $e->getMessage());
+            
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            }
+            
+            return redirect()->route('admin.blogs.edit', $id)->with('error', 'Terjadi kesalahan saat menghapus gambar: ' . $e->getMessage());
         }
-        
-        return response()->json(['success' => false, 'message' => 'Tidak ada gambar untuk dihapus'], 404);
     }
 
     /**

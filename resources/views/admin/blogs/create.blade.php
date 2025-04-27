@@ -341,242 +341,35 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <style>
-    /* Toggle Switch */
-    .toggle-checkbox:checked {
-        right: 0;
-        transform: translateX(100%);
-        border-color: #3b82f6;
-    }
-    .toggle-checkbox:checked + .toggle-label {
-        background-color: #3b82f6;
-    }
-    .toggle-label, .toggle-checkbox {
-        transition: all 0.3s ease-in-out;
-    }
-    
-    /* TinyMCE Fixed Height dengan Scrollbar */
-    /* Pengaturan ini akan membuat editor TinyMCE memiliki ukuran statis dengan scrollbar */
+    /* Style untuk TinyMCE */
     .tox-tinymce {
-        height: 500px !important;
-    }
-    .tox .tox-edit-area__iframe {
-        height: 100% !important;
-    }
-    .tox .tox-edit-area {
-        overflow-y: hidden !important;
-    }
-    .tox-editor-container {
-        display: flex;
-        flex-direction: column;
-        height: 500px !important;
+        border-radius: 0.375rem !important;
     }
     
-    /* Custom scrollbar for TinyMCE */
-    .tox-edit-area__iframe {
-        scrollbar-width: thin;
-        scrollbar-color: #d1d5db #f3f4f6;
-    }
-    .tox-edit-area__iframe::-webkit-scrollbar {
-        width: 8px;
-    }
-    .tox-edit-area__iframe::-webkit-scrollbar-track {
-        background: #f3f4f6;
-    }
-    .tox-edit-area__iframe::-webkit-scrollbar-thumb {
-        background-color: #d1d5db;
-        border-radius: 6px;
-        border: 2px solid #f3f4f6;
+    .tox-statusbar {
+        border-top: 1px solid #e5e7eb !important;
     }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // TinyMCE initialization - fallback to basic if API key not set
-        let editor;
-
-        if ('{{ env('TINYMCE_API_KEY', '') }}' !== 'no-api-key') {
+        // TinyMCE initialization
+        if (document.getElementById('content')) {
             tinymce.init({
                 selector: '#content',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
                 height: 500,
-                menubar: true,
-                resize: false,
-                autoresize_bottom_margin: 0,
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
-                    'codesample', 'quickbars', 'template', 'pagebreak', 'nonbreaking',
-                    'paste', 'print', 'visualchars', 'save', 'directionality'
-                ],
-                toolbar: 'undo redo | blocks | formatselect | ' +
-                        'bold italic forecolor backcolor emoticons | ' +
-                        'alignleft aligncenter alignright alignjustify | ' +
-                        'bullist numlist outdent indent | link image media table codesample | ' +
-                        'visualblocks fullscreen preview | ' +
-                        'pagebreak nonbreaking | removeformat help',
-                formats: {
-                    h1: { block: 'h1', wrapper: false },
-                    h2: { block: 'h2', wrapper: false },
-                    h3: { block: 'h3', wrapper: false },
-                    h4: { block: 'h4', wrapper: false },
-                },
-                style_formats: [
-                    { title: 'Headings', items: [
-                        { title: 'Heading 1', format: 'h1' },
-                        { title: 'Heading 2', format: 'h2' },
-                        { title: 'Heading 3', format: 'h3' },
-                        { title: 'Heading 4', format: 'h4' },
-                        { title: 'Heading 5', format: 'h5' },
-                        { title: 'Heading 6', format: 'h6' }
-                    ]},
-                    { title: 'Inline', items: [
-                        { title: 'Bold', format: 'bold' },
-                        { title: 'Italic', format: 'italic' },
-                        { title: 'Underline', format: 'underline' },
-                        { title: 'Strikethrough', format: 'strikethrough' },
-                        { title: 'Code', format: 'code' }
-                    ]},
-                    { title: 'Blocks', items: [
-                        { title: 'Paragraph', format: 'p' },
-                        { title: 'Blockquote', format: 'blockquote' },
-                        { title: 'Div', format: 'div' },
-                        { title: 'Pre', format: 'pre' }
-                    ]}
-                ],
-                toolbar_mode: 'sliding',
-                toolbar_sticky: true,
-                content_style: `
-                    body { 
-                        font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; 
-                        font-size: 16px; 
-                        line-height: 1.6; 
-                        padding: 20px;
-                    }
-                    h1 {
-                        font-size: 2.25rem;
-                        font-weight: 700;
-                        margin-top: 2.5rem;
-                        margin-bottom: 1.25rem;
-                        color: #1f2937;
-                    }
-                    img { 
-                        max-width: 100%; 
-                        height: auto;
-                        border-radius: 4px;
-                    }
-                    pre {
-                        background-color: #f5f5f5;
-                        padding: 12px;
-                        border-radius: 4px;
-                        overflow-x: auto;
-                    }
-                    blockquote {
-                        background-color: #f9f9f9;
-                        padding: 10px 20px;
-                        border-left: 4px solid #ccc;
-                        margin: 15px 0;
-                    }
-                    table {
-                        border-collapse: collapse;
-                        width: 100%;
-                    }
-                    table td, table th {
-                        border: 1px solid #ddd;
-                        padding: 8px;
-                    }
-                `,
-                branding: false,
-                promotion: false,
-                images_upload_url: '{{ route("admin.tinymce.upload") }}',
-                automatic_uploads: true,
-                file_picker_types: 'image',
-                image_class_list: [
-                    {title: 'Responsive', value: 'img-fluid'},
-                    {title: 'Left Aligned', value: 'float-left me-3 mb-3'},
-                    {title: 'Right Aligned', value: 'float-right ms-3 mb-3'},
-                    {title: 'Centered', value: 'mx-auto d-block'},
-                    {title: 'No margins', value: 'mb-0'}
-                ],
-                image_caption: true,
-                image_advtab: true,
-                relative_urls: false,
-                remove_script_host: false,
-                convert_urls: true,
-                extended_valid_elements: 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]',
-                setup: function(ed) {
-                    editor = ed;
-                    // Event listener for content changes to update TOC
-                    editor.on('Change', function() {
+                menubar: false,
+                setup: function(editor) {
+                    editor.on('change', function() {
                         updateTableOfContents();
                     });
-                    
-                    // Keydown handler untuk menekan tab
-                    editor.on('keydown', function(e) {
-                        if (e.keyCode === 9) { // Tab key
-                            if (e.shiftKey) {
-                                editor.execCommand('Outdent');
-                            } else {
-                                editor.execCommand('Indent');
-                            }
-                            e.preventDefault();
-                            return false;
-                        }
+                    editor.on('keyup', function() {
+                        updateTableOfContents();
                     });
-                },
-                templates: [
-                    {
-                        title: 'Callout Box',
-                        description: 'Creates a callout box with a title',
-                        content: '<div style="background-color: #f8f9fa; border-left: 4px solid #0d6efd; padding: 15px; margin-bottom: 20px;">' +
-                                '<h3 style="margin-top: 0; color: #0d6efd;">Judul Callout</h3>' +
-                                '<p>Teks callout Anda di sini...</p>' +
-                                '</div>'
-                    },
-                    {
-                        title: 'Info Box',
-                        description: 'Creates an info box',
-                        content: '<div style="background-color: #e8f4f8; border-radius: 5px; padding: 15px; margin-bottom: 20px;">' +
-                                '<h4 style="color: #0c5460;"><strong>Info Penting</strong></h4>' +
-                                '<p>Info Anda di sini...</p>' +
-                                '</div>'
-                    },
-                    {
-                        title: 'Tabel Perbandingan',
-                        description: 'Membuat tabel perbandingan sederhana',
-                        content: '<table style="width:100%; border-collapse: collapse;">' +
-                                '<thead>' +
-                                '<tr style="background-color: #f8f9fa;">' +
-                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Fitur</th>' +
-                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Opsi A</th>' +
-                                '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Opsi B</th>' +
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>' +
-                                '<tr>' +
-                                '<td style="border: 1px solid #ddd; padding: 8px;">Fitur 1</td>' +
-                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
-                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
-                                '</tr>' +
-                                '<tr style="background-color: #f8f9fa;">' +
-                                '<td style="border: 1px solid #ddd; padding: 8px;">Fitur 2</td>' +
-                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
-                                '<td style="border: 1px solid #ddd; padding: 8px;">Deskripsi</td>' +
-                                '</tr>' +
-                                '</tbody>' +
-                                '</table>'
-                    }
-                ]
-            });
-        } else {
-            // Fallback to basic editor if no API key
-            const textarea = document.getElementById('content');
-            textarea.style.minHeight = '500px';
-            textarea.classList.add('p-3');
-            
-            // Use textarea for TOC updates
-            textarea.addEventListener('input', function() {
-                updateTableOfContents();
+                }
             });
         }
 
@@ -587,10 +380,12 @@
             
             let content = '';
             
-            if (window.tinymce && tinymce.get('content')) {
+            if (tinymce.get('content')) {
                 content = tinymce.get('content').getContent();
             } else {
-                content = document.getElementById('content').value;
+                const contentEl = document.getElementById('content');
+                if (!contentEl) return;
+                content = contentEl.value;
             }
             
             // Parse the content to find headings
@@ -606,7 +401,6 @@
             
             // Create TOC structure
             let tocHtml = '<ul class="list-disc pl-5 space-y-1">';
-            let contentChanged = false;
             
             // Process H2 headings first
             h2Elements.forEach((h2, index) => {
@@ -619,11 +413,8 @@
                     .replace(/(^-|-$)/g, '');
                 const headingId = `h2-${headingSlug}`;
                 
-                // Periksa apakah ID telah berubah
-                if (h2.id !== headingId) {
-                    h2.id = headingId;
-                    contentChanged = true;
-                }
+                // Set ID untuk heading
+                h2.id = headingId;
                 
                 tocHtml += `<li><a href="#${headingId}" class="text-blue-600 hover:underline">${headingText}</a>`;
                 
@@ -637,7 +428,7 @@
                 
                 if (h3Subset.length > 0) {
                     tocHtml += '<ul class="pl-4 mt-1 space-y-1">';
-                    h3Subset.forEach((h3, subIndex) => {
+                    h3Subset.forEach((h3) => {
                         const subHeadingText = h3.textContent.trim();
                         if (!subHeadingText) return;
                         
@@ -647,11 +438,8 @@
                             .replace(/(^-|-$)/g, '');
                         const subHeadingId = `h3-${headingSlug}-${subHeadingSlug}`;
                         
-                        // Periksa apakah ID telah berubah
-                        if (h3.id !== subHeadingId) {
-                            h3.id = subHeadingId;
-                            contentChanged = true;
-                        }
+                        // Set ID untuk heading
+                        h3.id = subHeadingId;
                         
                         tocHtml += `<li><a href="#${subHeadingId}" class="text-blue-600 hover:underline">${subHeadingText}</a></li>`;
                     });
@@ -666,19 +454,16 @@
             // Update the preview
             tocPreview.innerHTML = tocHtml;
             
-            // Update the actual content in the editor with the ID attributes hanya jika ada perubahan
-            if (contentChanged && window.tinymce && tinymce.get('content')) {
-                // Mencegah loop tak terbatas dengan menonaktifkan event handler sementara
-                tinymce.get('content').off('Change');
-                
-                // Perbarui konten dengan ID yang benar
+            // Update content with IDs
+            if (tinymce.get('content')) {
+                const editorData = tinymce.get('content').getContent();
                 const updatedContent = doc.body.innerHTML;
-                tinymce.get('content').setContent(updatedContent);
                 
-                // Aktifkan kembali event handler setelah penundaan
-                setTimeout(() => {
-                    tinymce.get('content').on('Change', updateTableOfContents);
-                }, 300);
+                // Hanya update jika ada perubahan
+                if (editorData !== updatedContent) {
+                    // Set content dengan ID yang sudah dibuat
+                    tinymce.get('content').setContent(updatedContent, {format: 'html'});
+                }
             }
         }
 
@@ -689,34 +474,41 @@
         // Variable untuk melacak apakah user sudah mengedit slug secara manual
         let slugManuallyChanged = false;
         
-        titleInput.addEventListener('input', function() {
-            updateSeoPreview();
+        if (titleInput && slugInput) {
+            titleInput.addEventListener('input', function() {
+                updateSeoPreview();
+                
+                // Hanya update slug otomatis jika belum diubah secara manual
+                if (!slugManuallyChanged && titleInput.value) {
+                    let slug = this.value.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/(^-|-$)/g, '');
+                    slugInput.value = slug;
+                }
+            });
             
-            // Hanya update slug otomatis jika belum diubah secara manual
-            if (!slugManuallyChanged && titleInput.value) {
-                let slug = this.value.toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
-                slugInput.value = slug;
-            }
-        });
-        
-        // Tambahkan event listener untuk menandai slug sudah diubah manual
-        slugInput.addEventListener('input', function() {
-            slugManuallyChanged = true;
-            updateSeoPreview();
-        });
+            // Tambahkan event listener untuk menandai slug sudah diubah manual
+            slugInput.addEventListener('input', function() {
+                slugManuallyChanged = true;
+                updateSeoPreview();
+            });
+        }
 
-        document.getElementById('description').addEventListener('input', function() {
-            updateSeoPreview();
-            updateCharacterCount();
-        });
+        const descriptionEl = document.getElementById('description');
+        if (descriptionEl) {
+            descriptionEl.addEventListener('input', function() {
+                updateSeoPreview();
+                updateCharacterCount();
+            });
+        }
         
         // Character counter for description
         function updateCharacterCount() {
-            const description = document.getElementById('description').value;
+            const description = document.getElementById('description');
             const counter = document.getElementById('descriptionCounter');
-            const count = description.length;
+            if (!description || !counter) return;
+            
+            const count = description.value.length;
             counter.textContent = count;
             
             if (count > 255) {
@@ -728,41 +520,62 @@
         
         // Form submission handler
         const form = document.getElementById('blogForm');
-        form.addEventListener('submit', function(e) {
-            const description = document.getElementById('description').value;
-            if (description.length > 255) {
-                e.preventDefault();
-                alert('Deskripsi tidak boleh lebih dari 255 karakter.');
-                return false;
-            }
-            
-            // Set status based on button clicked
-            const submitButton = document.activeElement;
-            if (submitButton.name === 'save_draft') {
-                document.getElementById('status').value = 'draft';
-            } else {
-                // If publishing, make sure required fields are filled
-                if (!titleInput.value.trim()) {
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const description = document.getElementById('description');
+                if (!description) return;
+                
+                if (description.value.length > 255) {
                     e.preventDefault();
-                    alert('Judul blog harus diisi');
-                    titleInput.focus();
+                    alert('Deskripsi tidak boleh lebih dari 255 karakter.');
                     return false;
                 }
                 
-                if (!document.getElementById('description').value.trim()) {
-                    e.preventDefault();
-                    alert('Deskripsi singkat harus diisi');
-                    document.getElementById('description').focus();
-                    return false;
+                // Set status based on button clicked
+                const submitButton = document.activeElement;
+                if (submitButton.name === 'save_draft') {
+                    document.getElementById('status').value = 'draft';
+                } else {
+                    // If publishing, make sure required fields are filled
+                    if (!titleInput.value.trim()) {
+                        e.preventDefault();
+                        alert('Judul blog harus diisi');
+                        titleInput.focus();
+                        return false;
+                    }
+                    
+                    if (!document.getElementById('description').value.trim()) {
+                        e.preventDefault();
+                        alert('Deskripsi singkat harus diisi');
+                        document.getElementById('description').focus();
+                        return false;
+                    }
+                    
+                    // Validasi konten editor
+                    if (tinymce.get('content') && !tinymce.get('content').getContent().trim()) {
+                        e.preventDefault();
+                        alert('Konten blog harus diisi');
+                        tinymce.get('content').focus();
+                        return false;
+                    }
                 }
-            }
-        });
+            });
+        }
         
         // Fungsi untuk update preview di Google
         function updateSeoPreview() {
-            const title = document.getElementById('title').value || 'Preview Judul';
-            const slug = document.getElementById('slug').value || 'preview-slug';
-            const description = document.getElementById('description').value || 'Preview deskripsi akan muncul di sini.';
+            const titleEl = document.getElementById('title');
+            const slugEl = document.getElementById('slug');
+            const descriptionEl = document.getElementById('description');
+            const seoPreviewTitle = document.getElementById('seo-preview-title');
+            const seoPreviewSlug = document.getElementById('seo-preview-slug');
+            const seoPreviewDesc = document.getElementById('seo-preview-desc');
+            
+            if (!titleEl || !slugEl || !descriptionEl || !seoPreviewTitle || !seoPreviewSlug || !seoPreviewDesc) return;
+            
+            const title = titleEl.value || 'Preview Judul';
+            const slug = slugEl.value || 'preview-slug';
+            const description = descriptionEl.value || 'Preview deskripsi akan muncul di sini.';
             
             // Update elemen preview Google
             const seoTitleInput = document.getElementById('seo_title');
@@ -771,15 +584,19 @@
             const titleForPreview = seoTitleInput && seoTitleInput.value ? seoTitleInput.value : title;
             const descForPreview = seoDescriptionInput && seoDescriptionInput.value ? seoDescriptionInput.value : description;
             
-            document.getElementById('seo-preview-title').textContent = titleForPreview;
-            document.getElementById('seo-preview-slug').textContent = slug;
-            document.getElementById('seo-preview-desc').textContent = descForPreview;
+            seoPreviewTitle.textContent = titleForPreview;
+            seoPreviewSlug.textContent = slug;
+            seoPreviewDesc.textContent = descForPreview;
         }
 
         // Image preview function
-        function previewImage() {
+        window.previewImage = function() {
             const preview = document.getElementById('image-preview');
-            const file = document.getElementById('image').files[0];
+            const fileInput = document.getElementById('image');
+            
+            if (!preview || !fileInput) return;
+            
+            const file = fileInput.files[0];
             const reader = new FileReader();
 
             reader.onloadend = function() {
@@ -802,7 +619,7 @@
     });
 </script>
 
-<!-- RankMath SEO Script -->
+<!-- SEO Script (existing code) -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Dapatkan elemen-elemen yang dibutuhkan
