@@ -162,10 +162,10 @@
                                 <div class="relative group">
                                     <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" class="h-40 w-full object-cover rounded">
                                     <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded">
-                                        <form action="{{ route('admin.blogs.delete-image', $blog->id) }}" method="POST" class="inline">
+                                        <form action="{{ route('admin.blogs.delete-image', $blog->id) }}" method="POST" class="image-delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="bg-red-500 text-white rounded-full p-2 hover:bg-red-600" onclick="confirmDeleteImage(this)">
+                                            <button type="button" class="bg-red-500 text-white rounded-full p-2 hover:bg-red-600" onclick="confirmDeleteImage(this.closest('form'))">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -661,16 +661,18 @@
         const tocModeText = document.getElementById('toc_mode_text');
         const tocAutoContainer = document.getElementById('toc_auto_container');
         
-        tocModeToggle.addEventListener('change', function() {
-            if (this.checked) {
-                // Mode Auto
-                tocModeText.textContent = 'Otomatis';
-                tocAutoContainer.classList.remove('hidden');
-            } else {
-                // Mode Manual
-                tocAutoContainer.classList.add('hidden');
-            }
-        });
+        if (tocModeToggle) {
+            tocModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    // Mode Auto
+                    tocModeText.textContent = 'Otomatis';
+                    tocAutoContainer.classList.remove('hidden');
+                } else {
+                    // Mode Manual
+                    tocAutoContainer.classList.add('hidden');
+                }
+            });
+        }
         
         // Function to update the TOC automatically
         function updateTableOfContents() {
@@ -781,28 +783,30 @@
         // Jika slug dan judul sama, asumsikan bahwa slug belum diubah secara manual
         let slugManuallyChanged = '{{ $blog->slug }}' !== '{{ \Illuminate\Support\Str::slug($blog->title) }}';
         
-        titleInput.addEventListener('input', function() {
-            // Hanya update slug otomatis jika belum diubah secara manual
-            if (!slugManuallyChanged && titleInput.value) {
-                let slug = this.value.toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
-                slugInput.value = slug;
-            }
-        });
-        
-        // Tandai jika slug diubah secara manual
-        slugInput.addEventListener('input', function() {
-            slugManuallyChanged = true;
-        });
+        if (titleInput && slugInput) {
+            titleInput.addEventListener('input', function() {
+                // Hanya update slug otomatis jika belum diubah secara manual
+                if (!slugManuallyChanged && titleInput.value) {
+                    let slug = this.value.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/(^-|-$)/g, '');
+                    slugInput.value = slug;
+                }
+            });
+            
+            // Tandai jika slug diubah secara manual
+            slugInput.addEventListener('input', function() {
+                slugManuallyChanged = true;
+            });
+        }
 
         // Character counter for description
         function updateCharacterCount() {
-            const description = document.getElementById('description').value;
+            const description = document.getElementById('description');
             const counter = document.getElementById('descriptionCounter');
-            if (!counter) return;
+            if (!description || !counter) return;
             
-            const count = description.length;
+            const count = description.value.length;
             counter.textContent = count;
             
             if (count > 255) {
@@ -813,25 +817,50 @@
         }
         
         // Initial character count update
-        document.getElementById('description')?.addEventListener('input', updateCharacterCount);
-        updateCharacterCount();
+        const descriptionEl = document.getElementById('description');
+        if (descriptionEl) {
+            descriptionEl.addEventListener('input', updateCharacterCount);
+            updateCharacterCount();
+        }
         
-        // Form validation
+        // Form validation - PENTING! Validasi form sebelum submit
         const form = document.getElementById('blogForm');
-        form.addEventListener('submit', function(e) {
-            const description = document.getElementById('description').value;
-            if (description.length > 255) {
-                e.preventDefault();
-                alert('Deskripsi tidak boleh lebih dari 255 karakter.');
-                return false;
-            }
-            
-            // Set status based on button clicked
-            const submitButton = document.activeElement;
-            if (submitButton.name === 'save_draft') {
-                document.getElementById('status').value = 'draft';
-            }
-        });
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Tambahkan konfirmasi sebelum submit untuk mencegah kehilangan data
+                const submitButton = document.activeElement;
+                const isUpdateAction = (submitButton && !submitButton.name) || 
+                                      (submitButton && submitButton.name !== 'save_draft');
+                                      
+                if (isUpdateAction) {
+                    // Konfirmasi untuk update yang bukan save draft
+                    if (!confirm('Anda yakin ingin memperbarui artikel ini?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+                
+                const description = document.getElementById('description').value;
+                if (description.length > 255) {
+                    e.preventDefault();
+                    alert('Deskripsi tidak boleh lebih dari 255 karakter.');
+                    return false;
+                }
+                
+                // Set status based on button clicked
+                if (submitButton && submitButton.name === 'save_draft') {
+                    document.getElementById('status').value = 'draft';
+                }
+                
+                // Prevent double submission
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                    }, 3000);
+                }
+            });
+        }
         
         // Image preview functions
         function previewImage() {
@@ -852,15 +881,18 @@
             }
         }
         
-        // Konfirmasi hapus gambar
-        function confirmDeleteImage(button) {
-            if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
-                button.closest('form').submit();
+        // Perbaikan fungsi confirmDeleteImage
+        window.confirmDeleteImage = function(formElement) {
+            if (!formElement || !formElement.classList.contains('image-delete-form')) {
+                console.error('Form element not found or not valid');
+                return;
             }
-        }
-        
-        // Make confirmDeleteImage available globally
-        window.confirmDeleteImage = confirmDeleteImage;
+            
+            // Gunakan konfirmasi sederhana daripada modal untuk menghindari konflik
+            if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
+                formElement.submit();
+            }
+        };
         
         // Run initial TOC update
         setTimeout(updateTableOfContents, 1000);
