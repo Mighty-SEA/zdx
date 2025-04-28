@@ -224,7 +224,7 @@
         
         <p class="text-gray-600 text-sm mb-3">Silakan pilih nomor yang ingin Anda hubungi:</p>
         
-        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '6285814718888') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '') }}?text=Halo%20admin%20ZDX" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
            target="_blank">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
@@ -237,7 +237,7 @@
         </a>
         
         @if(isset($companyInfo->company_phone_cs2))
-        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs2 ?: '6285814718889') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }}" 
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs2 ?: '') }}?text=Halo%20admin%20ZDX" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
            target="_blank">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
