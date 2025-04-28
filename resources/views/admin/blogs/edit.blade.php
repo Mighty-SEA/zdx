@@ -639,13 +639,20 @@
             
             // Update content with IDs
             if (tinymce.get('content')) {
-                const editorData = tinymce.get('content').getContent();
+                const editor = tinymce.get('content');
+                const editorData = editor.getContent();
                 const updatedContent = doc.body.innerHTML;
                 
                 // Hanya update jika ada perubahan
                 if (editorData !== updatedContent) {
+                    // Simpan posisi cursor saat ini
+                    const bookmarkManager = editor.selection.getBookmark(2, true, true);
+                    
                     // Set content dengan ID yang sudah dibuat
-                    tinymce.get('content').setContent(updatedContent, {format: 'html'});
+                    editor.setContent(updatedContent, {format: 'html'});
+                    
+                    // Pulihkan posisi cursor
+                    editor.selection.moveToBookmark(bookmarkManager);
                 }
             }
         }
