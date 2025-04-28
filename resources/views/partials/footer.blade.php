@@ -237,7 +237,7 @@
         </a>
         
         @if(isset($companyInfo->company_phone_cs2))
-        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs2 ?: '6285814718889') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }},%20saya%20ingin%20bertanya%20tentang%20layanan%20pengiriman" 
+        <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs2 ?: '6285814718889') }}?text=Halo%20{{ $companyInfo->company_name ?? 'ZDX' }}" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
            target="_blank">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
