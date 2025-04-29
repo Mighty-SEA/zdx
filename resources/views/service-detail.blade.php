@@ -158,7 +158,13 @@
                         <span>WhatsApp</span>
                     </a>
                 </div>
-                <a href="/kontak" class="block w-full bg-[#FF6000] text-center text-white px-4 py-4 rounded-lg hover:bg-[#E65100] transition-colors font-medium text-lg">
+                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '6285814718888') }}?text={{ urlencode('Halo Admin ZDX Express,
+
+Saya tertarik untuk konsultasi mengenai layanan ' . $service->title . '.
+
+Mohon informasi lebih lanjut mengenai layanan ini dan tarif yang tersedia.
+
+Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
                     Konsultasi Gratis
                 </a>
             </div>
