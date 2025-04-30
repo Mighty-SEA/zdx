@@ -265,7 +265,6 @@
             <!-- Bulk Delete Form -->
             <form id="bulkDeleteForm" action="{{ route('admin.rates.bulk-delete') }}" method="POST" class="hidden">
                 @csrf
-                @method('DELETE')
                 <input type="hidden" name="selected_ids" id="selectedIdsInput">
             </form>
 

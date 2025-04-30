@@ -86,7 +86,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::delete('/rates/{id}', [RateController::class, 'destroy'])->name('rates.destroy');
     Route::post('/rates/import', [RateController::class, 'import'])->name('rates.import');
     Route::get('/rates/download-template', [RateController::class, 'downloadTemplate'])->name('rates.download-template');
-    Route::delete('/rates/bulk-delete', [RateController::class, 'bulkDelete'])->name('rates.bulk-delete');
+    Route::post('/rates/bulk-delete', [RateController::class, 'bulkDelete'])->name('rates.bulk-delete');
     
     // Notifications Routes
     Route::get('/notifications', [NotificationController::class, 'all'])->name('notifications');
