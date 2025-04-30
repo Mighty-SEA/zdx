@@ -201,7 +201,7 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
         <div class="max-w-xl mx-auto w-full">
             <div class="bg-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-gradient-to-r from-[#E65100] to-[#FF6000] py-3 px-6">
-                    <h2 class="text-xl font-bold text-white">Form Pemesanan</h2>
+                    <h2 class="text-xl font-bold text-white">Cek Tarif Pengiriman</h2>
                 </div>
                 
                 <div class="p-6" id="rate-calculator">
