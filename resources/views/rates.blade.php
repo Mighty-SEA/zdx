@@ -209,6 +209,30 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
                     <div class="mb-5">
                         <div class="flex items-center mb-3">
                             <div class="w-6 h-6 rounded-full bg-[#FF6000] text-white flex items-center justify-center font-bold mr-2">1</div>
+                            <label class="font-semibold text-gray-700">Pilih Asal</label>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div>
+                                <select id="origin-province-select" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#FF6000] bg-white">
+                                    <option value="">Pilih Provinsi Asal</option>
+                                    <option value="DKI Jakarta">DKI Jakarta</option>
+                                    <option value="Jawa Barat">Jawa Barat</option>
+                                    <option value="Banten">Banten</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select id="origin-city-select" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#FF6000] bg-white" disabled>
+                                    <option value="">Pilih Kota/Kabupaten Asal</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="mb-5">
+                        <div class="flex items-center mb-3">
+                            <div class="w-6 h-6 rounded-full bg-[#FF6000] text-white flex items-center justify-center font-bold mr-2">2</div>
                             <label class="font-semibold text-gray-700">Pilih Tujuan</label>
                         </div>
                         
@@ -234,10 +258,10 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
                         </div>
                     </div>
                     
-                    <!-- Step 2 -->
+                    <!-- Step 3 -->
                     <div class="mb-5">
                         <div class="flex items-center mb-3">
-                            <div class="w-6 h-6 rounded-full bg-[#FF6000] text-white flex items-center justify-center font-bold mr-2">2</div>
+                            <div class="w-6 h-6 rounded-full bg-[#FF6000] text-white flex items-center justify-center font-bold mr-2">3</div>
                             <label class="font-semibold text-gray-700">Masukkan Berat dalam kg</label>
                         </div>
                         <div class="flex items-center">
@@ -298,6 +322,8 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
     <script>
         $(document).ready(function() {
             const calculateBtn = document.getElementById('calculate-rate');
+            const originProvinceSelect = document.getElementById('origin-province-select');
+            const originCitySelect = document.getElementById('origin-city-select');
             const provinceSelect = document.getElementById('province-select');
             const citySelect = document.getElementById('city-select');
             const kelurahanSelect = document.getElementById('kelurahan-select');
@@ -306,6 +332,34 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
             const errorText = document.getElementById('error-text').querySelector('span');
             
             // Inisialisasi Select2 pada dropdown
+            $('#origin-province-select').select2({
+                placeholder: "Pilih Provinsi Asal",
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Provinsi tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+            
+            $('#origin-city-select').select2({
+                placeholder: "Pilih Kota/Kabupaten Asal",
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Kota tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+            
             $('#province-select').select2({
                 placeholder: "Pilih Provinsi",
                 allowClear: true,
@@ -345,6 +399,48 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
                     searching: function() {
                         return "Mencari...";
                     }
+                }
+            });
+            
+            // Event listener untuk provinsi asal dropdown
+            $('#origin-province-select').on('change', function() {
+                const province = this.value;
+                
+                // Reset dependent dropdowns
+                $('#origin-city-select').empty().append('<option value="">Pilih Kota/Kabupaten Asal</option>').trigger('change');
+                
+                if (!province) {
+                    $('#origin-city-select').prop('disabled', true).trigger('change');
+                    return;
+                }
+                
+                $('#origin-city-select').prop('disabled', false);
+                
+                // Isi dengan data sesuai provinsi yang dipilih
+                if (province === 'DKI Jakarta') {
+                    $('#origin-city-select').empty().append(`
+                        <option value="">Pilih Kota/Kabupaten Asal</option>
+                        <option value="Jakarta Pusat">Jakarta Pusat</option>
+                        <option value="Jakarta Utara">Jakarta Utara</option>
+                        <option value="Jakarta Barat">Jakarta Barat</option>
+                        <option value="Jakarta Selatan">Jakarta Selatan</option>
+                        <option value="Jakarta Timur">Jakarta Timur</option>
+                    `).trigger('change');
+                } else if (province === 'Jawa Barat') {
+                    $('#origin-city-select').empty().append(`
+                        <option value="">Pilih Kota/Kabupaten Asal</option>
+                        <option value="Depok">Depok</option>
+                        <option value="Bekasi">Bekasi</option>
+                        <option value="Bogor">Bogor</option>
+                        <option value="Sukabumi">Sukabumi</option>
+                        <option value="Karawang">Karawang</option>
+                    `).trigger('change');
+                } else if (province === 'Banten') {
+                    $('#origin-city-select').empty().append(`
+                        <option value="">Pilih Kota/Kabupaten Asal</option>
+                        <option value="Tangerang">Tangerang</option>
+                        <option value="Tangerang Selatan">Tangerang Selatan</option>
+                    `).trigger('change');
                 }
             });
             
@@ -451,18 +547,21 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
             calculateBtn.addEventListener('click', function() {
                 errorDiv.classList.add('hidden');
                 
+                const originProvince = $('#origin-province-select').val();
+                const originCity = $('#origin-city-select').val();
                 const province = $('#province-select').val();
                 const city = $('#city-select').val();
                 const kelurahan = $('#kelurahan-select').val();
                 const weightValue = weight.value;
                 
-                if (!province || !city || !weightValue) {
-                    errorText.textContent = 'Harap lengkapi provinsi, kota, dan berat.';
+                if (!originProvince || !originCity || !province || !city || !weightValue) {
+                    errorText.textContent = 'Harap lengkapi asal, tujuan, dan berat.';
                     errorDiv.classList.remove('hidden');
                     return;
                 }
 
-                // Membuat teks tujuan
+                // Membuat teks asal dan tujuan
+                let originText = `${originCity}, ${originProvince}`;
                 let destinationText = kelurahan ? 
                     `${kelurahan}, ${city}, ${province}` : 
                     `${city}, ${province}`;
@@ -471,6 +570,7 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
                 let whatsappText = encodeURIComponent(
                     `Halo Admin ZDX Express,\n\n` +
                     `Saya ingin melakukan pemesanan pengiriman barang dengan detail:\n\n` +
+                    `Asal: ${originText}\n` +
                     `Tujuan: ${destinationText}\n` +
                     `Berat: ${weightValue} kg\n\n` +
                     `Terima kasih.`
