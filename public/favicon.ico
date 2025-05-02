@@ -1,0 +1,14 @@
+<!--
+File favicon ini adalah placeholder.
+Favicon yang sebenarnya digunakan adalah format PNG dan telah diimplementasikan 
+dengan beberapa ukuran di direktori asset/favicon/.
+
+Masing-masing favicon tersedia dalam ukuran:
+- 32x32
+- 48x48 (ukuran standar Google)
+- 96x96
+- 180x180 (untuk Apple Touch Icon)
+
+Mohon jangan menghapus file ini untuk menghindari 404 error.
+Semua favicon diimplementasikan menggunakan tag link di head dokumen HTML.
+-->

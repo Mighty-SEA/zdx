@@ -4,7 +4,14 @@
     <meta name="keywords" content="{{ $seoData['keywords'] }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl }}" sizes="32x32">
+    @php
+    $faviconPath = !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl;
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="96x96">
+    <link rel="shortcut icon" href="{{ $faviconPath }}">
+    <link rel="apple-touch-icon" href="{{ $faviconPath }}">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ $seoData['canonical_url'] }}">
@@ -32,7 +39,14 @@
     <meta name="keywords" content="jasa pengiriman, ekspedisi, kurir">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ $logoUrl }}" sizes="32x32">
+    @php
+    $faviconPath = $logoUrl;
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="96x96">
+    <link rel="shortcut icon" href="{{ $faviconPath }}">
+    <link rel="apple-touch-icon" href="{{ $faviconPath }}">
     
     <link rel="canonical" href="{{ url()->current() }}">
 @endif 

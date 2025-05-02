@@ -2,7 +2,14 @@
 
 @section('meta_tags')
 <title>{{ $seoData['title'] }}</title>
-<link rel="icon" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl }}">
+@php
+$faviconPath = !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : $logoUrl;
+@endphp
+<link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="32x32">
+<link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="48x48">
+<link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="96x96">
+<link rel="shortcut icon" href="{{ $faviconPath }}">
+<link rel="apple-touch-icon" href="{{ $faviconPath }}">
 <meta name="description" content="{{ $seoData['description'] }}">
 <meta name="keywords" content="{{ $seoData['keywords'] }}">
 

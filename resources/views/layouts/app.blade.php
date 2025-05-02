@@ -24,11 +24,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="masukkan-kode-verifikasi-google-anda-disini" />
+    
     <!-- Favicon -->
     @php
         $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
+        $faviconPath = !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : ($logoUrl ?? asset('asset/logo.png'));
     @endphp
-    <link rel="icon" type="image/png" href="{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : ($logoUrl ?? asset('asset/logo.png')) }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}" sizes="96x96">
+    <link rel="shortcut icon" href="{{ $faviconPath }}">
+    <link rel="apple-touch-icon" href="{{ $faviconPath }}">
+    <!-- Untuk hasil pencarian Google -->
+    <meta name="google" content="nositelinkssearchbox">
+    <meta name="google-site-verification" content="your-verification-code-if-any">
     
     <!-- SEO Metadata -->
     @hasSection('meta_tags')
