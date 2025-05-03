@@ -40,6 +40,7 @@ Route::post('/search-rates', [PageController::class, 'searchRates'])->name('sear
 Route::post('/get-cities', [PageController::class, 'getCities'])->name('get.cities');
 Route::post('/get-kelurahans', [PageController::class, 'getKelurahans'])->name('get.kelurahans');
 Route::post('/calculate-rates', [PageController::class, 'calculateRates'])->name('calculate.rates');
+Route::get('/order-now', [PageController::class, 'orderNow'])->name('order.now');
 
 // Blog Routes
 Route::get('/blog', [PageController::class, 'blogs']);
@@ -187,7 +188,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 $excludedRoutes = [
     'login', 'admin', 'layanan', 'services', 'tarif', 'rates', 'tracking', 
     'customer', 'commodity', 'komoditas', 'profile', 'kontak', 
-    'contact', 'blog'
+    'contact', 'blog', 'order-now'
 ];
 
 // Fungsi untuk memeriksa apakah slug ada di dalam database blog

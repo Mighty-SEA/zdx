@@ -705,4 +705,29 @@ class PageController extends Controller
         
         return view('blogs', compact('seoData', 'blogs', 'tag'));
     }
+    
+    /**
+     * Handle order now page with direct redirect to WhatsApp
+     */
+    public function orderNow(Request $request)
+    {
+        // Ambil nomor WhatsApp dari Settings
+        $whatsappNumber = str_replace(['+', ' ', '-'], '', \App\Models\Setting::getValue('company_phone_cs1', '6285814718888'));
+        
+        // Default message
+        $message = 'Halo Admin ZDX Express, saya ingin memesan pengiriman barang';
+        
+        // Check if we have query parameters
+        if ($request->has('message')) {
+            $message = $request->message;
+        }
+        
+        // Build WhatsApp URL
+        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . urlencode($message);
+        
+        // Google Analytics or Google Ads tracking can be implemented server-side here if needed
+        
+        // Redirect to WhatsApp
+        return redirect()->away($whatsappUrl);
+    }
 } 

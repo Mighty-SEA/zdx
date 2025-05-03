@@ -271,12 +271,12 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
                     </div>
                     
                     <!-- Hitung Button -->
-                    <button type="button" id="calculate-rate" class="w-full bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white py-3 rounded-lg font-semibold hover:shadow-md transition-all duration-300 flex items-center justify-center">
+                    <a href="{{ route('order.now') }}" id="calculate-rate" class="w-full bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white py-3 rounded-lg font-semibold hover:shadow-md transition-all duration-300 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                         Pesan Sekarang
-                    </button>
+                    </a>
 
                     <!-- Error Message -->
                     <div id="error-message" class="mt-5 hidden">
@@ -301,13 +301,17 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
             <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
                 Dapatkan penawaran harga spesial untuk pengiriman dalam jumlah besar atau kontrak jangka panjang
             </p>
-            <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '6285814718888') }}?text={{ urlencode('Halo Admin ZDX Express,
+            <a 
+                id="request-special-offer"
+                href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '6285814718888') }}?text={{ urlencode('Halo Admin ZDX Express,
 
 Saya tertarik untuk mendapatkan penawaran khusus untuk pengiriman dalam jumlah besar.
 
 Mohon informasi lebih lanjut mengenai layanan dan tarif spesial yang tersedia.
 
-Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+Terima kasih.') }}"
+                onclick="requestSpecialOffer(event)"
+                class="inline-block bg-gradient-to-r from-[#FF6000] to-[#FF8C00] text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
                 Minta Penawaran
             </a>
         </div>
@@ -320,6 +324,25 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        // Fungsi untuk menangani klik tombol "Minta Penawaran"
+        function requestSpecialOffer(event) {
+            // Prevent default link behavior
+            event.preventDefault();
+            
+            // Text untuk WhatsApp
+            let message = 
+                'Halo Admin ZDX Express,\n\n' +
+                'Saya tertarik untuk mendapatkan penawaran khusus untuk pengiriman dalam jumlah besar.\n\n' +
+                'Mohon informasi lebih lanjut mengenai layanan dan tarif spesial yang tersedia.\n\n' +
+                'Terima kasih.';
+            
+            // Redirect ke order-now dengan pesan sebagai parameter
+            let orderUrl = "{{ route('order.now') }}?message=" + encodeURIComponent(message);
+            
+            // Redirect ke halaman order-now untuk tracking konversi Google Ads
+            window.location.href = orderUrl;
+        }
+        
         $(document).ready(function() {
             const calculateBtn = document.getElementById('calculate-rate');
             const originProvinceSelect = document.getElementById('origin-province-select');
@@ -544,7 +567,8 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
                 });
             });
             
-            calculateBtn.addEventListener('click', function() {
+            calculateBtn.addEventListener('click', function(event) {
+                // Cek validasi input sebelum menavigasi ke halaman order-now
                 errorDiv.classList.add('hidden');
                 
                 const originProvince = $('#origin-province-select').val();
@@ -555,6 +579,8 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
                 const weightValue = weight.value;
                 
                 if (!originProvince || !originCity || !province || !city || !weightValue) {
+                    // Jika input tidak lengkap, tampilkan error dan cegah navigasi
+                    event.preventDefault();
                     errorText.textContent = 'Harap lengkapi asal, tujuan, dan berat.';
                     errorDiv.classList.remove('hidden');
                     return;
@@ -567,20 +593,19 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
                     `${city}, ${province}`;
 
                 // Membuat pesan WhatsApp
-                let whatsappText = encodeURIComponent(
+                let message = 
                     `Halo Admin ZDX Express,\n\n` +
                     `Saya ingin melakukan pemesanan pengiriman barang dengan detail:\n\n` +
                     `Asal: ${originText}\n` +
                     `Tujuan: ${destinationText}\n` +
                     `Berat: ${weightValue} kg\n\n` +
-                    `Terima kasih.`
-                );
-
-                // Redirect ke WhatsApp
-                window.open(
-                    `https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '6285814718888') }}?text=${whatsappText}`,
-                    '_blank'
-                );
+                    `Terima kasih.`;
+                
+                // Redirect ke order-now dengan pesan sebagai parameter
+                let orderUrl = "{{ route('order.now') }}?message=" + encodeURIComponent(message);
+                
+                // Update href attribute pada tombol dan lanjutkan navigasi
+                this.href = orderUrl;
             });
         });
     </script>

@@ -1,7 +1,22 @@
 User-agent: *
 Allow: /
+Allow: /favicon.ico
+Allow: /asset/favicon/
+Allow: /asset/logo.png
 Disallow: /admin/
 Disallow: /storage/
 Disallow: /vendor/
+
+# Pastikan Googlebot dapat mengakses halaman utama
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+
+# Pastikan Googlebot-Image dapat mengakses favicon dan gambar lainnya
+User-agent: Googlebot-Image
+Allow: /favicon.ico
+Allow: /asset/favicon/
+Allow: /asset/logo.png
+Disallow: /admin/
 
 Sitemap: http://zdx.test/sitemap.xml
