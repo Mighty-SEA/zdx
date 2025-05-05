@@ -27,6 +27,26 @@
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="masukkan-kode-verifikasi-google-anda-disini" />
     
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PT. Zindan Diantar Express",
+        "url": "{{ url('/') }}",
+        "logo": "{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}",
+        "image": "{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}",
+        "description": "Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia."
+    }
+    </script>
+    
+    <!-- Logo Meta Tags untuk SEO -->
+    <meta property="og:image" content="{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="{{ $settings->title_logo_alt ?? 'Logo PT. Zindan Diantar Express' }}">
+    
     <!-- Favicon -->
     @php
         $settings = \Illuminate\Support\Facades\DB::table('settings')->first();

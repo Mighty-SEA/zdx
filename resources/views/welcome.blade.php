@@ -42,14 +42,20 @@
         "@type": "Organization",
         "name": "PT. Zindan Diantar Express",
         "url": "{{ url('/') }}",
-        "logo": "{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}",
+        "logo": "{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}",
         "description": "Jasa pengiriman barang darat, laut, dan udara terpercaya di Indonesia.",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ $companyInfo->address ?? 'Jl. Contoh No. 123' }}",
+            "addressLocality": "{{ $companyInfo->city ?? 'Jakarta' }}",
+            "addressRegion": "{{ $companyInfo->province ?? 'DKI Jakarta' }}",
+            "postalCode": "{{ $companyInfo->postal_code ?? '12345' }}",
+            "addressCountry": "ID"
+        },
         "contactPoint": {
             "@type": "ContactPoint",
-            "telephone": "{{ $companyInfo->company_phone ?? '+62-21-38711144' }}",
-            "contactType": "customer service",
-            "areaServed": "ID",
-            "availableLanguage": "id"
+            "telephone": "{{ $companyInfo->phone ?? '+62-21-1234567' }}",
+            "contactType": "customer service"
         }
     }
     </script>
@@ -57,6 +63,30 @@
 @endsection
 
 @section('content')
+    <!-- Logo Schema untuk Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "{{ url('/') }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ url('/tracking') }}?no={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "PT. Zindan Diantar Express",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : asset('asset/logo.png') }}",
+                "width": "512",
+                "height": "512"
+            }
+        }
+    }
+    </script>
+
     <!-- Hero Section -->
     <div class="relative bg-gray-100 overflow-hidden">
         <div class="max-w-7xl mx-auto">

@@ -11,9 +11,17 @@
                             $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
                         @endphp
                         @if($settings && !empty($settings->logo_1_path))
-                            <img id="header-logo" src="{{ asset($settings->logo_1_path) }}?v={{ time() }}" alt="{{ $settings->logo_1_alt ?? ($companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS') }}" class="h-14 w-auto">
+                            <img id="header-logo" src="{{ asset($settings->logo_1_path) }}?v={{ time() }}" 
+                                alt="{{ $settings->logo_1_alt ?? 'Logo PT. Zindan Diantar Express - Jasa Pengiriman Barang Terpercaya' }}" 
+                                class="h-14 w-auto"
+                                loading="eager"
+                                fetchpriority="high">
                         @else
-                            <img id="header-logo" src="{{ asset('asset/logo.png') }}" alt="{{ $companyInfo->company_name ?? 'ZINDAN DIANTAR EXPRESS' }}" class="h-14 w-auto">
+                            <img id="header-logo" src="{{ asset('asset/logo.png') }}" 
+                                alt="Logo PT. Zindan Diantar Express - Jasa Pengiriman Barang Terpercaya" 
+                                class="h-14 w-auto"
+                                loading="eager"
+                                fetchpriority="high">
                         @endif
                     </div>
                     
