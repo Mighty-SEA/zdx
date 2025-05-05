@@ -52,11 +52,10 @@
         $settings = \Illuminate\Support\Facades\DB::table('settings')->first();
         $faviconPath = !empty($settings->title_logo_path) ? asset($settings->title_logo_path) : ($logoUrl ?? asset('asset/logo.png'));
     @endphp
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" href="{{ $faviconPath }}">
+    <link rel="apple-touch-icon" href="{{ $faviconPath }}">
+    <link rel="shortcut icon" href="{{ $faviconPath }}" type="image/x-icon">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
     <!-- Untuk hasil pencarian Google -->
     <meta name="google" content="nositelinkssearchbox">
