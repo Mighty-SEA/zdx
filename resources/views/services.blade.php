@@ -197,4 +197,7 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-[#FF6000] text-white 
             </a>
         </div>
     </div>
-@endsection 
+@endsection
+
+@push('scripts')
+@endpush 

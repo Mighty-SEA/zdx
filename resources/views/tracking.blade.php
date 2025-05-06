@@ -271,70 +271,9 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Ajax Track Shipment untuk pengalaman yang lebih responsif
-        const trackingForm = document.getElementById('tracking-form');
-        
-        // Aktifkan untuk ajax tracking 
-        if (trackingForm) {
-            trackingForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const trackingNumber = document.getElementById('tracking_number').value.trim();
-                const errorMessage = document.getElementById('error-message');
-                
-                if (!trackingNumber) {
-                    errorMessage.textContent = 'Silakan masukkan nomor resi';
-                    errorMessage.classList.remove('hidden');
-                    return;
-                } else {
-                    errorMessage.classList.add('hidden');
-                }
-                
-                // Tampilkan loading
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Mencari...';
-                submitBtn.disabled = true;
-                
-                // Kirim request AJAX
-                fetch('{{ route('track.shipment') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        tracking_number: trackingNumber
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Reset tombol
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    
-                    if (data.success) {
-                        // Update UI dengan hasil tracking
-                        // Cara termudah adalah me-reload halaman dengan parameter
-                        window.location.href = `{{ url('/tracking') }}?tracking_number=${trackingNumber}`;
-                    } else {
-                        // Tampilkan pesan error
-                        errorMessage.textContent = 'Kode Resi tidak ditemukan';
-                        errorMessage.classList.remove('hidden');
-                    }
-                })
-                .catch(error => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    
-                    // Tampilkan pesan error
-                    errorMessage.textContent = 'Kode Resi tidak ditemukan';
-                    errorMessage.classList.remove('hidden');
-                    console.error('Error:', error);
-                });
-            });
-        }
-    });
+    // Route untuk AJAX tracking
+    const trackShipmentRoute = "{{ url('/api/track-shipment') }}";
+    const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+    const trackingUrl = "{{ url('/tracking') }}";
 </script>
 @endpush 

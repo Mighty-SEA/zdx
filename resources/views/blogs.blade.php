@@ -194,4 +194,7 @@
             </p>
         </div>
     </div>
-@endsection 
+@endsection
+
+@push('scripts')
+@endpush 

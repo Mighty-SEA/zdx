@@ -120,4 +120,7 @@ use Illuminate\Support\Facades\Storage;
     </div>
 </div>
 
-@endsection 
+@endsection
+
+@push('scripts')
+@endpush 

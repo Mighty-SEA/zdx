@@ -138,32 +138,4 @@
             </div>
         </div>
     </div>
-</nav>
-
-<script>
-    // Add scroll effect to navbar
-    window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('mainNav');
-        if (window.scrollY > 30) {
-            navbar.classList.add('py-1', 'shadow-lg', 'bg-white/95', 'backdrop-blur-sm');
-            navbar.classList.remove('py-2');
-        } else {
-            navbar.classList.remove('py-1', 'shadow-lg', 'bg-white/95', 'backdrop-blur-sm');
-            navbar.classList.add('py-2');
-        }
-    });
-    
-    // Toggle mobile menu
-    document.getElementById('menuToggle').addEventListener('click', function() {
-        const mobileMenu = document.getElementById('mobileMenu');
-        mobileMenu.classList.toggle('hidden');
-    });
-    
-    // Toggle Tentang Kami dropdown on mobile
-    document.getElementById('aboutDropdownToggle').addEventListener('click', function() {
-        const aboutDropdown = document.getElementById('aboutDropdown');
-        const aboutChevron = document.getElementById('aboutChevron');
-        aboutDropdown.classList.toggle('hidden');
-        aboutChevron.classList.toggle('rotate-180');
-    });
-</script> 
+</nav> 

@@ -34,47 +34,6 @@
 @if($seoData['custom_schema'])
 {!! $seoData['custom_schema'] !!}
 @endif
-
-<style>
-    .prose h2 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        color: #1f2937;
-        border-bottom: 1px solid #e5e7eb;
-        padding-bottom: 0.5rem;
-    }
-    
-    .prose h3 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-top: 1.25rem;
-        margin-bottom: 0.75rem;
-        color: #1f2937;
-    }
-    
-    .prose p {
-        margin-bottom: 1.25rem;
-        line-height: 1.8;
-    }
-    
-    .prose ul {
-        list-style-type: disc;
-        margin-left: 1.5rem;
-        margin-bottom: 1.25rem;
-    }
-    
-    .prose ul li {
-        margin-bottom: 0.5rem;
-        padding-left: 0.5rem;
-    }
-    
-    .prose strong {
-        font-weight: 600;
-        color: #1f2937;
-    }
-</style>
 @endsection
 
 @section('content')
@@ -231,4 +190,8 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-gradient-to-r from-[#
         </div>
     </div>
 </div>
-@endsection 
+@endsection
+
+@push('scripts')
+<!-- Jika butuh inisialisasi khusus, gunakan @push('scripts') -->
+@endpush 
