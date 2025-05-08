@@ -57,6 +57,13 @@
 </script>
 @endif
 
+<!-- CSS Khusus Halaman Services -->
+@if(app()->environment('production'))
+<link rel="stylesheet" href="{{ asset('css/services.min.css') }}">
+@else
+<link rel="stylesheet" href="{{ asset('css/services.css') }}">
+@endif
+
 <!-- Fungsi formatPhoneNumber -->
 @php
 function formatPhoneNumber($phoneNumber) {
@@ -88,7 +95,6 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
 @endsection
 
 @section('content')
-
     <!-- Services Section -->
     <div class="max-w-7xl mx-auto px-4 py-16">
         @if($services->count() > 0)
@@ -200,4 +206,14 @@ Terima kasih.') }}" target="_blank" class="inline-block bg-[#FF6000] text-white 
 @endsection
 
 @push('scripts')
+<!-- Library yang dibutuhkan -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<!-- Script khusus halaman services -->
+@if(app()->environment('production'))
+<script src="{{ asset('js/services.min.js') }}"></script>
+@else
+<script src="{{ asset('js/services.js') }}"></script>
+@endif
 @endpush 

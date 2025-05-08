@@ -3,8 +3,8 @@
 @section('meta_tags')
 <title>{{ $seoData['title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}</title>
 <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
-<meta name="description" content="{{ $seoData['description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
-<meta name="keywords" content="{{ $seoData['keywords'] ?? 'tarif pengiriman, harga cargo, biaya logistik, ongkos kirim, ekspedisi' }}">
+<meta name="description" content="{{ $seoData['description'] ?? 'Cek tarif pengiriman ZDX Express untuk berbagai rute dan layanan. Dapatkan harga terbaik untuk pengiriman barang di seluruh Indonesia.' }}">
+<meta name="keywords" content="{{ $seoData['keywords'] ?? 'tarif pengiriman, cek ongkir, biaya kirim, harga cargo' }}">
 
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ $seoData['canonical_url'] ?? url('/tarif') }}">
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:title" content="{{ $seoData['og_title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
-<meta property="og:description" content="{{ $seoData['og_description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+<meta property="og:description" content="{{ $seoData['og_description'] ?? 'Cek tarif pengiriman ZDX Express untuk berbagai rute dan layanan. Dapatkan harga terbaik untuk pengiriman barang di seluruh Indonesia.' }}">
 @if(isset($seoData['og_image']))
 <meta property="og:image" content="{{ asset($seoData['og_image']) }}">
 @endif
@@ -24,7 +24,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $seoData['twitter_title'] ?? 'Tarif Pengiriman - PT. Zindan Diantar Express' }}">
-<meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? 'Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.' }}">
+<meta name="twitter:description" content="{{ $seoData['twitter_description'] ?? 'Cek tarif pengiriman ZDX Express untuk berbagai rute dan layanan. Dapatkan harga terbaik untuk pengiriman barang di seluruh Indonesia.' }}">
 @if(isset($seoData['twitter_image']))
 <meta name="twitter:image" content="{{ asset($seoData['twitter_image']) }}">
 @endif
@@ -38,20 +38,15 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Tarif Pengiriman - PT. Zindan Diantar Express",
-    "description": "Informasi tarif pengiriman barang ZDX Cargo yang kompetitif dan transparan untuk kebutuhan logistik Anda.",
+    "description": "Cek tarif pengiriman ZDX Express untuk berbagai rute dan layanan. Dapatkan harga terbaik untuk pengiriman barang di seluruh Indonesia.",
     "url": "{{ url('/tarif') }}",
     "mainEntity": {
         "@type": "Service",
         "name": "Layanan Cek Tarif ZDX Express",
-        "description": "Layanan untuk memeriksa dan menghitung biaya pengiriman barang ke berbagai tujuan di Indonesia",
+        "description": "Layanan untuk menghitung tarif pengiriman barang di seluruh Indonesia",
         "provider": {
             "@type": "Organization",
             "name": "PT. Zindan Diantar Express"
-        },
-        "offers": {
-            "@type": "AggregateOffer",
-            "priceCurrency": "IDR",
-            "availability": "https://schema.org/InStock"
         }
     }
 }
@@ -89,6 +84,9 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
 
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- CSS Khusus Halaman Rates (Tarif) -->
+@vite(['resources/css/rates.css'])
 @endsection
 
 @section('content')
@@ -224,5 +222,14 @@ Terima kasih.') }}"
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        // Route untuk AJAX check rate
+        const calculateRateUrl = "{{ url('/api/check-rate') }}";
+        const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+    </script>
+
+    <!-- Script khusus halaman rates (tarif) -->
+    @vite(['resources/js/rates.js'])
     @endpush
 @endsection 

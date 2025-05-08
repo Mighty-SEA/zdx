@@ -52,6 +52,13 @@
     }
     </script>
     @endif
+    
+    <!-- CSS Khusus Halaman Tracking -->
+    @if(app()->environment('production'))
+    <link rel="stylesheet" href="{{ asset('css/tracking.min.css') }}">
+    @else
+    <link rel="stylesheet" href="{{ asset('css/tracking.css') }}">
+    @endif
 @endsection
 
 @section('content')
@@ -276,4 +283,11 @@
     const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
     const trackingUrl = "{{ url('/tracking') }}";
 </script>
+
+<!-- Script khusus halaman tracking -->
+@if(app()->environment('production'))
+<script src="{{ asset('js/tracking.min.js') }}"></script>
+@else
+<script src="{{ asset('js/tracking.js') }}"></script>
+@endif
 @endpush 

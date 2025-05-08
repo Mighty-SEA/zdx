@@ -3,7 +3,11 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "prod": "vite build --mode production",
+        "build:css": "vite build --mode production --config vite.config.js -- --css-only",
+        "build:js": "vite build --mode production --config vite.config.js -- --js-only",
+        "minify": "npm run build:css && npm run build:js"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

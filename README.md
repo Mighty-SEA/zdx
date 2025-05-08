@@ -64,3 +64,36 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## CSS dan JavaScript Terpisah
+
+Proyek ini menggunakan file CSS dan JavaScript terpisah untuk setiap halaman non-admin:
+
+### File CSS
+- `resources/css/home.css` - CSS untuk halaman home
+- `resources/css/tracking.css` - CSS untuk halaman tracking
+- `resources/css/services.css` - CSS untuk halaman layanan
+- `resources/css/rates.css` - CSS untuk halaman tarif
+
+### File JavaScript
+- `resources/js/home.js` - JavaScript untuk halaman home
+- `resources/js/tracking.js` - JavaScript untuk halaman tracking
+- `resources/js/services.js` - JavaScript untuk halaman layanan
+- `resources/js/rates.js` - JavaScript untuk halaman tarif
+
+### Kompilasi Asset
+
+Untuk mengkompilasi asset, gunakan perintah berikut:
+
+```bash
+# Untuk development
+npm run dev
+
+# Untuk production
+npm run prod
+
+# Untuk minify CSS dan JS saja
+npm run minify
+```
+
+Setelah kompilasi, file-file akan tersedia di folder `public/css` dan `public/js`.

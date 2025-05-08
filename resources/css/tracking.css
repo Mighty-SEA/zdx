@@ -1,0 +1,108 @@
+/* CSS untuk halaman tracking */
+
+/* Loading animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Form styling */
+.tracking-input:focus {
+    box-shadow: 0 0 0 2px rgba(255, 96, 0, 0.2);
+    border-color: #FF6000;
+}
+
+/* Timeline styling */
+.timeline-item-active {
+    border-left-color: #FF6000;
+}
+
+.timeline-dot {
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #FF6000;
+    border: 3px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-dot-inactive {
+    background-color: #E5E7EB;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge-success {
+    background-color: #DEF7EC;
+    color: #03543E;
+}
+
+.status-badge-pending {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.status-badge-processing {
+    background-color: #E0F2FE;
+    color: #075985;
+}
+
+.status-badge-delivered {
+    background-color: #DEF7EC;
+    color: #03543E;
+}
+
+/* Card hover effects */
+.info-card {
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Form container */
+.form-container {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+}
+
+.form-container:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Results container animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#tracking-results {
+    animation: fadeIn 0.5s ease-out;
+} 
