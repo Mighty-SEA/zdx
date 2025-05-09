@@ -2,7 +2,7 @@
 
 @section('meta_tags')
 <title>{{ $seoData['title'] ?? 'Blog - PT. Zindan Diantar Express' }}</title>
-<link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
+<!-- <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}"> -->
 <meta name="description" content="{{ $seoData['description'] ?? 'Blog artikel terbaru dari PT. Zindan Diantar Express' }}">
 <meta name="keywords" content="{{ $seoData['keywords'] ?? 'blog, artikel, zdx cargo, pengiriman' }}">
 

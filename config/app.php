@@ -125,6 +125,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | HTML Minification
+    |--------------------------------------------------------------------------
+    |
+    | This configuration option determines whether your application should
+    | minify HTML output. When enabled, this will remove extra whitespace,
+    | comments, and other non-essential elements to reduce file size.
+    |
+    */
+    
+    'minify_html' => env('MINIFY_HTML', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

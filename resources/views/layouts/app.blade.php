@@ -76,6 +76,7 @@
     @include('partials.footer')
     
     @stack('scripts')
+    @yield('scripts')
     
     <!-- AOS Animation Init -->
     <!-- HAPUS <script> inline inisialisasi AOS dan custom JS, pindahkan ke landing.js -->

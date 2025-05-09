@@ -2,7 +2,7 @@
 
 @section('meta_tags')
     <title>{{ $seoData['title'] ?? 'Komoditas Pengiriman - Jasa Pengiriman Berbagai Jenis Barang | ZDX Express' }}</title>
-    <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}">
+    <!-- <link rel="icon" type="image/png" href="{{ !empty($companyInfo->title_logo_path) ? asset('storage/'.$companyInfo->title_logo_path) : asset('asset/logo.png') }}"> -->
     <meta name="description" content="{{ $seoData['description'] ?? 'ZDX Express melayani pengiriman berbagai jenis komoditas, dari general cargo, elektronik, frozen food, hingga barang bernilai tinggi dengan penanganan khusus dan aman.' }}">
     <meta name="keywords" content="{{ $seoData['keywords'] ?? 'komoditas pengiriman, cargo zdx, jenis barang kiriman, layanan pengiriman khusus, jasa cargo, pengiriman barang berharga, pengiriman frozen food' }}">
 

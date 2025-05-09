@@ -97,3 +97,40 @@ npm run minify
 ```
 
 Setelah kompilasi, file-file akan tersedia di folder `public/css` dan `public/js`.
+
+## HTML Minification
+
+Aplikasi ini mendukung minifikasi HTML untuk mengurangi ukuran file yang dikirim ke browser. 
+Untuk mengaktifkan fitur ini, tambahkan konfigurasi berikut di file `.env`:
+
+```
+MINIFY_HTML=true
+```
+
+Untuk menonaktifkan:
+
+```
+MINIFY_HTML=false
+```
+
+Minifikasi HTML akan:
+- Menghapus komentar HTML
+- Menghapus spasi yang tidak perlu
+- Mengurangi ukuran halaman yang dikirim ke pengguna
+
+Minifikasi HTML hanya akan berfungsi jika middleware `minify.html` diterapkan. Anda dapat menerapkannya di:
+1. Rute tertentu dengan menambahkan middleware di dalam file routes:
+   ```php
+   Route::get('/contoh', function() {
+       return view('contoh');
+   })->middleware('minify.html');
+   ```
+
+2. Grup rute:
+   ```php
+   Route::middleware('minify.html')->group(function() {
+       // Rute-rute disini
+   });
+   ```
+
+3. Semua rute (global) dengan menghapus komentar di `$middleware` array di `app/Http/Kernel.php`.

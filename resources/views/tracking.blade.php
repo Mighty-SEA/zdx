@@ -276,18 +276,17 @@
     </div>
 @endsection
 
-@push('scripts')
-<script>
-    // Route untuk AJAX tracking
-    const trackShipmentRoute = "{{ url('/api/track-shipment') }}";
-    const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-    const trackingUrl = "{{ url('/tracking') }}";
-</script>
-
-<!-- Script khusus halaman tracking -->
-@if(app()->environment('production'))
-<script src="{{ asset('js/tracking.min.js') }}"></script>
-@else
-<script src="{{ asset('js/tracking.js') }}"></script>
-@endif
-@endpush 
+@section('scripts')
+    <script>
+        // Definisikan variabel yang dibutuhkan oleh tracking.js
+        var trackShipmentRoute = "{{ route('track.shipment') }}";
+        var csrfToken = "{{ csrf_token() }}";
+        var trackingUrl = "{{ url('/tracking') }}";
+    </script>
+    
+    @if(app()->environment('production'))
+    <script src="{{ asset('js/tracking.min.js') }}"></script>
+    @else
+    <script src="{{ asset('js/tracking.js') }}"></script>
+    @endif
+@endsection 
