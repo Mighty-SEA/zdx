@@ -221,6 +221,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 `Berat: ${weight} kg%0A%0AMohon info lebih lanjut dan konfirmasi biaya pengiriman.%0ATerima kasih.`;
             // Redirect ke WhatsApp
             const waUrl = `https://wa.me/${whatsappPhone}?text=${message}`;
+            // Trigger event custom ke Google Analytics
+            if (typeof gtag === 'function') {
+                gtag('event', 'rates_check_button', {
+                    'event_category': 'rates',
+                    'event_label': waUrl
+                });
+            }
+            // Redirect ke WhatsApp
             if (typeof window.gtag_report_conversion === 'function') {
                 window.gtag_report_conversion(waUrl);
             } else {

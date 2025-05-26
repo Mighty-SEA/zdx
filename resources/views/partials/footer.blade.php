@@ -226,7 +226,7 @@
         
         <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs1 ?? '') }}?text=Halo%20admin%20ZDX" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
-           target="_blank">
+           target="_blank" id="footer-wa-cs1">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
                 <i class="fab fa-whatsapp text-white text-xl"></i>
             </div>
@@ -239,7 +239,7 @@
         @if(isset($companyInfo->company_phone_cs2))
         <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $companyInfo->company_phone_cs2 ?: '') }}?text=Halo%20admin%20ZDX" 
            class="flex items-center bg-gray-100 hover:bg-gray-200 p-3 rounded-lg mb-2 transition-all duration-300" 
-           target="_blank">
+           target="_blank" id="footer-wa-cs2">
             <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
                 <i class="fab fa-whatsapp text-white text-xl"></i>
             </div>
@@ -251,4 +251,34 @@
         @endif
         
     </div>
-</div> 
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var waFooterBtns = [
+        document.getElementById('footer-wa-cs1'),
+        document.getElementById('footer-wa-cs2')
+    ];
+    waFooterBtns.forEach(function(btn) {
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var waUrl = this.href;
+                // Trigger event custom ke Google Analytics
+                if (typeof gtag === 'function') {
+                    gtag('event', 'whatsapp_cs_button', {
+                        'event_category': 'whatsapp',
+                        'event_label': waUrl
+                    });
+                }
+                // Tetap trigger konversi Google Ads jika perlu
+                if (typeof window.gtag_report_conversion === 'function') {
+                    window.gtag_report_conversion(waUrl);
+                } else {
+                    window.open(waUrl, '_blank');
+                }
+            });
+        }
+    });
+});
+</script> 
