@@ -105,30 +105,6 @@ $displayPhone = formatPhoneNumber($companyInfo->company_phone ?? '');
                 </div>
                 
                 <div class="p-6" id="rate-calculator">
-                    <!-- Step 1 -->
-                    <div class="mb-5">
-                        <div class="flex items-center mb-3">
-                            <div class="w-6 h-6 rounded-full bg-[#FF6000] text-white flex items-center justify-center font-bold mr-2">1</div>
-                            <label class="font-semibold text-gray-700">Pilih Asal</label>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            <div>
-                                <select id="origin-province-select" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#FF6000] bg-white">
-                                    <option value="">Pilih Provinsi Asal</option>
-                                    <option value="DKI Jakarta">DKI Jakarta</option>
-                                    <option value="Jawa Barat">Jawa Barat</option>
-                                    <option value="Banten">Banten</option>
-                                </select>
-                            </div>
-                            <div>
-                                <select id="origin-city-select" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#FF6000] bg-white" disabled>
-                                    <option value="">Pilih Kota/Kabupaten Asal</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Step 2 -->
                     <div class="mb-5">
                         <div class="flex items-center mb-3">

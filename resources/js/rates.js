@@ -15,16 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inisialisasi Select2
     if ($.fn.select2) {
-        $('#origin-province-select').select2({
-            placeholder: "Pilih Provinsi Asal",
-            allowClear: true
-        });
-        
-        $('#origin-city-select').select2({
-            placeholder: "Pilih Kota/Kabupaten Asal",
-            allowClear: true
-        });
-        
         $('#province-select').select2({
             placeholder: "Pilih Provinsi",
             allowClear: true
@@ -47,25 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'Jawa Barat': ['Bandung', 'Bekasi', 'Bogor', 'Depok', 'Cimahi', 'Sukabumi', 'Tasikmalaya', 'Cirebon'],
         'Banten': ['Tangerang', 'Tangerang Selatan', 'Serang', 'Cilegon']
     };
-    
-    // Menghandle perubahan pada provinsi asal
-    $('#origin-province-select').on('change', function() {
-        const selectedProvince = $(this).val();
-        const citySelect = $('#origin-city-select');
-        
-        // Reset city select
-        citySelect.empty().append('<option value="">Pilih Kota/Kabupaten Asal</option>').prop('disabled', true);
-        
-        if (selectedProvince && cityData[selectedProvince]) {
-            // Tambahkan opsi kota berdasarkan provinsi yang dipilih
-            cityData[selectedProvince].forEach(city => {
-                citySelect.append(`<option value="${city}">${city}</option>`);
-            });
-            
-            // Enable select kota
-            citySelect.prop('disabled', false);
-        }
-    });
     
     // Menghandle perubahan pada provinsi tujuan
     $('#province-select').on('change', function() {
@@ -149,23 +120,11 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessageDiv.classList.add('hidden');
         }
         
-        const originProvinceSelect = document.getElementById('origin-province-select');
-        const originCitySelect = document.getElementById('origin-city-select');
         const provinceSelect = document.getElementById('province-select');
         const citySelect = document.getElementById('city-select');
         const kelurahanSelect = document.getElementById('kelurahan-select');
         const weightInput = document.getElementById('weight');
 
-        if (!originProvinceSelect || !originProvinceSelect.value) {
-            showError('Silakan pilih provinsi asal');
-            return false;
-        }
-        
-        if (!originCitySelect || !originCitySelect.value) {
-            showError('Silakan pilih kota/kabupaten asal');
-            return false;
-        }
-        
         if (!provinceSelect || !provinceSelect.value) {
             showError('Silakan pilih provinsi tujuan');
             return false;
@@ -208,8 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             e.preventDefault();
             // Ambil data form
-            const originProvince = document.getElementById('origin-province-select').value;
-            const originCity = document.getElementById('origin-city-select').value;
             const destProvince = document.getElementById('province-select').value;
             const destCity = document.getElementById('city-select').value;
             const destKelurahan = document.getElementById('kelurahan-select').value;
@@ -219,7 +176,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Format pesan
             const message =
                 `Halo Admin ZDX Express,%0A%0ASaya ingin melakukan pemesanan pengiriman dengan detail berikut:%0A` +
-                `Asal: ${originCity}, ${originProvince}%0A` +
                 `Tujuan: ${destKelurahan}, ${destCity}, ${destProvince}%0A` +
                 `Berat: ${weight} kg%0A%0AMohon info lebih lanjut dan konfirmasi biaya pengiriman.%0ATerima kasih.`;
             // Redirect ke WhatsApp
