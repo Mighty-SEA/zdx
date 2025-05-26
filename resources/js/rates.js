@@ -68,19 +68,33 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#province-select').on('change', function() {
         const selectedProvince = $(this).val();
         const citySelect = $('#city-select');
-        
+
         // Reset city select
         citySelect.empty().append('<option value="">Pilih Kota/Kabupaten</option>').prop('disabled', true);
         $('#kelurahan-select').empty().append('<option value="">Pilih Kelurahan/Kecamatan</option>').prop('disabled', true);
-        
-        if (selectedProvince && cityData[selectedProvince]) {
-            // Tambahkan opsi kota berdasarkan provinsi yang dipilih
-            cityData[selectedProvince].forEach(city => {
-                citySelect.append(`<option value="${city}">${city}</option>`);
+
+        if (selectedProvince) {
+            // AJAX ke backend untuk ambil kota
+            $.ajax({
+                url: '/get-cities',
+                type: 'POST',
+                data: {
+                    province: selectedProvince,
+                    _token: csrfToken
+                },
+                success: function(response) {
+                    console.log('[DEBUG] Response kota:', response);
+                    if (response.success && response.cities && response.cities.length > 0) {
+                        response.cities.forEach(function(city) {
+                            citySelect.append(`<option value="${city}">${city}</option>`);
+                        });
+                        citySelect.prop('disabled', false);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('[DEBUG] AJAX error get-cities:', status, error, xhr.responseText);
+                }
             });
-            
-            // Enable select kota
-            citySelect.prop('disabled', false);
         }
     });
     
@@ -88,23 +102,35 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#city-select').on('change', function() {
         const selectedCity = $(this).val();
         const kelurahanSelect = $('#kelurahan-select');
+        const selectedProvince = $('#province-select').val();
+        console.log('[DEBUG] Kota dipilih:', selectedCity, 'Provinsi:', selectedProvince);
         
         // Reset kelurahan select
         kelurahanSelect.empty().append('<option value="">Pilih Kelurahan/Kecamatan</option>').prop('disabled', true);
         
-        if (selectedCity) {
-            // Contoh data kelurahan (bisa diganti dengan data yang sebenarnya)
-            const kelurahanList = [
-                'Kelurahan 1', 'Kelurahan 2', 'Kelurahan 3', 'Kelurahan 4', 'Kelurahan 5'
-            ];
-            
-            // Tambahkan opsi kelurahan
-            kelurahanList.forEach(kelurahan => {
-                kelurahanSelect.append(`<option value="${kelurahan}">${kelurahan}</option>`);
+        if (selectedCity && selectedProvince) {
+            // AJAX ke backend untuk ambil kelurahan
+            $.ajax({
+                url: '/get-kelurahans',
+                type: 'POST',
+                data: {
+                    province: selectedProvince,
+                    city: selectedCity,
+                    _token: csrfToken // pastikan CSRF token dikirim
+                },
+                success: function(response) {
+                    console.log('[DEBUG] Response kelurahan:', response);
+                    if (response.success && response.kelurahans && response.kelurahans.length > 0) {
+                        response.kelurahans.forEach(function(kelurahan) {
+                            kelurahanSelect.append(`<option value="${kelurahan}">${kelurahan}</option>`);
+                        });
+                        kelurahanSelect.prop('disabled', false);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('[DEBUG] AJAX error:', status, error, xhr.responseText);
+                }
             });
-            
-            // Enable select kelurahan
-            kelurahanSelect.prop('disabled', false);
         }
     });
     
@@ -175,6 +201,30 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mencegah navigasi ke link jika validasi gagal
             if (!validateForm()) {
                 e.preventDefault();
+                return;
+            }
+            e.preventDefault();
+            // Ambil data form
+            const originProvince = document.getElementById('origin-province-select').value;
+            const originCity = document.getElementById('origin-city-select').value;
+            const destProvince = document.getElementById('province-select').value;
+            const destCity = document.getElementById('city-select').value;
+            const destKelurahan = document.getElementById('kelurahan-select').value;
+            const weight = document.getElementById('weight').value;
+            // Nomor WhatsApp tujuan (di-inject dari blade)
+            const whatsappPhone = window.whatsappPhone || '6285814718888';
+            // Format pesan
+            const message =
+                `Halo Admin ZDX Express,%0A%0ASaya ingin melakukan pemesanan pengiriman dengan detail berikut:%0A` +
+                `Asal: ${originCity}, ${originProvince}%0A` +
+                `Tujuan: ${destKelurahan}, ${destCity}, ${destProvince}%0A` +
+                `Berat: ${weight} kg%0A%0AMohon info lebih lanjut dan konfirmasi biaya pengiriman.%0ATerima kasih.`;
+            // Redirect ke WhatsApp
+            const waUrl = `https://wa.me/${whatsappPhone}?text=${message}`;
+            if (typeof window.gtag_report_conversion === 'function') {
+                window.gtag_report_conversion(waUrl);
+            } else {
+                window.open(waUrl, '_blank');
             }
         });
     }
