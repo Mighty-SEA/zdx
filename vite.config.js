@@ -19,7 +19,7 @@ export default defineConfig({
                 'resources/css/services.css',
                 'resources/js/services.js',
                 'resources/css/rates.css',
-                'resources/js/rates.js',
+                'resources/js/rates-v2.js',
             ],
             refresh: true,
         }),
