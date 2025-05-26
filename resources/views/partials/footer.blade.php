@@ -251,4 +251,17 @@
         @endif
         
     </div>
-</div> 
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var waBtn = document.getElementById('whatsapp-button');
+        if (waBtn) {
+            waBtn.addEventListener('click', function() {
+                if (typeof window.dataLayer !== 'undefined') {
+                    window.dataLayer.push({ event: 'cs_button' });
+                }
+            });
+        }
+    });
+</script> 

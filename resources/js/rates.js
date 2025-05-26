@@ -1,5 +1,8 @@
 // JavaScript untuk halaman rates (tarif)
 
+// Ambil CSRF token dari meta tag
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
 document.addEventListener('DOMContentLoaded', function() {
     // Inisialisasi AOS
     if (typeof AOS !== 'undefined') {
